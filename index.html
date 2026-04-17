@@ -192,7 +192,7 @@ select:focus{border-color:#e8b86d}
 </div>
 
 <script>
-const SHEET='https://script.google.com/macros/s/AKfycbycxvMUZL_gWlq5ZT011Oopk-EFkuLjiz6bH0VJqyAptgguGwPJAsgd35Knskrm7xpEzg/exec';
+const SHEET='https://script.google.com/macros/s/AKfycbxgae2nECVYBjH08_lJLWlwVjopCy3U3cDbNHKb7iTCbrmftkW_6MHfLVzifwn7-mfBPw/exec';
 const ADMIN_PIN='1121'; // Admin PIN
 let _n=0;
 function jsonp(url){
@@ -489,7 +489,8 @@ function renderDaily(){
   if(cfg.tr||cfg.run){
     let tl=[];
     tl.push({t:'Arrive',l:'Turn sauna on · McGill Big 3 · CARs',c:'#e8b86d'});
-    if(cfg.tr)tl.push({t:'Phase 1',l:'Shoulder activation — 5 min',c:'#888'});
+    const ibActLabels={1:'Lower body + shoulder prep',2:'Shoulder + elbow + wrist',3:'Lower body + upper back prep',4:'Lower body + knee focus',5:'Lower body + chest prep',6:'Full lower body dynamic'};
+    if(cfg.tr||cfg.run)tl.push({t:'Phase 1',l:`Activation — ${ibActLabels[d]||'full body'} · 5–8 min`,c:'#4ade80'});
     if(cfg.run&&cfg.runType!=='long'){const rt=getRunTarget(cfg.runType);tl.push({t:'Phase 2',l:`${RUN_INFO[cfg.runType].label} · ${rt} min target`,c:RUN_INFO[cfg.runType].color});}
     if(cfg.run&&cfg.runType!=='long'&&cfg.tr)tl.push({t:'Phase 3',l:'Pre-lift warm-up · 5 min',c:'#888'});
     if(cfg.tr)tl.push({t:cfg.run&&cfg.runType!=='long'?'Phase 4':'Phase 2',l:`Main lift — ${lift?lift.n:''}`,c:'#7F77DD'});

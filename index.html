@@ -3,197 +3,177 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Family Command Center</title>
+<title>Iron Brotherhood</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;color:#1a1a1a;font-size:14px}
-.pin-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:16px;padding:2rem}
-.pin-title{font-size:22px;font-weight:700;text-align:center}
-.pin-sub{font-size:13px;color:#666;text-align:center;max-width:320px;line-height:1.6}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f0f;color:#f0f0f0;font-size:14px}
+.pin-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:16px;padding:2rem;background:linear-gradient(160deg,#0f0f0f 0%,#1a1a2e 100%)}
+.logo-big{font-size:48px;margin-bottom:-8px}
+.app-title{font-size:28px;font-weight:800;letter-spacing:-.5px;text-align:center;background:linear-gradient(135deg,#e8b86d,#f0d080);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.app-sub{font-size:13px;color:#666;text-align:center;max-width:280px;line-height:1.6}
 .pin-row{display:flex;gap:8px}
-.pin-field{width:130px;text-align:center;font-size:24px;font-weight:600;letter-spacing:6px;padding:10px 12px;border-radius:8px;border:1.5px solid #ccc;outline:none;background:white}
-.pin-field:focus{border-color:#1a1a1a}
-.pin-btn{padding:10px 22px;border-radius:8px;border:none;background:#1a1a1a;color:white;font-size:14px;font-weight:500;cursor:pointer}
-.pin-err{font-size:12px;color:#c02828;background:#fceaea;padding:6px 12px;border-radius:6px}
-.pin-note{font-size:11px;color:#999;text-align:center;max-width:280px;line-height:1.6}
-.app{display:none;min-height:100vh;flex-direction:column}
-.hdr{background:white;border-bottom:1px solid #e5e3dc;padding:10px 14px 8px;position:sticky;top:0;z-index:50}
+.pin-field{width:130px;text-align:center;font-size:24px;font-weight:700;letter-spacing:6px;padding:10px 12px;border-radius:8px;border:1.5px solid #333;background:#1a1a1a;color:#f0f0f0;outline:none}
+.pin-field:focus{border-color:#e8b86d}
+.name-field{width:220px;text-align:center;font-size:16px;font-weight:500;padding:10px 14px;border-radius:8px;border:1.5px solid #333;background:#1a1a1a;color:#f0f0f0;outline:none}
+.name-field:focus{border-color:#e8b86d}
+.pin-btn{padding:10px 22px;border-radius:8px;border:none;background:linear-gradient(135deg,#e8b86d,#d4a054);color:#0f0f0f;font-size:14px;font-weight:700;cursor:pointer}
+.pin-btn:hover{opacity:.9}
+.pin-err{font-size:12px;color:#e8604a;background:#2a1a1a;padding:6px 12px;border-radius:6px;border:1px solid #4a2a2a}
+.pin-note{font-size:11px;color:#555;text-align:center;max-width:280px;line-height:1.6}
+.new-user-section{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:14px;width:100%;max-width:320px;text-align:center}
+.new-user-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#666;margin-bottom:10px}
+
+.app{display:none;min-height:100vh;flex-direction:column;background:#0f0f0f}
+.hdr{background:#141414;border-bottom:1px solid #222;padding:10px 14px 8px;position:sticky;top:0;z-index:50}
 .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.logo{font-size:15px;font-weight:700}
-.logo-row{display:flex;align-items:center;gap:8px}
-.pin-bdg{font-size:10px;color:#999;background:#f5f4f0;border:1px solid #e0ddd6;padding:2px 7px;border-radius:6px;cursor:pointer}
+.logo{font-size:15px;font-weight:800;background:linear-gradient(135deg,#e8b86d,#f0d080);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.user-bdg{font-size:10px;color:#888;background:#1a1a1a;border:1px solid #2a2a2a;padding:2px 8px;border-radius:6px;cursor:pointer}
 .sync{font-size:10px;padding:3px 9px;border-radius:8px;font-weight:500}
-.s-ok{background:#e0f3ea;color:#1a6b40}
-.s-save{background:#fdf3dc;color:#7a5010}
-.s-err{background:#fceaea;color:#c02828}
-.profile-tabs{display:flex;gap:4px;margin-bottom:8px;background:#f5f4f0;padding:3px;border-radius:8px}
-.ptab{flex:1;text-align:center;padding:6px 8px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;color:#888;border:none;background:transparent}
-.ptab.active{background:white;color:#1a1a1a;box-shadow:0 1px 3px rgba(0,0,0,.12)}
-.ptab.darius.active{color:#1a5a9b}
-.ptab.kelcie.active{color:#9b1a5a}
-.ptab.family.active{color:#1a7a50}
-.ntabs{display:flex;gap:3px;overflow-x:auto;margin-bottom:8px;scrollbar-width:none}
+.s-ok{background:#0d2a1a;color:#4ade80}
+.s-save{background:#2a2200;color:#fbbf24}
+.s-err{background:#2a0d0d;color:#f87171}
+.ntabs{display:flex;gap:3px;overflow-x:auto;scrollbar-width:none}
 .ntabs::-webkit-scrollbar{display:none}
-.ntab{flex-shrink:0;padding:5px 11px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;background:transparent;color:#888;border:none;letter-spacing:.04em;text-transform:uppercase}
-.ntab.active{background:#1a1a1a;color:white}
-.wnav{display:flex;align-items:center;gap:6px}
-.wb{background:white;border:1px solid #ddd;border-radius:5px;width:26px;height:26px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:#666}
+.ntab{flex-shrink:0;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;background:transparent;color:#555;border:none;letter-spacing:.04em;text-transform:uppercase}
+.ntab.active{background:#e8b86d;color:#0f0f0f}
+.wnav{display:flex;align-items:center;gap:6px;margin-top:8px}
+.wb{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:5px;width:26px;height:26px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:#888}
+.wb:hover{border-color:#e8b86d;color:#e8b86d}
 .wlbl{font-size:11px;color:#666;font-weight:500;min-width:130px;text-align:center}
-.dtabs{display:flex;gap:3px;overflow-x:auto;scrollbar-width:none}
+.dtabs{display:flex;gap:3px;overflow-x:auto;scrollbar-width:none;margin-top:6px}
 .dtabs::-webkit-scrollbar{display:none}
+
 .main{padding:12px;max-width:600px;margin:0 auto;padding-bottom:40px;flex:1}
 .page{display:none;flex-direction:column;gap:5px}
 .page.active{display:flex}
-.spin-wrap{display:flex;align-items:center;justify-content:center;gap:8px;padding:48px;color:#999;font-size:13px}
-.spinner{width:16px;height:16px;border:2px solid #e0ddd6;border-top-color:#1a1a1a;border-radius:50%;animation:spin .7s linear infinite}
+.spin-wrap{display:flex;align-items:center;justify-content:center;gap:8px;padding:48px;color:#555;font-size:13px}
+.spinner{width:16px;height:16px;border:2px solid #2a2a2a;border-top-color:#e8b86d;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.dh{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #e5e3dc}
-.dn{font-size:26px;font-weight:700}
-.dm{text-align:right}.dfl{font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.07em}
-.dfv{font-size:12px;font-weight:500;color:#555;margin-top:2px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
-.stat{background:white;border:1px solid #e5e3dc;border-radius:8px;padding:9px 10px;text-align:center}
-.snum{font-size:20px;font-weight:700}.slbl{font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
-.sec{margin-bottom:12px}
+
+.card{background:#141414;border:1px solid #222;border-radius:10px;padding:12px 14px;margin-bottom:5px}
+.card-gold{background:#1a1500;border-color:#3a2e00}
 .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.st{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:#999;display:flex;align-items:center;gap:5px}
+.st{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#555;display:flex;align-items:center;gap:5px}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.card{background:white;border:1px solid #e5e3dc;border-radius:10px;padding:12px 14px;margin-bottom:5px}
-.hr{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid #f0ede6;cursor:pointer;user-select:none}
-.hr:last-child{border-bottom:none;padding-bottom:0}
-.hr:first-child{padding-top:0}
-.hc{width:20px;height:20px;border-radius:50%;border:1.5px solid #ddd;background:white;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:white;transition:all .15s}
-.hc.on{background:#1a7a50;border-color:#1a7a50}
-.hc.on-j{background:#1a5a9b;border-color:#1a5a9b}
-.hc.on-k{background:#9b1a5a;border-color:#9b1a5a}
-.hl{flex:1;font-size:13px;color:#444}
-.hl.on{text-decoration:line-through;color:#bbb}
-.htag{font-size:10px;padding:2px 7px;border-radius:6px;background:#f5f4f0;color:#999;white-space:nowrap;flex-shrink:0}
-.bl{display:flex;align-items:stretch;border-radius:8px;overflow:hidden;border:1px solid #e5e3dc;margin-bottom:3px}
-.ba{width:4px;flex-shrink:0}
-.blb{min-width:58px;font-size:10px;color:#999;padding:8px 6px;display:flex;align-items:center;justify-content:center;border-right:1px solid #e5e3dc;background:#faf9f6;font-weight:600;text-align:center;line-height:1.3}
-.blc{flex:1;padding:8px 11px}
-.blt{font-size:12px;font-weight:600;color:#1a1a1a;display:flex;align-items:center;flex-wrap:wrap;gap:3px}
-.bls{font-size:11px;color:#666;margin-top:2px;line-height:1.5}
-.bdg{display:inline-block;font-size:10px;padding:1px 6px;border-radius:5px;font-weight:500}
-.bg2{background:#e0f3ea;color:#1a6b40}
-.bi2{background:#e6eef8;color:#1a5a9b}
-.lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#999;display:block;margin-bottom:4px}
-textarea,input[type=text],input[type=number]{width:100%;background:#faf9f6;border:1px solid #e0ddd6;border-radius:6px;padding:8px 10px;font-family:inherit;font-size:13px;color:#1a1a1a;outline:none;resize:none}
-textarea:focus,input:focus{border-color:#1a1a1a}
+.sec{margin-bottom:12px}
+.dh{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #222}
+.dn{font-size:26px;font-weight:800}
+.dm{text-align:right}.dfl{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.07em}
+.dfv{font-size:12px;font-weight:500;color:#888;margin-top:2px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.stat{background:#141414;border:1px solid #222;border-radius:8px;padding:9px 10px;text-align:center}
+.snum{font-size:20px;font-weight:800;color:#e8b86d}
+.slbl{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#555;display:block;margin-bottom:4px}
+textarea,input[type=text],input[type=number]{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:6px;padding:8px 10px;font-family:inherit;font-size:13px;color:#f0f0f0;outline:none;resize:none}
+textarea:focus,input:focus{border-color:#e8b86d}
 textarea{min-height:68px;line-height:1.6}
 input[type=number]{-moz-appearance:textfield}
 input[type=number]::-webkit-inner-spin-button{display:none}
-.pbar{height:4px;background:#e5e3dc;border-radius:2px;overflow:hidden;margin-top:4px}
-.pbf{height:100%;border-radius:2px;transition:width .3s}
-.prompt{border-radius:10px;padding:12px 14px;margin-bottom:5px}
-.pcat{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;margin-bottom:4px}
-.pq{font-size:15px;font-style:italic;color:#1a1a1a;line-height:1.5}
-.ph{font-size:11px;color:#666;margin-top:5px;line-height:1.5}
-.vl{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:#1a5a9b;text-decoration:none;border:1px solid #b0c8e8;border-radius:5px;padding:3px 8px;margin:3px 2px 0 0;background:#e6eef8}
-.vl:hover{background:#1a5a9b;color:white}
-.sets{display:flex;gap:4px;flex-wrap:wrap;margin:5px 0}
-.sp{font-size:10px;padding:2px 8px;border-radius:7px;border:1px solid;font-weight:500}
-.sw{background:#e1f5ee;border-color:#5dcaa5;color:#0a5a3a}
-.st2{background:#eeedfe;border-color:#afa9ec;color:#3a2a9a}
-.sv{background:#faeeda;border-color:#fac775;color:#6a4010}
-.se{background:#eaf3de;border-color:#97c459;color:#2a5a10}
-.note{font-size:11px;color:#555;padding:8px 11px;background:#faf9f6;border-radius:6px;border:1px solid #e5e3dc;line-height:1.6;margin:4px 0}
-.divider{height:1px;background:#e5e3dc;margin:16px 0}
-.wtabs{display:flex;gap:4px;margin-bottom:7px;flex-wrap:wrap}
-.wt{padding:3px 10px;border-radius:5px;border:1px solid #ddd;font-size:11px;cursor:pointer;background:white;color:#888}
-.wt.active{background:#faf9f6;color:#1a1a1a;border-color:#888;font-weight:500}
-.mini{width:64px;text-align:center;padding:4px 7px;font-size:13px;font-weight:500}
-.mr{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0ede6}
-.mr:last-child{border-bottom:none}
-.ml{font-size:12px;color:#666}
-.a-teal{background:#1D9E75}.a-purple{background:#7F77DD}.a-amber{background:#EF9F27}
-.a-blue{background:#378ADD}.a-coral{background:#D85A30}.a-green{background:#639922}
-.a-gold{background:#BA7517}.a-gray{background:#888780}.a-pink{background:#D4537E}
-.a-rose{background:#c0386a}.a-sky{background:#2a8ad4}
-/* phase checkable row */
-.phase-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f0ede6;cursor:pointer;user-select:none}
+select{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:6px;padding:8px 10px;font-family:inherit;font-size:13px;color:#f0f0f0;outline:none}
+select:focus{border-color:#e8b86d}
+.pbar{height:5px;background:#222;border-radius:3px;overflow:hidden;margin-top:4px}
+.pbf{height:100%;border-radius:3px;transition:width .3s;background:linear-gradient(90deg,#e8b86d,#f0d080)}
+.phase-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #1e1e1e;cursor:pointer;user-select:none}
 .phase-row:last-child{border-bottom:none}
-.phase-row:first-child{padding-top:0}
-.phase-check{width:20px;height:20px;border-radius:4px;border:1.5px solid #ddd;background:white;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:white;transition:all .15s}
-.phase-check.on{background:#1a5a9b;border-color:#1a5a9b}
-.phase-label{flex:1;font-size:12px;color:#444;font-weight:500}
-/* set logger */
-.set-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;margin:6px 0}
-.set-cell{background:#faf9f6;border:1px solid #e0ddd6;border-radius:5px;padding:4px 5px;text-align:center}
-.set-cell-hdr{font-size:9px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
-.set-cell input{background:transparent;border:none;text-align:center;font-size:12px;font-weight:600;padding:2px;width:100%}
-.set-cell input:focus{outline:none}
-/* supplement */
-.supp-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f0ede6}
-.supp-row:last-child{border-bottom:none}
-.supp-name{flex:1;font-size:12px;color:#1a1a1a}
-.supp-time{font-size:11px;color:#999;flex-shrink:0;min-width:60px;text-align:right}
-/* family cards */
-.family-split{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.person-card{border-radius:10px;padding:12px;border:1px solid}
-.person-name{font-size:14px;font-weight:700;margin-bottom:8px}
-.ps-row{display:flex;align-items:center;justify-content:space-between;padding:3px 0}
-.ps-label{font-size:11px;color:#666}
-.ps-val{font-size:11px;font-weight:500}
-.habit-dots{display:flex;gap:3px;flex-wrap:wrap;margin:4px 0}
-.hdot{width:8px;height:8px;border-radius:50%}
-.conn-card{background:white;border:1px solid #e5e3dc;border-radius:10px;padding:12px 14px;margin-bottom:8px}
-.conn-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999;margin-bottom:8px}
-.lucas-entry{background:#fdf3dc;border:1px solid #e8cc80;border-radius:8px;padding:10px 12px;margin-bottom:6px}
-.lucas-who{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#8a6010;margin-bottom:3px}
-.lucas-text{font-size:12px;color:#1a1a1a;line-height:1.5;font-style:italic}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:8px}
-.cal-hc{text-align:center;font-size:10px;font-weight:600;color:#999;text-transform:uppercase;padding:4px 0}
-.cal-cell{border:1px solid #e5e3dc;border-radius:7px;padding:5px;min-height:58px;background:white;cursor:pointer}
-.cal-cell.today{border-color:#e8cc80;border-width:2px}
-.cal-cell.selected{border-color:#1a1a1a;border-width:2px}
-.cal-cell.other{opacity:.3}
-.cal-dn{font-size:11px;font-weight:500;color:#666;margin-bottom:3px}
-.cal-dots{display:flex;gap:2px;flex-wrap:wrap}
-.cdot{width:5px;height:5px;border-radius:50%}
-.cal-legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-.cleg{display:flex;align-items:center;gap:4px;font-size:10px;color:#666}
-/* chore list */
-.chore-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f0ede6}
-.chore-row:last-child{border-bottom:none}
-.chore-text{flex:1;font-size:12px;color:#1a1a1a}
-.chore-text.done-txt{text-decoration:line-through;color:#bbb}
-.chore-who{font-size:10px;padding:1px 7px;border-radius:5px;font-weight:500;flex-shrink:0}
-.who-d{background:#e6eef8;color:#1a5a9b}
-.who-k{background:#f8e6f0;color:#9b1a5a}
-.who-both{background:#e0f3ea;color:#1a6b40}
+.phase-check{width:20px;height:20px;border-radius:4px;border:1.5px solid #333;background:#1a1a1a;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#0f0f0f;transition:all .15s}
+.phase-check.on{background:#e8b86d;border-color:#e8b86d}
+.phase-label{flex:1;font-size:12px;color:#888;font-weight:500}
+.phase-label.done{text-decoration:line-through;color:#444}
+.hr{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid #1e1e1e;cursor:pointer;user-select:none}
+.hr:last-child{border-bottom:none;padding-bottom:0}
+.hc{width:20px;height:20px;border-radius:50%;border:1.5px solid #333;background:#1a1a1a;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#0f0f0f}
+.hc.on{background:#e8b86d;border-color:#e8b86d}
+.hl{flex:1;font-size:13px;color:#888}
+.hl.done{text-decoration:line-through;color:#444}
+.htag{font-size:10px;padding:2px 7px;border-radius:6px;background:#1a1a1a;color:#555;border:1px solid #2a2a2a;white-space:nowrap}
+.note{font-size:11px;color:#666;padding:8px 11px;background:#1a1a1a;border-radius:6px;border:1px solid #222;line-height:1.6;margin:4px 0}
+.time-badge{font-size:10px;font-weight:600;color:#e8b86d;background:#1a1500;padding:2px 7px;border-radius:5px;border:1px solid #3a2e00;white-space:nowrap}
+.gold-badge{font-size:10px;font-weight:600;color:#0f0f0f;background:#e8b86d;padding:2px 8px;border-radius:5px}
+.vl{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:#e8b86d;text-decoration:none;border:1px solid #3a2e00;border-radius:5px;padding:3px 8px;margin:3px 2px 0 0;background:#1a1500}
+.vl:hover{background:#e8b86d;color:#0f0f0f}
+.divider{height:1px;background:#1e1e1e;margin:14px 0}
+
+/* PROGRESS / LEADERBOARD */
+.lb-card{background:#141414;border:1px solid #222;border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.lb-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1e1e1e}
+.lb-row:last-child{border-bottom:none}
+.lb-rank{font-size:18px;font-weight:800;width:28px;flex-shrink:0;text-align:center}
+.rank-1{color:#f0d080}
+.rank-2{color:#aaa}
+.rank-3{color:#cd7f32}
+.rank-n{color:#444}
+.lb-name{flex:1;font-size:13px;font-weight:600;color:#f0f0f0}
+.lb-val{font-size:13px;font-weight:700;color:#e8b86d}
+.lb-sub{font-size:10px;color:#555}
+.pr-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}
+.pr-card{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:10px 12px}
+.pr-lift{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.pr-weight{font-size:22px;font-weight:800;color:#e8b86d;line-height:1}
+.pr-unit{font-size:11px;color:#555}
+.pr-date{font-size:10px;color:#444;margin-top:2px}
+
+/* ADMIN */
+.admin-badge{background:linear-gradient(135deg,#e8b86d,#f0d080);color:#0f0f0f;font-size:10px;font-weight:800;padding:2px 8px;border-radius:5px;letter-spacing:.06em}
+.member-card{background:#141414;border:1px solid #222;border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.member-name{font-size:16px;font-weight:700;color:#f0f0f0;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.member-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px}
+.mstat{background:#1a1a1a;border-radius:6px;padding:7px 8px;text-align:center}
+.mstat-n{font-size:16px;font-weight:700;color:#e8b86d}
+.mstat-l{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:.06em;margin-top:1px}
+.prog-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.prog-bar-label{font-size:11px;color:#666;width:120px;flex-shrink:0}
+.prog-bar-wrap{flex:1;height:6px;background:#1e1e1e;border-radius:3px;overflow:hidden}
+.prog-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#e8b86d,#f0d080)}
+.prog-bar-val{font-size:10px;color:#888;width:40px;text-align:right;flex-shrink:0}
+
+/* MARATHON SECTION */
+.run-card{background:#0d1a12;border:1px solid #1a3a22;border-radius:10px;padding:12px 14px;margin-bottom:5px}
+.run-type-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:.06em}
+.run-easy{background:#0d2a1a;color:#4ade80;border:1px solid #1a4a2a}
+.run-moderate{background:#0d1a2a;color:#60a5fa;border:1px solid #1a2a4a}
+.run-long{background:#2a0d1a;color:#f472b6;border:1px solid #4a1a2a}
 </style>
 </head>
 <body>
 
 <div id="pinScreen" class="pin-screen">
-  <div style="font-size:36px;margin-bottom:-8px">🏠</div>
-  <div class="pin-title">Family Command Center</div>
-  <div class="pin-sub">One PIN for the whole family. Darius and Kelcie both enter the same PIN — synced to Google Sheets on every device.</div>
+  <div class="logo-big">⚔️</div>
+  <div class="app-title">Iron Brotherhood</div>
+  <div class="app-sub">Train together. Get stronger together. Enter your PIN to load your account.</div>
   <div class="pin-row">
-    <input class="pin-field" id="pinInput" type="number" placeholder="1234" maxlength="6">
-    <button class="pin-btn" onclick="enterPin()">Enter</button>
+    <input class="pin-field" id="pinInput" type="number" placeholder="PIN" maxlength="8">
+    <button class="pin-btn" onclick="enterPin()">Go</button>
   </div>
   <div id="pinErr" class="pin-err" style="display:none"></div>
-  <div class="pin-note">Same PIN works on every device — phone, computer, tablet.</div>
+  <div class="new-user-section">
+    <div class="new-user-title">New here? Create your account</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <input class="name-field" id="newName" type="text" placeholder="Your name (e.g. Marcus)">
+      <input class="pin-field" id="newPin" type="number" placeholder="Pick a PIN" style="width:100%">
+      <button class="pin-btn" style="width:100%" onclick="createAccount()">Create account</button>
+    </div>
+  </div>
+  <div class="pin-note">Your PIN is yours — nobody else can see your data. Admin PIN shows the full leaderboard.</div>
 </div>
 
 <div id="mainApp" class="app">
   <div class="hdr">
     <div class="hdr-top">
-      <div class="logo-row">
-        <div class="logo">Family Command</div>
-        <div class="pin-bdg" id="pinBdg" onclick="changePIN()">PIN ••••</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="logo">⚔️ Iron Brotherhood</div>
+        <div id="adminBadge" style="display:none" class="admin-badge">ADMIN</div>
       </div>
-      <div id="syncBadge" class="sync s-save">Connecting...</div>
+      <div style="display:flex;align-items:center;gap:7px">
+        <div class="user-bdg" id="userBdg" onclick="logout()">— · logout</div>
+        <div id="syncBadge" class="sync s-save">...</div>
+      </div>
     </div>
-    <div class="profile-tabs">
-      <button class="ptab darius active" id="ptab-darius" onclick="switchProfile('darius',this)">Darius</button>
-      <button class="ptab kelcie" id="ptab-kelcie" onclick="switchProfile('kelcie',this)">Kelcie</button>
-      <button class="ptab family" id="ptab-family" onclick="switchProfile('family',this)">Family</button>
+    <div class="ntabs" id="navTabs">
+      <button class="ntab active" onclick="setPage('daily',this)">Daily</button>
+      <button class="ntab" onclick="setPage('progress',this)">Progress</button>
+      <button class="ntab" onclick="setPage('marathon',this)">Marathon</button>
     </div>
-    <div class="ntabs" id="navTabs"></div>
     <div style="display:flex;align-items:center;justify-content:space-between">
       <div class="wnav">
         <button class="wb" onclick="changeWeek(-1)">‹</button>
@@ -204,18 +184,20 @@ input[type=number]::-webkit-inner-spin-button{display:none}
     </div>
   </div>
   <div class="main">
-    <div id="page-daily" class="page active"><div id="mainContent"><div class="spin-wrap"><div class="spinner"></div>Loading...</div></div></div>
-    <div id="page-calendar" class="page"><div id="calContent"></div></div>
-    <div id="page-sunday" class="page"><div id="sundayContent"></div></div>
+    <div id="page-daily" class="page active"><div id="dailyContent"><div class="spin-wrap"><div class="spinner"></div></div></div></div>
+    <div id="page-progress" class="page"><div id="progressContent"></div></div>
+    <div id="page-marathon" class="page"><div id="marathonContent"></div></div>
+    <div id="page-admin" class="page"><div id="adminContent"></div></div>
   </div>
 </div>
 
 <script>
 const SHEET='https://script.google.com/macros/s/AKfycbycxvMUZL_gWlq5ZT011Oopk-EFkuLjiz6bH0VJqyAptgguGwPJAsgd35Knskrm7xpEzg/exec';
+const ADMIN_PIN='1121'; // Admin PIN
 let _n=0;
 function jsonp(url){
   return new Promise((res,rej)=>{
-    const cb='_wc'+(++_n),s=document.createElement('script');
+    const cb='_ib'+(++_n),s=document.createElement('script');
     const t=setTimeout(()=>{cleanup();rej(new Error('timeout'))},10000);
     function cleanup(){clearTimeout(t);delete window[cb];if(s.parentNode)s.parentNode.removeChild(s);}
     window[cb]=d=>{cleanup();res(d);};
@@ -229,180 +211,150 @@ const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturda
 const SHORT=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-// ── DARIUS CONFIG ──────────────────────────────────────────
-const D_DCFG={
-  0:{f:'Sabbath + Planning',run:false,tr:null},
-  1:{f:'Shoulders / Abs + Easy Run',run:true,runType:'easy',tr:'Shoulders'},
-  2:{f:'Arms',run:false,tr:'Arms'},
-  3:{f:'Back / Abs + Moderate Run',run:true,runType:'moderate',tr:'Back'},
-  4:{f:'Legs — Knee Focus',run:false,tr:'Legs'},
-  5:{f:'Chest (Rehab) + Easy Run',run:true,runType:'easy',tr:'Chest'},
-  6:{f:'Long Run Day',run:true,runType:'long',tr:null}
+const ACTIVATION={
+  0:null,
+  1:{
+    label:'Mon — Lower body (run) + Shoulder (overhead press)',
+    items:[
+      {cat:'🏃 Run prep',exercises:[['Glute bridges','2×10 — fire glutes before running'],['Banded side walks','2×10 each — hip abductors'],['Leg swings forward','×10 each — dynamic hip flexor'],['Ankle circles','×10 each — ground contact prep'],['Air squats slow','×10 — full chain primer']]},
+      {cat:'💪 Lift prep — overhead press',exercises:[['Band pull-aparts','2×15 — rear delt + rotator cuff'],['External rotations','2×12 each — shoulder health'],['Wall slides','2×10 — scapular upward rotation'],['Arm circles small to big','×10 each direction']]}
+    ],
+    v:['pre run lower body activation','shoulder activation overhead press warm up']
+  },
+  2:{
+    label:'Tue — Shoulder + elbow + wrist (arms day)',
+    items:[
+      {cat:'💪 Lift prep — curls + pushdowns',exercises:[['Wrist circles','×10 each direction — elbow tendon prep'],['Band pull-aparts','2×15 — shoulder stability'],['External rotations','2×12 each — rotator cuff'],['Reverse curls light','2×10 — elbow warm up'],['Finger extensions','×10 — forearm balance']]}
+    ],
+    v:['arm day warm up routine','elbow wrist activation before curls']
+  },
+  3:{
+    label:'Wed — Lower body (run) + Upper back (rows)',
+    items:[
+      {cat:'🏃 Run prep',exercises:[['Glute bridges','2×10 — fire glutes before running'],['Banded side walks','2×10 each — hip abductors'],['Leg swings forward + lateral','×10 each — full hip mobility'],['Ankle circles','×10 each — ground contact prep'],['Air squats slow','×10 — full chain primer']]},
+      {cat:'💪 Lift prep — rows + back',exercises:[['Band pull-aparts','2×15 — scapular retraction'],['Face pulls','2×15 — rear delt + external rotation'],['Scapular retractions','2×10 — mid back activation'],['Dead hang','20–30s — lat lengthening before rows']]}
+    ],
+    v:['pre run lower body activation','back day warm up rows scapular']
+  },
+  4:{
+    label:'Thu — Lower body + knee focus (leg press + squats)',
+    items:[
+      {cat:'🦵 Leg day + knee prep',exercises:[['Glute bridges','2×15 — max hip activation'],['Banded side walks','2×15 each — hip abductors for knee stability'],['Wall ankle dorsiflexion','×10 each — squat depth + knee tracking'],['Leg swings','×10 each — hip mobility'],['Bodyweight squats slow','2×10 — full chain activation'],['Single leg balance','20s each — proprioception + knee stability']]}
+    ],
+    v:['leg day activation routine','knee activation before squats leg press']
+  },
+  5:{
+    label:'Fri — Lower body (run) + Chest/push prep',
+    items:[
+      {cat:'🏃 Run prep',exercises:[['Glute bridges','2×10 — fire glutes before running'],['Banded side walks','2×10 each — hip abductors'],['Leg swings forward','×10 each — dynamic hip flexor'],['Ankle circles','×10 each — ground contact prep'],['Air squats slow','×10 — full chain primer']]},
+      {cat:'💪 Lift prep — chest + push (rehab safe)',exercises:[['Band pull-aparts','2×15 — posterior shoulder balance'],['External rotations','2×12 each — rotator cuff protection'],['Pec isometric holds','3×10s pain-free range only — tissue prep'],['Face pulls','2×15 — always before pressing']]},
+    ],
+    v:['pre run lower body activation','chest warm up shoulder health before pressing']
+  },
+  6:{
+    label:'Sat — Full lower body dynamic (long run)',
+    items:[
+      {cat:'🏃 Long run prep — full dynamic',exercises:[['Glute bridges','2×15 — full hip activation'],['Banded side walks','2×15 each — hip abductors'],['Leg swings forward','×10 each side — hip flexor'],['Leg swings lateral','×10 each side — hip abductor'],['Ankle circles + calf raises','×10 each — full ankle prep'],['Hip circles','×10 each — full hip mobility'],['Dynamic lunges with reach','×5 each — thoracic + hip'],['High knees 10s + butt kicks 10s','— full warm-up primer']]}
+    ],
+    v:['pre long run activation dynamic warm up','marathon warm up routine before long run']
+  }
 };
-const D_COMP={
-  1:{n:'DB Overhead Press (Wk4+) / Cable Laterals (now)',sets:['Warm-up 1','Warm-up 2','Top Set','Working Set 1','Working Set 2']},
+const SPLIT={
+  0:{f:'Rest / Sabbath',tr:null,run:false},
+  1:{f:'Shoulders + Abs',tr:'Shoulders',run:true,runType:'easy'},
+  2:{f:'Arms',tr:'Arms',run:false},
+  3:{f:'Back + Abs',tr:'Back',run:true,runType:'moderate'},
+  4:{f:'Legs — Knee Focus',tr:'Legs',run:false},
+  5:{f:'Chest + Push',tr:'Chest',run:true,runType:'easy'},
+  6:{f:'Long Run Day',tr:null,run:true,runType:'long'}
+};
+
+const LIFTS={
+  1:{n:'DB Overhead Press / Cable Laterals',sets:['Warm-up 1','Warm-up 2','Top Set','Working Set 1','Working Set 2']},
   2:{n:'Barbell Curl',sets:['Warm-up 1','Warm-up 2','Top Set','Working Set 1','Working Set 2']},
   3:{n:'Chest-Supported Row',sets:['Warm-up 1','Warm-up 2','Top Set','Working Set 1','Working Set 2']},
   4:{n:'Leg Press',sets:['Warm-up 1','Warm-up 2','Top Set','Working Set 1','Working Set 2']},
-  5:{n:'Incline DB Press (Wk3+) / Isometric (Wk2)',sets:['Warm-up 1','Warm-up 2','Top Set','Working Set 1','Working Set 2']},
-  // Saturday = long run only, no lifting
+  5:{n:'DB Press / Machine Press',sets:['Warm-up 1','Warm-up 2','Top Set','Working Set 1','Working Set 2']}
 };
-const D_SS={
-  1:[[{l:'A',n:'DB lateral raises',s:'3×12 slow eccentric'},{l:'B',n:'Rear delt flys',s:'3×15 · 60s rest'}],[{l:'A',n:'Face pulls',s:'3×15 rope to forehead'},{l:'B',n:'External rotations',s:'3×12 each'},{l:'C',n:'Cable lateral raises',s:'3×12 · 90s rest'}],[{l:'A',n:'Plank',s:'3×30–60s'},{l:'B',n:'Hanging knee raise',s:'3×12'},{l:'C',n:'Ab wheel rollout',s:'3×10'}]],
-  2:[[{l:'A',n:'Hammer curls',s:'3×12 neutral grip'},{l:'B',n:'Rope pushdowns',s:'3×12'}],[{l:'A',n:'Cable curls',s:'3×12'},{l:'B',n:'Cable kickbacks',s:'3×12'},{l:'C',n:'Reverse curls',s:'3×12'}]],
-  3:[[{l:'A',n:'Lat pulldown neutral grip',s:'3×10 elbows DOWN'},{l:'B',n:'Seated cable rows',s:'3×12'}],[{l:'A',n:'Rear delt flys',s:'3×15'},{l:'B',n:'Face pulls',s:'3×15'},{l:'C',n:'Dead bug',s:'3×10'}]],
+
+const SS={
+  1:[[{l:'A',n:'DB lateral raises',s:'3×12'},{l:'B',n:'Rear delt flys',s:'3×15'}],[{l:'A',n:'Face pulls',s:'3×15'},{l:'B',n:'External rotations',s:'3×12'}],[{l:'A',n:'Plank',s:'3×45s'},{l:'B',n:'Hanging knee raise',s:'3×12'}]],
+  2:[[{l:'A',n:'Hammer curls',s:'3×12'},{l:'B',n:'Rope pushdowns',s:'3×12'}],[{l:'A',n:'Cable curls',s:'3×12'},{l:'B',n:'Cable kickbacks',s:'3×12'}]],
+  3:[[{l:'A',n:'Lat pulldown',s:'3×10'},{l:'B',n:'Seated cable rows',s:'3×12'}],[{l:'A',n:'Rear delt flys',s:'3×15'},{l:'B',n:'Face pulls',s:'3×15'}]],
   4:[[{l:'A',n:'Romanian deadlifts',s:'3×10'},{l:'B',n:'Hamstring curls',s:'3×12'}],[{l:'A',n:'Bulgarian split squats',s:'3×10 each'},{l:'B',n:'Calf raises',s:'3×15'}]],
-  5:[[{l:'A',n:'Flat DB press (Wk4+)',s:'3×10 elbows 45°'},{l:'B',n:'Cable rows',s:'3×12'}],[{l:'A',n:'Cable crossovers (Wk5+)',s:'3×12'},{l:'B',n:'Face pulls',s:'3×15'}]],
+  5:[[{l:'A',n:'Flat DB press',s:'3×10'},{l:'B',n:'Cable rows',s:'3×12'}],[{l:'A',n:'Cable crossovers',s:'3×12'},{l:'B',n:'Face pulls',s:'3×15'}]],
   6:[]
 };
-const D_BP={"1": {"t": "Shoulders \u2014 combined bulletproofing + PAILs/RAILs", "i": ["Dead hang 60s \u2014 spinal decompression + shoulder traction", "Doorway pec PAILs/RAILs: hold stretch at 90\u00b0 \u2192 PAIL press arm into frame \u00d7 20s ramp to max \u2192 RAIL contract deeper \u00d7 10s \u00b7 3 rounds (THIS IS YOUR REHAB)", "Band pull-aparts 2\u00d715 \u2014 posterior shoulder health", "Scapular pull-ups 2\u00d78 \u2014 scap stability", "Pec isometric holds 3\u00d715s \u2014 tissue loading"], "v": ["shoulder PAILs RAILs doorway FRC tutorial", "dead hang shoulder decompression benefits", "scapular pull ups how to tutorial"]}, "2": {"t": "Arms \u2014 combined bulletproofing + PAILs/RAILs", "i": ["Wrist extension PAILs: prayer press into floor \u00d7 20s ramp to max \u00b7 2 rounds each side", "Elbow full extension hold \u00d7 10s \u2014 elbow tendon protection \u00b7 2 rounds", "Reverse curls 2\u00d712 \u2014 elbow and forearm bulletproofing", "Dead hang 30s \u2014 decompress after arm day"], "v": ["wrist PAILs RAILs FRC tutorial", "elbow end range strengthening", "reverse curls elbow tendon health"]}, "3": {"t": "Back \u2014 combined bulletproofing + PAILs/RAILs", "i": ["Dead hang 60s \u2014 spinal decompression after heavy row day", "Lat overhead PAILs: press arm into wall overhead \u00d7 20s \u2192 RAIL reach further \u00d7 10s \u00b7 2 rounds", "Thoracic foam roll 60s \u2014 T-spine mobility", "Thoracic rotation hold \u00d7 20s each side", "Neck rolls \u00d7 5 each direction \u2014 cervical mobility"], "v": ["lat overhead PAILs stretch tutorial", "thoracic spine mobility foam roller", "dead hang spinal decompression"]}, "4": {"t": "Legs \u2014 combined bulletproofing + PAILs/RAILs", "i": ["90/90 hip PAILs/RAILs: 2 min passive hold \u2192 PAIL front shin into floor \u00d7 20s \u2192 RAIL lift front knee \u00d7 10s \u00b7 2 rounds each side", "Reverse Nordic curl 2\u00d78 controlled eccentric \u2014 knee bulletproofing", "Wall ankle dorsiflexion \u00d7 10 each \u2014 squat depth + knee protection", "Deep squat hold 45s \u2014 hip + ankle end range"], "v": ["90 90 hip PAILs RAILs ian markow tutorial", "reverse nordic curl knee bulletproofing how to", "ankle dorsiflexion wall mobility"]}, "5": {"t": "Chest \u2014 combined bulletproofing + PAILs/RAILs (rehab priority)", "i": ["Doorway pec PAILs/RAILs: hold stretch at 90\u00b0 \u2192 PAIL press arm into frame \u00d7 20s ramp to max \u2192 RAIL contract pec deeper \u00d7 10s \u00b7 3 rounds \u2014 most important day of the week for rehab", "Dead hang 60s \u2014 shoulder traction", "Pec isometric holds 3\u00d720s \u2014 tissue loading end range", "Band pull-aparts 1\u00d715 \u2014 posterior shoulder balance"], "v": ["pec PAILs RAILs doorway FRC end range", "pec strain rehab end range isometric", "dead hang shoulder health"]}, "6": {"t": "Long Run Day \u2014 post-run recovery", "i": ["World's greatest stretch \u00d7 5 each side \u2014 hip flexor + thoracic + shoulder all in one", "Deep squat hold 60s \u2014 hip + ankle end range", "90/90 hip PAILs/RAILs \u00d7 1 round each side \u2014 hip maintenance", "Shoulder doorway PAILs/RAILs \u00d7 2 rounds \u2014 shoulder maintenance", "Dead hang 60s \u2014 decompress after Murph"], "v": ["world's greatest stretch tutorial how to", "90 90 hip PAILs RAILs tutorial", "full body mobility flow post workout"]}};
-// PAILs/RAILs now combined into D_BP
-// MARATHON TRAINING - Phase 1 base building (now through end of June)
-// Runs progress automatically each week
-const MARATHON_PLAN={
-  runTypes:{
-    easy:{label:'Easy Run',desc:'Conversational pace — you can hold a full sentence. Never let heart rate go above 140bpm. This builds your aerobic base.',color:'#1a7a50'},
-    moderate:{label:'Moderate Run',desc:'Comfortably hard — you can speak in short sentences. Slightly faster than easy. Builds lactate threshold.',color:'#1a5a9b'},
-    long:{label:'Long Run',desc:'Easy pace the whole way — same as easy run pace. Distance is the goal, not speed. Walk breaks are completely fine.',color:'#9b1a5a'}
-  },
-  // Weekly targets by week number from start (week 1 = now)
-  // [easy_min, moderate_min, long_min]
-  weeks:[
-    [20,30,40],  // week 1
-    [25,35,45],  // week 2
-    [25,35,50],  // week 3
-    [20,30,40],  // week 4 — deload
-    [30,40,55],  // week 5
-    [30,40,60],  // week 6
-    [35,45,70],  // week 7
-    [25,35,50],  // week 8 — deload
-    [35,50,80],  // week 9
-    [40,50,90],  // week 10
-    [40,55,100], // week 11
-    [30,40,70],  // week 12 — deload
-    [45,55,110], // week 13
-    [45,60,120], // week 14
-    [50,60,130], // week 15
-    [35,45,90],  // week 16 — deload
-    [50,65,140], // week 17
-    [50,65,150], // week 18
-    [40,50,110], // week 19 — taper begins
-    [30,40,80],  // week 20
-    [20,30,40],  // week 21 — race week
-    [0,0,0]      // week 22 — race day
-  ]
+
+const MARATHON_START=new Date('2026-04-16');
+const MARATHON_WEEKS=[
+  [20,30,40],[25,35,45],[25,35,50],[20,30,40],[30,40,55],[30,40,60],[35,45,70],[25,35,50],
+  [35,50,80],[40,50,90],[40,55,100],[30,40,70],[45,55,110],[45,60,120],[50,60,130],[35,45,90],
+  [50,65,140],[50,65,150],[40,50,110],[30,40,80],[20,30,40],[0,0,0]
+];
+function getMarathonWeek(){return Math.min(Math.max(Math.floor((new Date()-MARATHON_START)/(7*24*60*60*1000)),0),21);}
+function getRunTarget(type){const w=MARATHON_WEEKS[getMarathonWeek()]||[20,30,40];return type==='easy'?w[0]:type==='moderate'?w[1]:w[2];}
+
+const RUN_INFO={
+  easy:{label:'Easy Run',color:'#4ade80',cls:'run-easy',desc:'Conversational pace — full sentences, under 140bpm. Builds aerobic base.'},
+  moderate:{label:'Moderate Run',color:'#60a5fa',cls:'run-moderate',desc:'Comfortably hard — short sentences. Builds lactate threshold.'},
+  long:{label:'Long Run',color:'#f472b6',cls:'run-long',desc:'Easy pace the whole way. Distance is the goal. Walk breaks are fine.'}
 };
-// Marathon start date — April 16 2026 (today)
-const MARATHON_START = new Date('2026-04-16');
-function getMarathonWeek(){
-  const now=new Date();
-  const diff=Math.floor((now-MARATHON_START)/(7*24*60*60*1000));
-  return Math.min(Math.max(diff,0),21);
-}
-function getRunTarget(runType){
-  const week=getMarathonWeek();
-  const targets=MARATHON_PLAN.weeks[week]||[20,30,40];
-  if(runType==='easy')return targets[0];
-  if(runType==='moderate')return targets[1];
-  if(runType==='long')return targets[2];
-  return 0;
-}
 
-const D_CARS={1:'Full CARs + extra shoulder CARs',2:'Full CARs + extra wrist + elbow CARs',3:'Full CARs + extra thoracic CARs',4:'Full CARs + extra hip + ankle CARs',5:'Full CARs — shoulder pain-free range only',6:'Full CARs all 6 joints'};
-const D_MCGILL=['Modified curl-up: lie back, one knee bent, hands under lower back — lift head/shoulders × 5 holds of 10s','Side plank: forearm down, body straight — 5 holds of 10s each side','Bird dog: all fours, extend opposite arm + leg, hold 10s × 5 each side'];
-
-const D_PROMPTS={
-  0:{c:'Sabbath · Sunday',q:'What did you learn or feel at church today that you want to carry into the week?',h:'Even a rough Sunday with a 6-month-old had something. Find it.'},
-  1:{c:'Spiritual · Monday',q:'What did you read in the scriptures this morning, and what did the Spirit impress upon you?',h:'One verse, one feeling, one word that stayed.'},
-  2:{c:'Family · Tuesday',q:'How present were you with Kelcie and Lucas today? Was there a moment you were fully there?',h:"No judgment. What does tomorrow look like if you improve by 10%?"},
-  3:{c:'Growth · Wednesday',q:"What are you working on becoming — not doing, but becoming — and did anything today move you closer?",h:'Patience, discipline, faith, presence. Pick one.'},
-  4:{c:'Spiritual · Thursday',q:'Did you feel the Spirit today? In what moment did you feel guided or close to Heavenly Father?',h:"If it was hard and you didn't feel it, write that honestly too."},
-  5:{c:'Weekly Review · Friday',q:'One win as a husband, one as a father, one as a disciple this week?',h:"Wins first, always."},
-  6:{c:'Family · Saturday',q:"Write a memory from today with Lucas — something he did you want to remember when he's 16.",h:"He is 6 months old right now. This is the journal he'll read someday."}
-};
-const D_WD=[
-  {t:'Hard stop on school 10:15pm — write tomorrow\'s first task, close laptop',v:null},
-  {t:'Prep tomorrow: gym bag, clothes, water bottle — reduce 5am friction',v:null},
-  {t:'Axisboard Pro + toe spacers — 5–10 min balance work before bed (see notes below)',v:'sidekick axisboard pro exercises tutorial'},
-  {t:'4-7-8 breathing: inhale 4s → hold 7s → exhale 8s × 4 rounds',v:'4 7 8 breathing technique tutorial Andrew Weil'},
-  {t:'Week 3+: 10-min NSDR body scan — Insight Timer app (free, download offline)',v:'NSDR non sleep deep rest body scan guided'},
-  {t:'Asleep by 11pm — 5am wake = 6 hours',v:null}
+const MCGILL=[
+  'Modified curl-up: lie back, one knee bent — lift head/shoulders × 5 holds of 10s',
+  'Side plank: forearm down, body straight — 5 holds of 10s each side',
+  'Bird dog: all fours, extend opposite arm + leg — hold 10s × 5 each side'
 ];
 
-const K_PROMPTS={
-  0:{c:'Sabbath · Sunday',q:'What did you feel at church today — in a talk, a hymn, a quiet moment with Lucas — that you want to carry into the week?',h:'Even a rough Sunday with a 6-month-old had something. Find it.'},
-  1:{c:'Motherhood · Monday',q:'What was one moment today with Lucas that you want to remember — something he did, a sound he made, the way he looked at you?',h:'He is 6 months old right now. These moments go fast. Write it down.'},
-  2:{c:'Business · Tuesday',q:'What did you do today toward your photography — even something small? And what felt aligned with the photographer you are becoming?',h:'Building a business while home with a newborn is not small. Any step counts.'},
-  3:{c:'Marriage · Wednesday',q:"How connected did you feel to Darius today? Was there a moment of real presence between you two?",h:"Marriage with a newborn and two full lives is hard. What's one thing you can bring tomorrow?"},
-  4:{c:'Personal Growth · Thursday',q:"What are you working on becoming right now — as a mother, a photographer, a woman of faith?",h:'Not tasks. Character. Patience, creativity, faith, joy.'},
-  5:{c:'Weekly Review · Friday',q:'One win this week as a mother. One as a photographer. One as a wife. One as a disciple.',h:"Wins first, always."},
-  6:{c:'Family · Saturday',q:"Write something for Lucas — a memory, an observation, something you want him to know about this season.",h:'He will read this. Write it for him.'}
-};
-const K_WD=[
-  {t:'Wind down with Darius if he is still up — connection time',v:null},
-  {t:'Write tomorrow\'s one photography task before closing phone',v:null},
-  {t:'4-7-8 breathing: inhale 4s → hold 7s → exhale 8s × 4 rounds',v:'4 7 8 breathing technique tutorial Andrew Weil'},
-  {t:'NSDR or Insight Timer if Lucas allowed it today',v:'NSDR non sleep deep rest body scan guided'},
-  {t:'Aim for 9:30pm — protect your sleep even with interrupted nights',v:null}
-];
-
-// DEFAULT SUPPLEMENTS — editable in app
-const DEFAULT_D_SUPPS=[
-  {name:'Creatine',time:'Morning'},
-  {name:'Vitamin D3',time:'Morning'},
-  {name:'Magnesium Glycinate',time:'Night'},
-  {name:'Omega-3 Fish Oil',time:'Morning'},
-  {name:'Protein Shake',time:'Post-workout'}
-];
-const DEFAULT_K_SUPPS=[
-  {name:'Prenatal Vitamin',time:'Morning'},
-  {name:'Vitamin D3',time:'Morning'},
-  {name:'Magnesium Glycinate',time:'Night'},
-  {name:'Omega-3 Fish Oil',time:'Morning'}
-];
-
-// DEFAULT CHORES
-const DEFAULT_CHORES=[
-  {text:'Grocery shopping',who:'both',done:false},
-  {text:'Vacuum main floor',who:'both',done:false},
-  {text:'Wipe down kitchen counters',who:'k',done:false},
-  {text:'Clean bathrooms',who:'both',done:false},
-  {text:'Do laundry',who:'both',done:false},
-  {text:'Fold and put away laundry',who:'both',done:false},
-  {text:'Take out trash + recycling',who:'d',done:false},
-  {text:'Mop floors',who:'both',done:false},
-  {text:'Pay bills / finances check-in',who:'d',done:false},
-  {text:'Lucas tummy time sessions',who:'k',done:false},
-  {text:'Meal prep for the week',who:'both',done:false},
-  {text:'Clean out car',who:'d',done:false},
-  {text:'Water plants',who:'k',done:false},
-  {text:'Wipe down appliances',who:'k',done:false},
-  {text:'Date night plan',who:'both',done:false}
-];
-
-let pin='',wOff=0,curDay=new Date().getDay(),state={},sTimer=null,loaded=false,calMo=new Date(),selDate=null,curProfile='darius',curPage='daily';
+let pin='',userName='',isAdmin=false,wOff=0,curDay=new Date().getDay(),state={},sTimer=null,loaded=false,curPage='daily';
 
 function wk(o=0){const n=new Date(),d=n.getDay(),s=new Date(n);s.setDate(n.getDate()-d+(o*7));return s.toISOString().split('T')[0];}
 function wDates(o=0){const n=new Date(),d=n.getDay(),s=new Date(n);s.setDate(n.getDate()-d+(o*7));return Array.from({length:7},(_,i)=>{const x=new Date(s);x.setDate(s.getDate()+i);return x;});}
 function fmtR(o){const d=wDates(o),op={month:'short',day:'numeric'};return d[1].toLocaleDateString('en-US',op)+' – '+d[6].toLocaleDateString('en-US',op);}
-function sb(s,m){const b=document.getElementById('syncBadge');if(!b)return;if(s==='ok'){b.className='sync s-ok';b.textContent='Synced ✓'}else if(s==='s'){b.className='sync s-save';b.textContent='Saving...'}else if(s==='l'){b.className='sync s-save';b.textContent='Loading...'}else{b.className='sync s-err';b.textContent=m||'Local only'}}
-function lk(){return 'fcc2_'+pin+'_'+wk(wOff);}
+function sb(s,m){const b=document.getElementById('syncBadge');if(!b)return;if(s==='ok'){b.className='sync s-ok';b.textContent='Synced ✓'}else if(s==='s'){b.className='sync s-save';b.textContent='Saving...'}else{b.className='sync s-err';b.textContent=m||'Local only'}}
+function userKey(){return 'ib_user_'+pin;}
+function weekKey(){return 'ib_week_'+pin+'_'+wk(wOff);}
+function allUsersKey(){return 'ib_users';}
+
 async function load(){
-  sb('l');
+  sb('s','Loading...');
   try{
-    const r=await jsonp(SHEET+'?action=get&key='+encodeURIComponent(lk()));
-    if(r&&r.status==='found'&&r.value){state=JSON.parse(r.value);try{localStorage.setItem(lk(),r.value)}catch(e){}sb('ok');}
-    else{try{const l=localStorage.getItem(lk());state=l?JSON.parse(l):{}}catch(e){state={}}sb('ok');}
-  }catch(e){try{const l=localStorage.getItem(lk());state=l?JSON.parse(l):{}}catch(e2){state={}}sb('err','Local only');}
+    const r=await jsonp(SHEET+'?action=get&key='+encodeURIComponent(weekKey()));
+    if(r&&r.status==='found'&&r.value){state=JSON.parse(r.value);try{localStorage.setItem(weekKey(),r.value)}catch(e){}sb('ok');}
+    else{try{const l=localStorage.getItem(weekKey());state=l?JSON.parse(l):{}}catch(e){state={}}sb('ok');}
+  }catch(e){try{const l=localStorage.getItem(weekKey());state=l?JSON.parse(l):{}}catch(e2){state={}}sb('err','Local only');}
   loaded=true;
 }
-function sched(){sb('s');if(sTimer)clearTimeout(sTimer);sTimer=setTimeout(doSave,1200);}
+function sched(){sb('s','Saving...');if(sTimer)clearTimeout(sTimer);sTimer=setTimeout(doSave,1200);}
 async function doSave(){
   const p=JSON.stringify(state);
-  try{localStorage.setItem(lk(),p)}catch(e){}
-  try{const r=await jsonp(SHEET+'?action=set&key='+encodeURIComponent(lk())+'&value='+encodeURIComponent(p));sb(r&&r.status==='saved'?'ok':'err','Local only');}
+  try{localStorage.setItem(weekKey(),p)}catch(e){}
+  try{const r=await jsonp(SHEET+'?action=set&key='+encodeURIComponent(weekKey())+'&value='+encodeURIComponent(p));sb(r&&r.status==='saved'?'ok':'err','Local only');}
   catch(e){sb('err','Local only');}
+  // Also save user profile
+  saveUserProfile();
 }
+async function saveUserProfile(){
+  const profileKey=userKey();
+  const profile={name:userName,pin:pin,lastSeen:new Date().toISOString()};
+  const p=JSON.stringify(profile);
+  try{localStorage.setItem(profileKey,p)}catch(e){}
+  try{await jsonp(SHEET+'?action=set&key='+encodeURIComponent(profileKey)+'&value='+encodeURIComponent(p));}catch(e){}
+  // Register in user list
+  registerUser();
+}
+async function registerUser(){
+  const listKey=allUsersKey();
+  let users=[];
+  try{const r=await jsonp(SHEET+'?action=get&key='+encodeURIComponent(listKey));if(r&&r.status==='found'&&r.value)users=JSON.parse(r.value);}catch(e){}
+  if(!users.find(u=>u.pin===pin)){
+    users.push({name:userName,pin:pin});
+    try{await jsonp(SHEET+'?action=set&key='+encodeURIComponent(listKey)+'&value='+encodeURIComponent(JSON.stringify(users)));}catch(e){}
+    try{localStorage.setItem(listKey,JSON.stringify(users))}catch(e){}
+  }
+}
+
 function g(p,d=null){const pts=p.split('.');let o=state;for(const x of pts){if(o==null||typeof o!=='object')return d;o=o[x];}return o!=null?o:d;}
 function sv(p,v){const pts=p.split('.');let o=state;for(let i=0;i<pts.length-1;i++){if(!o[pts[i]])o[pts[i]]={};o=o[pts[i]];}o[pts[pts.length-1]]=v;sched();}
 function tog(p){sv(p,!g(p,false));}
@@ -412,1074 +364,614 @@ function enterPin(){
   const v=document.getElementById('pinInput').value.toString().trim();
   const e=document.getElementById('pinErr');
   if(v.length<4){e.textContent='PIN must be at least 4 digits';e.style.display='block';return;}
-  e.style.display='none';pin=v;
-  document.getElementById('pinBdg').textContent='PIN '+v.substring(0,2)+'••';
-  document.getElementById('pinScreen').style.display='none';
-  document.getElementById('mainApp').style.display='flex';
-  load().then(()=>renderAll());
-}
-function changePIN(){const v=prompt('Enter new PIN (4–6 digits):');if(v&&v.length>=4&&/^\d+$/.test(v)){pin=v;document.getElementById('pinBdg').textContent='PIN '+v.substring(0,2)+'••';load().then(()=>renderAll());}}
-document.getElementById('pinInput').addEventListener('keydown',e=>{if(e.key==='Enter')enterPin();});
+  e.style.display='none';
 
-function switchProfile(p,el){
-  curProfile=p;
-  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  buildNav();
-  curPage='daily';
-  renderAll();
-}
+  // Check admin PIN
+  if(v===ADMIN_PIN){
+    pin=v;isAdmin=true;userName='Darius';
+    launchApp();return;
+  }
 
-function buildNav(){
-  const nav=document.getElementById('navTabs');
-  if(curProfile==='family'){
-    nav.innerHTML=`<button class="ntab active" onclick="setPage('daily',this)">Today</button><button class="ntab" onclick="setPage('calendar',this)">Calendar</button>`;
+  // Try to load existing user
+  const profileKey='ib_user_'+v;
+  let profile=null;
+  try{const l=localStorage.getItem(profileKey);if(l)profile=JSON.parse(l);}catch(e){}
+
+  if(profile&&profile.name){
+    pin=v;userName=profile.name;
+    launchApp();
   } else {
-    nav.innerHTML=`<button class="ntab active" onclick="setPage('daily',this)">Daily</button><button class="ntab" onclick="setPage('calendar',this)">Calendar</button><button class="ntab" onclick="setPage('sunday',this)">Sunday</button>`;
+    e.textContent='PIN not found. Create an account below or check your PIN.';
+    e.style.display='block';
   }
 }
+
+function createAccount(){
+  const name=document.getElementById('newName').value.trim();
+  const newPin=document.getElementById('newPin').value.toString().trim();
+  const e=document.getElementById('pinErr');
+  if(!name){e.textContent='Enter your name first';e.style.display='block';return;}
+  if(newPin.length<4){e.textContent='PIN must be at least 4 digits';e.style.display='block';return;}
+  if(newPin.toUpperCase()===ADMIN_PIN){e.textContent='That PIN is reserved';e.style.display='block';return;}
+  e.style.display='none';
+  pin=newPin;userName=name;isAdmin=false;
+  const profile={name,pin:newPin,lastSeen:new Date().toISOString()};
+  try{localStorage.setItem('ib_user_'+newPin,JSON.stringify(profile))}catch(e){}
+  launchApp();
+}
+
+function launchApp(){
+  document.getElementById('pinScreen').style.display='none';
+  document.getElementById('mainApp').style.display='flex';
+  document.getElementById('userBdg').textContent=userName+' · logout';
+  document.getElementById('adminBadge').style.display=isAdmin?'block':'none';
+  if(isAdmin){
+    document.getElementById('navTabs').innerHTML=`
+      <button class="ntab active" onclick="setPage('daily',this)">Daily</button>
+      <button class="ntab" onclick="setPage('progress',this)">Progress</button>
+      <button class="ntab" onclick="setPage('marathon',this)">Marathon</button>
+      <button class="ntab" onclick="setPage('admin',this)">⚡ Squad</button>`;
+  }
+  load().then(()=>renderAll());
+  saveUserProfile();
+}
+
+function logout(){
+  if(!confirm('Log out?'))return;
+  pin='';userName='';isAdmin=false;state={};loaded=false;
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('pinScreen').style.display='flex';
+  document.getElementById('pinInput').value='';
+}
+
+document.getElementById('pinInput').addEventListener('keydown',e=>{if(e.key==='Enter')enterPin();});
+document.getElementById('newPin').addEventListener('keydown',e=>{if(e.key==='Enter')createAccount();});
+
+async function changeWeek(dir){wOff+=dir;loaded=false;document.getElementById('dailyContent').innerHTML='<div class="spin-wrap"><div class="spinner"></div></div>';await load();renderAll();}
+function switchDay(d){curDay=d;renderAll();}
 function setPage(id,el){
   curPage=id;
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
+  const pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');
   if(el)el.classList.add('active');
   renderContent();
 }
-
-async function changeWeek(dir){wOff+=dir;loaded=false;document.getElementById('mainContent').innerHTML='<div class="spin-wrap"><div class="spinner"></div>Loading...</div>';await load();renderAll();}
-function switchDay(d){curDay=d;renderAll();}
 function renderAll(){renderHdr();renderContent();}
 function renderContent(){
-  if(curPage==='daily'){
-    if(curProfile==='darius')renderDarius();
-    else if(curProfile==='kelcie')renderKelcie();
-    else renderFamily();
-  } else if(curPage==='calendar'){
-    renderCal();
-  } else if(curPage==='sunday'){
-    if(curProfile==='darius')renderDSunday();
-    else renderKSunday();
-  }
+  if(curPage==='daily')renderDaily();
+  else if(curPage==='progress')renderProgress();
+  else if(curPage==='marathon')renderMarathon();
+  else if(curPage==='admin')renderAdmin();
 }
 
 function renderHdr(){
   document.getElementById('weekRange').textContent=fmtR(wOff);
-  const wrap=document.getElementById('dayTabsWrap');
-  wrap.innerHTML='';
-  if(curProfile==='family')return;
+  const wrap=document.getElementById('dayTabsWrap');wrap.innerHTML='';
   const today=new Date().getDay(),isCurr=wOff===0;
   for(let d=0;d<7;d++){
     const b=document.createElement('button');
     b.className='ntab'+(d===curDay?' active':'');
-    b.style.cssText='padding:4px 8px;font-size:10px'+(isCurr&&d===today?';box-shadow:0 0 0 2px #e8cc80':'');
+    b.style.cssText='padding:4px 8px;font-size:10px'+(isCurr&&d===today?';box-shadow:0 0 0 2px #e8b86d':'');
     b.textContent=SHORT[d];b.onclick=()=>switchDay(d);wrap.appendChild(b);
   }
 }
 
-function hr(dk,key,label,time,who='d'){
-  const done=g(`${dk}.habits.${key}`,false);
-  const onClass=who==='d'?'on-j':'on-k';
-  return `<div class="hr" onclick="tog('${dk}.habits.${key}');renderAll()"><div class="hc ${done?onClass:''}">✓</div><div class="hl ${done?'on':''}">${label}</div><div class="htag">${time}</div></div>`;
+function phRow(key,label){
+  const done=g(`d${curDay}.phases.${key}`,false);
+  return `<div class="phase-row" onclick="tog('d${curDay}.phases.${key}');renderAll()"><div class="phase-check ${done?'on':''}">✓</div><div class="phase-label ${done?'done':''}">${label}</div></div>`;
 }
-function phaseRow(dk,key,label){
-  const done=g(`${dk}.phases.${key}`,false);
-  return `<div class="phase-row" onclick="tog('${dk}.phases.${key}');renderAll()"><div class="phase-check ${done?'on':''}">✓</div><div class="phase-label ${done?'on':''}">${label}</div></div>`;
+function hrRow(key,label,time){
+  const done=g(`d${curDay}.habits.${key}`,false);
+  return `<div class="hr" onclick="tog('d${curDay}.habits.${key}');renderAll()"><div class="hc ${done?'on':''}">✓</div><div class="hl ${done?'done':''}">${label}</div><div class="htag">${time}</div></div>`;
 }
 
-
-// ── MARATHON RUN SECTION ──────────────────────────────────
-function renderMarathonRun(dk,d,runType){
+function renderDaily(){
+  const mc=document.getElementById('dailyContent');
+  if(!loaded){mc.innerHTML='<div class="spin-wrap"><div class="spinner"></div></div>';return;}
+  const d=curDay,dk=`d${d}`,cfg=SPLIT[d];
+  const lift=LIFTS[d],ss=SS[d]||[];
+  const sessComplete=g(`${dk}.training.done`,false);
+  const runComplete=g(`${dk}.phases.run`,false);
   const week=getMarathonWeek()+1;
-  const target=getRunTarget(runType);
-  const info=MARATHON_PLAN.runTypes[runType];
-  const actual=parseFloat(g(`${dk}.run.actual`,0))||0;
-  const pct=target>0?Math.min(100,Math.round((actual/target)*100)):0;
-  
-  // Knee tips for run days
-  const kneeTips={
-    easy:'St. George is downhill — train your quads for eccentric loading. On easy days focus on short stride, high cadence (170+ steps/min), slight forward lean.',
-    moderate:'Moderate days build lactate threshold. Find a slight downhill and practice running it — this is St. George specific training.',
-    long:'Long run tip: walk the uphills, run the flats and downhills. Practice the downhill form — lean slightly back, shorten stride, land midfoot not heel.'
-  };
 
-  let H=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:${info.color}"></div>Marathon Training · Week ${week} of 22 · ${info.label}</div><div style="font-size:10px;font-weight:600;color:#1a5a9b;background:#e6eef8;padding:2px 7px;border-radius:5px">6:00am · ${target} min target</div></div>
-  <div class="card">
-    <div style="background:${info.color}18;border:1px solid ${info.color}44;border-radius:8px;padding:10px 12px;margin-bottom:10px">
-      <div style="font-size:11px;font-weight:700;color:${info.color};text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">${info.label} · Target: ${target} min</div>
-      <div style="font-size:11px;color:#555;line-height:1.5">${info.desc}</div>
-    </div>
-    <div style="margin-bottom:4px;font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.07em">St. George tip</div>
-    <div style="font-size:11px;color:#555;line-height:1.5;margin-bottom:10px">${kneeTips[runType]}</div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-      <div><label class="lbl">Actual time (min)</label>
-        <input type="text" inputmode="decimal" value="${g(`${dk}.run.actual`,'')}" oninput="sv('${dk}.run.actual',this.value)" onchange="renderAll()" style="width:70px;font-size:15px;font-weight:700;text-align:center;padding:5px 7px">
-      </div>
-      <div style="flex:1">
-        <div style="font-size:11px;color:#999;margin-bottom:3px">${pct}% of target · ${target} min goal</div>
-        <div class="pbar"><div class="pbf" style="width:${pct}%;background:${info.color}"></div></div>
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-      <div><label class="lbl">Distance (miles)</label><input type="number" step=".1" min="0" value="${g(`${dk}.run.distance`,'')}" oninput="sv('${dk}.run.distance',this.value)" placeholder="0.0"></div>
-      <div><label class="lbl">Avg pace (min/mi)</label><input type="text" value="${esc(g(`${dk}.run.pace`,''))}" oninput="sv('${dk}.run.pace',this.value)" placeholder="e.g. 11:30"></div>
-    </div>
-    <div style="margin-bottom:8px"><label class="lbl">How did it feel? Any knee pain or discomfort?</label>
-      <textarea style="min-height:52px" placeholder="Energy level, knee feeling, breathing, anything to note..." oninput="sv('${dk}.run.notes',this.value)">${esc(g(`${dk}.run.notes`,''))}</textarea>
-    </div>
-    ${phaseRow(dk,'run','Run complete')}
-  </div></div>`;
-  return H;
-}
+  let H=`<div class="dh"><div class="dn" style="color:#e8b86d">${DAYS[d]}</div><div class="dm"><div class="dfl">Focus</div><div class="dfv">${cfg.f}</div></div></div>`;
 
-// ── DARIUS DAY ─────────────────────────────────────────────
-function renderDarius(){
-  const mc=document.getElementById('mainContent');
-  if(!loaded){mc.innerHTML='<div class="spin-wrap"><div class="spinner"></div>Loading...</div>';return;}
-  const d=curDay,cfg=D_DCFG[d],dk=`d_d${d}`;
-  const hk=['scripture','toespacers','piano','reading','journal','winddown','axisboard'];
-  const hd=hk.filter(h=>g(`${dk}.habits.${h}`,false)).length;
-  const sh=parseFloat(g(`${dk}.study.hours`,0))||0;
-  const td=g(`${dk}.training.done`,false);
-
-  let H=`<div class="dh"><div class="dn" style="color:#1a5a9b">Darius — ${DAYS[d]}</div><div class="dm"><div class="dfl">Focus</div><div class="dfv">${cfg.f}</div></div></div>
-  <div class="stats">
-    <div class="stat"><div class="snum">${hd}/${hk.length}</div><div class="slbl">Habits</div></div>
-    <div class="stat"><div class="snum">${sh.toFixed(1)}</div><div class="slbl">Study hrs</div></div>
-    <div class="stat"><div class="snum" style="color:${td?'#1a7a50':'#bbb'}">${td?'✓':'—'}</div><div class="slbl">Training</div></div>
+  // Quick stats
+  const habitsTotal=3,habitsDone=['water','sleep','nutrition'].filter(h=>g(`${dk}.habits.${h}`,false)).length;
+  H+=`<div class="stats">
+    <div class="stat"><div class="snum">${habitsDone}/${habitsTotal}</div><div class="slbl">Habits</div></div>
+    <div class="stat"><div class="snum" style="color:${sessComplete?'#4ade80':'#444'}">${sessComplete?'✓':'—'}</div><div class="slbl">Session</div></div>
+    <div class="stat"><div class="snum" style="color:${runComplete?'#4ade80':'#444'}">${runComplete?'✓':'—'}</div><div class="slbl">Run</div></div>
   </div>`;
 
-  // MORNING
-  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot a-gold"></div>Morning anchor</div></div><div class="card">
-    ${hr(dk,'scripture','Scripture reading — 15 min','5:00am','d')}
-    ${hr(dk,'toespacers','Toe spacers — wear during morning routine','Morning','d')}
-    <div style="font-size:11px;color:#999;padding:4px 0">Toe spacers restore natural foot alignment. Wear during scripture, McGill + CARs — any barefoot stationary time in the morning.</div>
-  </div></div>`;
-
-  // SAUNA
-  if(d>=1&&d<=6){
-    const runDay=cfg.run;
-    H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot a-amber"></div>Sauna</div><div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:#999">Turn on at 5:30 — ready by 5:40</span><span style="font-size:10px;font-weight:600;color:#1a5a9b;background:#e6eef8;padding:2px 7px;border-radius:5px">5:40am · 15–20 min</span></div></div><div class="card">
-      <div class="phase-row" onclick="tog('${dk}.phases.sauna');renderAll()"><div class="phase-check ${g(`${dk}.phases.sauna`,false)?'on':''}">✓</div><div class="phase-label">Sauna complete — ${d===6?'post-run 20 min':'15–20 min'}</div></div>
-      <div style="font-size:11px;color:#666;padding:5px 0 4px;line-height:1.6">${runDay?'Turn on when you arrive → do McGill + CARs while it heats → run → sauna → lift. On long run Saturdays: turn on before you leave, sauna when you return.':'Turn on when you arrive → do McGill + CARs while it heats → sauna 15–20 min → lift. Heat exposure before lifting raises core temp, primes the nervous system, and boosts growth hormone.'}</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:7px">
-        <div><label class="lbl">Duration (min)</label><input type="number" min="5" max="40" value="${g(`${dk}.sauna.duration`,'')}" oninput="sv('${dk}.sauna.duration',this.value)" placeholder="15"></div>
-        <div><label class="lbl">Temp (°F)</label><input type="number" min="140" max="220" value="${g(`${dk}.sauna.temp`,'')}" oninput="sv('${dk}.sauna.temp',this.value)" placeholder="180"></div>
-      </div>
-      <div style="margin-top:7px"><label class="lbl">Notes</label><input type="text" value="${esc(g(`${dk}.sauna.notes`,''))}" oninput="sv('${dk}.sauna.notes',this.value)" placeholder="How it felt, sweat level, energy after..."></div>
-    </div></div>`;}
-
-  // RUN
-  if(cfg.run)H+=renderMarathonRun(dk,d,cfg.runType);
-
-  // TRAINING
-  if(cfg.tr)H+=renderDariusTraining(dk,d);
-  
-  // SATURDAY — long run only
-  if(d===6){
-    H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot a-coral"></div>Saturday — long run only</div></div>
-    <div class="note">No lifting today. Run is the session. McGill + CARs + sauna + run + sauna = done. Get home, eat, rest, recover. Your legs need it for the week ahead.</div></div>`;
-  }
-
-  // EVENING
-  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot a-coral"></div>Evening — family</div></div><div class="card">
-    ${hr(dk,'familytime','Family time + floor time with Lucas','5:30–7:00pm','d')}
-    ${d>=1&&d<=4?hr(dk,'wifetime','1-on-1 with Kelcie','7:00–8:00pm','d'):''}
-    ${d===5?hr(dk,'wifetime','Extended date night','7:00–8:30pm','d'):''}
-    ${hr(dk,'piano','Piano — 15 min stress relief','6:30pm','d')}
-    <div style="padding:8px 0 0"><label class="lbl">Lucas moment today</label>
-      <input type="text" placeholder="Something he did worth remembering..." value="${esc(g(`${dk}.lucasmoment`,''))}" oninput="sv('${dk}.lucasmoment',this.value)">
-    </div>
-  </div></div>`;
-
-  // SCHOOL
-  if(d!==6&&d!==0)H+=renderStudy(dk,'d');
-
-  // READING
-  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot a-sky"></div>Self-interest reading</div></div><div class="card">
-    ${hr(dk,'reading','Reading — 15 min','After wife time','d')}
-    <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      <div><label class="lbl">Book title</label><input type="text" value="${esc(g(`${dk}.reading.book`,''))}" oninput="sv('${dk}.reading.book',this.value)" placeholder="What are you reading?"></div>
-      <div><label class="lbl">Genre</label>
-        <select style="width:100%;background:#faf9f6;border:1px solid #e0ddd6;border-radius:6px;padding:8px 10px;font-size:13px;color:#1a1a1a;outline:none" onchange="sv('${dk}.reading.genre',this.value)">
-          <option value="" ${!g(`${dk}.reading.genre`)?' selected':''}>Select...</option>
-          <option value="Self-help" ${g(`${dk}.reading.genre`)==='Self-help'?'selected':''}>Self-help</option>
-          <option value="Fiction" ${g(`${dk}.reading.genre`)==='Fiction'?'selected':''}>Fiction</option>
-          <option value="Business" ${g(`${dk}.reading.genre`)==='Business'?'selected':''}>Business</option>
-          <option value="Spiritual" ${g(`${dk}.reading.genre`)==='Spiritual'?'selected':''}>Spiritual</option>
-          <option value="Biography" ${g(`${dk}.reading.genre`)==='Biography'?'selected':''}>Biography</option>
-          <option value="Other" ${g(`${dk}.reading.genre`)==='Other'?'selected':''}>Other</option>
-        </select>
-      </div>
-    </div>
-    <div style="margin-top:8px"><label class="lbl">What did you read today? Key takeaway or what happened</label>
-      <textarea style="min-height:60px" placeholder="Summarize what you read, what stood out, how it applies to you..." oninput="sv('${dk}.reading.notes',this.value)">${esc(g(`${dk}.reading.notes`,''))}</textarea>
-    </div>
-  </div></div>`;
-
-  // SUPPLEMENTS
-  H+=renderSupplements(dk,'d');
-
-  // JOURNAL
-  H+=renderJournal(dk,d,'d');
-
-  // WIND DOWN
-  H+=renderWindDown(dk,d,'d');
-
-  mc.innerHTML=H;
-}
-
-function renderDariusTraining(dk,d){
-  const comp=D_COMP[d],dss=D_SS[d]||[],bp=D_BP[d],cars=D_CARS[d];
-  const td=g(`${dk}.training.done`,false);
-  const isRunDay=D_DCFG[d]&&D_DCFG[d].run;
-  const runType=D_DCFG[d]&&D_DCFG[d].runType;
-  const runTarget=isRunDay?getRunTarget(runType):0;
-
-  // ── SESSION TIMELINE ──────────────────────────────────────
-  let timeline=[];
-  timeline.push({t:'5:30am',l:'Arrive — turn sauna on',c:'#888'});
-  timeline.push({t:'5:30',l:'Phase 1 — McGill Big 3 · 5 min',c:'#1a5a9b'});
-  timeline.push({t:'5:35',l:'Phase 2 — CARs · 5 min',c:'#1a5a9b'});
-  timeline.push({t:'5:40',l:'Phase 3 — Sauna · 15–20 min',c:'#EF9F27'});
-  timeline.push({t:'5:55',l:'Phase 4 — Shoulder activation · 5 min',c:'#1a5a9b'});
-  if(isRunDay){
-    timeline.push({t:'6:00',l:`Phase 5 — Marathon run · ${runTarget} min target`,c:'#1a7a50'});
-    timeline.push({t:'after run',l:'Phase 6 — Pre-lift warm-up · 5 min',c:'#1a5a9b'});
-    timeline.push({t:'after warm-up',l:'Phase 7 — Main lift + supersets · 35 min',c:'#7F77DD'});
-  } else {
-    timeline.push({t:'6:00',l:'Phase 5 — Zone 2 run · 10 min',c:'#1a7a50'});
-    timeline.push({t:'6:10',l:'Phase 6 — Main lift + supersets · 35 min',c:'#7F77DD'});
-  }
-  timeline.push({t:'~6:50',l:'Phase 7 — Bulletproofing + PAILs/RAILs · 8 min',c:'#1D9E75'});
-  timeline.push({t:'~7:00am',l:'Home ✓',c:'#1a7a50'});
-
-  let H=`<div class="sec"><div class="sh"><div class="st"><div class="dot a-teal"></div>Training · ${D_DCFG[d].tr||'Session'}</div></div>
-  <div class="card" style="background:#faf9f6;margin-bottom:5px">
-    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999;margin-bottom:8px">Today's session — 5:30am to 7:00am</div>
-    <div style="display:flex;flex-direction:column;gap:6px">
-      ${timeline.map(s=>`<div style="display:flex;align-items:center;gap:8px">
-        <div style="font-size:10px;font-weight:600;color:#999;width:80px;flex-shrink:0;text-align:right">${s.t}</div>
-        <div style="width:8px;height:8px;border-radius:50%;background:${s.c};flex-shrink:0"></div>
-        <div style="font-size:11px;color:#444;line-height:1.4">${s.l}</div>
+  // Session timeline
+  if(cfg.tr||cfg.run){
+    let tl=[];
+    tl.push({t:'Arrive',l:'Turn sauna on · McGill Big 3 · CARs',c:'#e8b86d'});
+    if(cfg.tr)tl.push({t:'Phase 1',l:'Shoulder activation — 5 min',c:'#888'});
+    if(cfg.run&&cfg.runType!=='long'){const rt=getRunTarget(cfg.runType);tl.push({t:'Phase 2',l:`${RUN_INFO[cfg.runType].label} · ${rt} min target`,c:RUN_INFO[cfg.runType].color});}
+    if(cfg.run&&cfg.runType!=='long'&&cfg.tr)tl.push({t:'Phase 3',l:'Pre-lift warm-up · 5 min',c:'#888'});
+    if(cfg.tr)tl.push({t:cfg.run&&cfg.runType!=='long'?'Phase 4':'Phase 2',l:`Main lift — ${lift?lift.n:''}`,c:'#7F77DD'});
+    if(cfg.tr)tl.push({t:'Last',l:'Bulletproofing + cool down · 8 min',c:'#1D9E75'});
+    if(cfg.runType==='long'){const rt=getRunTarget('long');tl=[{t:'Today',l:`Long run · ${rt} min target`,c:'#f472b6'},{t:'After',l:'Cool down + stretch',c:'#1D9E75'}];}
+    H+=`<div class="card card-gold" style="margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#e8b86d;margin-bottom:8px">Session timeline · Week ${week} of 22</div>
+      ${tl.map(s=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1e1e1e">
+        <div style="font-size:10px;font-weight:600;color:#555;width:65px;flex-shrink:0;text-align:right">${s.t}</div>
+        <div style="width:7px;height:7px;border-radius:50%;background:${s.c};flex-shrink:0"></div>
+        <div style="font-size:11px;color:#888">${s.l}</div>
       </div>`).join('')}
-    </div>
-  </div>`;
-
-  // ── PHASE 1 — McGill ──────────────────────────────────────
-  H+=`<div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid #f0ede6">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 1 — McGill Big 3</div>
-      <div style="font-size:10px;font-weight:600;color:#1a5a9b;background:#e6eef8;padding:2px 7px;border-radius:5px">5:30am · 5 min</div>
-    </div>
-    ${phaseRow(dk,'mcgill','McGill Big 3 complete')}
-    ${D_MCGILL.map(m=>`<div style="font-size:11px;color:#555;padding:4px 0 4px 28px;border-bottom:1px solid #f0ede6;line-height:1.5">${m}</div>`).join('')}
-    <div class="note" style="margin-top:5px">Do at gym after driving — not immediately after waking.</div>
-    <a class="vl" style="margin-top:5px" href="https://www.youtube.com/results?search_query=McGill+Big+3+exercises+tutorial" target="_blank">▶ McGill Big 3 tutorial</a>
-  </div>`;
-
-  // ── PHASE 2 — CARs ───────────────────────────────────────
-  H+=`<div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 2 — CARs · ${cars}</div>
-      <div style="font-size:10px;font-weight:600;color:#1a5a9b;background:#e6eef8;padding:2px 7px;border-radius:5px">5:35am · 5 min</div>
-    </div>
-    ${phaseRow(dk,'cars','CARs complete')}
-    <div style="font-size:11px;color:#555;line-height:1.5;padding:4px 0 6px">Squeeze fists + brace core + tense glutes WHILE moving the joint. Neck → shoulder → thoracic → wrist → hip → ankle.</div>
-    <a class="vl" href="https://www.youtube.com/results?search_query=ian+markow+daily+CARs+routine" target="_blank">▶ Ian Markow CARs</a>
-    <a class="vl" href="https://www.youtube.com/results?search_query=FRC+controlled+articular+rotations+tutorial+follow+along" target="_blank">▶ FRC CARs follow along</a>
-  </div>`;
-
-  // ── PHASE 3 — SAUNA ──────────────────────────────────────
-  H+=`<div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 3 — Sauna</div>
-      <div style="font-size:10px;font-weight:600;color:#EF9F27;background:#fdf3dc;padding:2px 7px;border-radius:5px">5:40am · 15–20 min</div>
-    </div>
-    ${phaseRow(dk,'sauna','Sauna complete')}
-    <div style="font-size:11px;color:#555;line-height:1.5;padding:4px 0 6px">${isRunDay?'Sauna ready by the time McGill + CARs are done. 15 min in sauna → out → shoulder activation → run. Heat primes nervous system and raises core temp before your run.':'Sauna ready by the time McGill + CARs are done. 15–20 min → out → shoulder activation → Zone 2 run → lift. Heat before lifting raises growth hormone and primes the nervous system.'}</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
-      <div><label class="lbl">Duration (min)</label><input type="number" min="5" max="40" value="${g(`${dk}.sauna.duration`,'')}" oninput="sv('${dk}.sauna.duration',this.value)" placeholder="15"></div>
-      <div><label class="lbl">Temp (°F)</label><input type="number" min="140" max="220" value="${g(`${dk}.sauna.temp`,'')}" oninput="sv('${dk}.sauna.temp',this.value)" placeholder="180"></div>
-    </div>
-    <div style="margin-top:7px"><label class="lbl">Notes</label><input type="text" value="${esc(g(`${dk}.sauna.notes`,''))}" oninput="sv('${dk}.sauna.notes',this.value)" placeholder="How it felt, sweat level, energy after..."></div>
-  </div>`;
-
-  // ── PHASE 4 — Context-specific activation ────────────────
-  const D_ACT={
-    1:{label:'Lower body (run) + Shoulder (overhead press)',cats:[
-      {cat:'🏃 Run prep',ex:[['Glute bridges','2×10 — fire glutes before run'],['Banded side walks','2×10 each — hip abductors'],['Leg swings forward','×10 each — dynamic hip'],['Ankle circles','×10 each — ground contact prep'],['Air squats slow','×10 — full chain primer']]},
-      {cat:'💪 Lift prep — overhead press',ex:[['Band pull-aparts','2×15 — rear delt + rotator cuff'],['External rotations','2×12 each — shoulder health'],['Wall slides','2×10 — scapular upward rotation'],['Arm circles small to big','×10 each direction']]}
-    ]},
-    2:{label:'Shoulder + elbow + wrist (arms day)',cats:[
-      {cat:'💪 Lift prep — curls + pushdowns',ex:[['Wrist circles','×10 each direction — elbow tendon prep'],['Band pull-aparts','2×15 — shoulder stability'],['External rotations','2×12 each — rotator cuff'],['Reverse curls light','2×10 — elbow warm up'],['Finger extensions','×10 — forearm balance']]}
-    ]},
-    3:{label:'Lower body (run) + Upper back (rows)',cats:[
-      {cat:'🏃 Run prep',ex:[['Glute bridges','2×10 — fire glutes before run'],['Banded side walks','2×10 each — hip abductors'],['Leg swings forward + lateral','×10 each — full hip mobility'],['Ankle circles','×10 each — ground contact prep'],['Air squats slow','×10 — full chain primer']]},
-      {cat:'💪 Lift prep — rows + back',ex:[['Band pull-aparts','2×15 — scapular retraction'],['Face pulls','2×15 — rear delt + external rotation'],['Scapular retractions','2×10 — mid back activation'],['Dead hang','20–30s — lat lengthening before rows']]}
-    ]},
-    4:{label:'Lower body + knee focus (leg press + squats)',cats:[
-      {cat:'🦵 Leg day + knee prep',ex:[['Glute bridges','2×15 — max hip activation'],['Banded side walks','2×15 each — hip abductors for knee stability'],['Wall ankle dorsiflexion','×10 each — squat depth + knee tracking'],['Leg swings','×10 each — hip mobility'],['Bodyweight squats slow','2×10 — full chain activation'],['Single leg balance','20s each — proprioception + knee stability']]}
-    ]},
-    5:{label:'Lower body (run) + Chest/push prep (rehab safe)',cats:[
-      {cat:'🏃 Run prep',ex:[['Glute bridges','2×10 — fire glutes before run'],['Banded side walks','2×10 each — hip abductors'],['Leg swings forward','×10 each — dynamic hip'],['Ankle circles','×10 each — ground contact prep'],['Air squats slow','×10 — full chain primer']]},
-      {cat:'💪 Lift prep — chest (rehab safe)',ex:[['Band pull-aparts','2×15 — posterior shoulder balance'],['External rotations','2×12 each — rotator cuff protection'],['Pec isometric holds','3×10s pain-free range only'],['Face pulls','2×15 — always before pressing']]}
-    ]},
-    6:{label:'Full lower body dynamic (long run)',cats:[
-      {cat:'🏃 Long run prep — full dynamic',ex:[['Glute bridges','2×15 — full hip activation'],['Banded side walks','2×15 each'],['Leg swings forward + lateral','×10 each side'],['Ankle circles + calf raises','×10 each'],['Hip circles','×10 each — full hip mobility'],['Dynamic lunges with reach','×5 each — thoracic + hip'],['High knees 10s + butt kicks 10s','— full warm-up primer']]}
-    ]}
-  };
-  const actData=D_ACT[d];
-  if(actData){
-    H+=`<div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 4 — Activation · ${actData.label}</div>
-        <div style="font-size:10px;font-weight:600;color:#1a5a9b;background:#e6eef8;padding:2px 7px;border-radius:5px">5:55am · 5–8 min</div>
-      </div>
-      ${phaseRow(dk,'shoulder','Activation complete')}
-      ${actData.cats.map((cat,ci)=>`
-        <div style="margin-top:${ci>0?'10px':'6px'};padding-top:${ci>0?'10px':'0'};${ci>0?'border-top:1px solid #f0ede6':''}">
-          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#999;margin-bottom:5px">${cat.cat}</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
-            ${cat.ex.map(([n,s])=>`<div style="font-size:11px;padding:4px 0;border-bottom:1px solid #f0ede6"><span style="color:#1a1a1a;font-weight:500">${n}</span><br><span style="color:#999">${s}</span></div>`).join('')}
-          </div>
-        </div>`).join('')}
     </div>`;}
 
-  // ── PHASE 5 — Run ────────────────────────────────────────
-  if(isRunDay){
-    // Marathon run is rendered separately above by renderMarathonRun()
-    // Just show a connector card
-    H+=`<div class="card" style="background:#e6f4ee;border-color:#1a7a50">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#1a7a50">Phase 5 — Marathon run</div>
-        <div style="font-size:10px;font-weight:600;color:#1a7a50;background:#c0ecd8;padding:2px 7px;border-radius:5px">6:00am · ${runTarget} min</div>
-      </div>
-      <div style="font-size:11px;color:#1a5a3a;line-height:1.5">See marathon training section above ↑ for full run details, target, and logging.</div>
-      ${phaseRow(dk,'phase5run','Marathon run complete')}
-    </div>`;
-  } else {
-    H+=`<div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 5 — Zone 2 Run · 10 min</div>
-        <div style="font-size:10px;font-weight:600;color:#1a5a9b;background:#e6eef8;padding:2px 7px;border-radius:5px">6:00am · 10 min</div>
-      </div>
-      ${phaseRow(dk,'phase5run','Zone 2 run complete')}
-      <div style="font-size:11px;color:#555;line-height:1.5;padding:4px 0">Rest day from marathon running. Conversational pace, 10 min keeps your aerobic base ticking without adding run stress.</div>
-      <a class="vl" style="margin-top:4px" href="https://www.youtube.com/results?search_query=zone+2+running+heart+rate+training" target="_blank">▶ Zone 2 running explained</a>
-    </div>`;
-  }
+  // McGill + CARs
+  if(cfg.tr||cfg.run){
+    H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#e8b86d"></div>McGill Big 3 + CARs</div><span class="time-badge">First thing</span></div>
+    <div class="card">
+      ${phRow('mcgill','McGill Big 3 complete')}
+      ${MCGILL.map(m=>`<div style="font-size:11px;color:#666;padding:4px 0 4px 28px;border-bottom:1px solid #1e1e1e;line-height:1.5">${m}</div>`).join('')}
+      ${phRow('cars','CARs complete')}
+      <div style="font-size:11px;color:#555;padding:4px 0 4px 28px;line-height:1.5">Neck → shoulder → thoracic → wrist → hip → ankle. Squeeze fists + brace core the whole time.</div>
+      <a class="vl" style="margin-top:5px" href="https://www.youtube.com/results?search_query=McGill+Big+3+tutorial" target="_blank">▶ McGill Big 3</a>
+      <a class="vl" href="https://www.youtube.com/results?search_query=FRC+controlled+articular+rotations+tutorial" target="_blank">▶ FRC CARs</a>
+    </div></div>`;
 
-  // ── PHASE 6 — Pre-lift warm-up (run days only) ────────────
-  if(isRunDay){
-    H+=`<div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 6 — Pre-lift warm-up</div>
-        <div style="font-size:10px;font-weight:600;color:#1a5a9b;background:#e6eef8;padding:2px 7px;border-radius:5px">after run · 5 min</div>
-      </div>
-      ${phaseRow(dk,'phase6warmup','Warm-up complete')}
-      <div style="font-size:11px;color:#555;line-height:1.5;padding:4px 0">Light movement to transition from run to lift — jump rope 2 min easy, or 5 min bike. Gets blood into lifting muscles after the run.</div>
-    </div>`;}
-
-  // ── PHASE 6 or 7 — Main lift ──────────────────────────────
-  const liftPhaseNum = isRunDay ? 7 : 6;
-  const liftTime = isRunDay ? 'after warm-up · 35 min' : '6:10am · 35 min';
-  if(comp&&comp.n){
-    H+=`<div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase ${liftPhaseNum} — ${comp.n}</div>
-      <div style="font-size:10px;font-weight:600;color:#1a5a9b;background:#e6eef8;padding:2px 7px;border-radius:5px">${liftTime}</div>
-    </div>
-    ${phaseRow(dk,'phase_lift','Lift complete')}`;
-
-    // SET LOGGER
-    H+=`<div style="margin-top:8px">
-      <div style="font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Set log — today</div>
-      <div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:4px;margin-bottom:4px">
-        <div style="font-size:10px;font-weight:600;color:#999;padding:3px 5px">Set</div>
-        <div style="font-size:10px;font-weight:600;color:#999;text-align:center">Weight</div>
-        <div style="font-size:10px;font-weight:600;color:#999;text-align:center">Reps</div>
-        <div style="font-size:10px;font-weight:600;color:#999;text-align:center">Notes</div>
-      </div>
-      ${comp.sets.map((setName,i)=>`
-      <div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:4px;margin-bottom:3px;align-items:center">
-        <div style="font-size:10px;color:#666;padding:3px 5px;font-weight:500;white-space:nowrap">${setName}</div>
-        <input type="text" value="${esc(g(`${dk}.sets.s${i}.weight`,''))}" oninput="sv('${dk}.sets.s${i}.weight',this.value)" placeholder="lbs" style="text-align:center;padding:5px 4px;font-size:12px">
-        <input type="text" value="${esc(g(`${dk}.sets.s${i}.reps`,''))}" oninput="sv('${dk}.sets.s${i}.reps',this.value)" placeholder="reps" style="text-align:center;padding:5px 4px;font-size:12px">
-        <input type="text" value="${esc(g(`${dk}.sets.s${i}.note`,''))}" oninput="sv('${dk}.sets.s${i}.note',this.value)" placeholder="..." style="padding:5px 4px;font-size:11px">
-      </div>`).join('')}
-    </div>`;
-
-    // PRIOR WEEK SUMMARY
-    const hasPrior=comp.sets.some((_,i)=>g(`prev.d_d${d}.sets.s${i}.weight`,''));
-    H+=`<div style="margin-top:10px;padding-top:10px;border-top:1px solid #f0ede6">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#999;margin-bottom:5px">Last week</div>`;
-    if(hasPrior){
-      H+=comp.sets.map((setName,i)=>{
-        const w=g(`prev.d_d${d}.sets.s${i}.weight`,'—');
-        const r=g(`prev.d_d${d}.sets.s${i}.reps`,'—');
-        return `<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #f0ede6"><div style="font-size:11px;color:#666">${setName}</div><div style="font-size:11px;font-weight:500;color:#1a1a1a">${w} lbs × ${r}</div></div>`;
-      }).join('');
-    } else {
-      H+=`<div style="font-size:11px;color:#bbb;padding:4px 0">No data yet — will appear here automatically next week.</div>`;
+    // CONTEXT-SPECIFIC ACTIVATION
+    const act=ACTIVATION[d];
+    if(act){
+      H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#4ade80"></div>Activation — ${act.label}</div><span class="time-badge">5–8 min</span></div>
+      <div class="card">
+        ${phRow('activation','Activation complete')}
+        ${act.items.map((cat,ci)=>`
+          <div style="margin-top:${ci>0?'10px':'6px'};padding-top:${ci>0?'10px':'0px'};${ci>0?'border-top:1px solid #1e1e1e':''}">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#555;margin-bottom:6px">${cat.cat}</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
+              ${cat.exercises.map(([n,s])=>`<div style="font-size:11px;padding:4px 0;border-bottom:1px solid #1e1e1e"><span style="color:#f0f0f0;font-weight:500">${n}</span><br><span style="color:#555">${s}</span></div>`).join('')}
+            </div>
+          </div>`).join('')}
+        <div style="margin-top:8px">
+          ${act.v.map(v=>`<a class="vl" href="https://www.youtube.com/results?search_query=${encodeURIComponent(v)}" target="_blank">▶ ${v}</a>`).join('')}
+        </div>
+      </div></div>`;
     }
-    H+=`</div>`;
+  }
 
-    H+=`<div style="margin-top:8px"><label class="lbl">Session notes</label>
-      <textarea style="min-height:46px" placeholder="How it felt, PRs, pain signals..." oninput="sv('${dk}.training.notes',this.value)">${esc(g(`${dk}.training.notes`,''))}</textarea>
-    </div>
-    <div style="margin-top:7px;display:flex;align-items:center;gap:8px;cursor:pointer" onclick="tog('${dk}.training.done');renderAll()">
-      <div style="flex:1;font-size:12px;font-weight:600">Session complete</div>
-      <div class="hc ${td?'on-j':''}" style="width:20px;height:20px;border-radius:4px">✓</div>
+  // RUN (non-Saturday)
+  if(cfg.run&&cfg.runType!=='long'){
+    const rt=getRunTarget(cfg.runType),info=RUN_INFO[cfg.runType];
+    const actual=parseFloat(g(`${dk}.run.actual`,0))||0;
+    const pct=rt>0?Math.min(100,Math.round((actual/rt)*100)):0;
+    H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:${info.color}"></div>Marathon Training · Week ${week}/22</div><span class="${'run-type-badge '+info.cls}">${info.label}</span></div>
+    <div class="run-card">
+      <div style="font-size:11px;color:#888;line-height:1.5;margin-bottom:10px">${info.desc}</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div><label class="lbl">Actual (min)</label>
+          <input type="text" inputmode="decimal" value="${g(`${dk}.run.actual`,'')}" onchange="sv('${dk}.run.actual',this.value);renderAll()" style="width:70px;font-size:15px;font-weight:700;text-align:center;padding:5px 7px">
+        </div>
+        <div style="flex:1">
+          <div style="font-size:11px;color:#555;margin-bottom:3px">${pct}% · target ${rt} min</div>
+          <div class="pbar"><div class="pbf" style="width:${pct}%"></div></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div><label class="lbl">Distance (mi)</label><input type="text" inputmode="decimal" value="${g(`${dk}.run.distance`,'')}" oninput="sv('${dk}.run.distance',this.value)" placeholder="0.0"></div>
+        <div><label class="lbl">Avg pace</label><input type="text" value="${esc(g(`${dk}.run.pace`,''))}" oninput="sv('${dk}.run.pace',this.value)" placeholder="11:30 /mi"></div>
+      </div>
+      <label class="lbl">How did it feel?</label>
+      <textarea style="min-height:52px" placeholder="Energy, breathing, any knee or leg issues..." oninput="sv('${dk}.run.notes',this.value)">${esc(g(`${dk}.run.notes`,''))}</textarea>
+      <div style="margin-top:6px">${phRow('run','Run complete')}</div>
     </div></div>`;}
 
-  // ── SUPERSETS ─────────────────────────────────────────────
-  if(dss.length>0){
-    let ssH=`<div class="card"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999;margin-bottom:4px">Phase ${liftPhaseNum} — Supersets</div>
-    ${phaseRow(dk,'supersets','Supersets complete')}`;
-    dss.forEach((s,si)=>{
-      ssH+=`<div style="border-left:3px solid #e0ddd6;padding-left:10px;margin:8px 0">
-        <div style="font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px">Superset ${si+1}</div>`;
-      s.forEach((e,ei)=>{
-        const ssKey=`ss${si}_${ei}`;
-        ssH+=`<div style="margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #f0ede6">
+  // SATURDAY LONG RUN
+  if(cfg.runType==='long'){
+    const rt=getRunTarget('long'),info=RUN_INFO.long;
+    const actual=parseFloat(g(`${dk}.run.actual`,0))||0;
+    const pct=rt>0?Math.min(100,Math.round((actual/rt)*100)):0;
+    H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:${info.color}"></div>Long Run Day · Week ${week}/22</div><span class="${'run-type-badge '+info.cls}">Long Run</span></div>
+    <div class="run-card">
+      <div style="font-size:11px;color:#888;line-height:1.5;margin-bottom:10px">${info.desc} · <b style="color:#f472b6">Target: ${rt} min</b></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div><label class="lbl">Actual (min)</label>
+          <input type="text" inputmode="decimal" value="${g(`${dk}.run.actual`,'')}" onchange="sv('${dk}.run.actual',this.value);renderAll()" style="width:70px;font-size:15px;font-weight:700;text-align:center;padding:5px 7px">
+        </div>
+        <div style="flex:1">
+          <div style="font-size:11px;color:#555;margin-bottom:3px">${pct}% · target ${rt} min</div>
+          <div class="pbar"><div class="pbf" style="width:${pct}%;background:linear-gradient(90deg,#f472b6,#f9a8d4)"></div></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div><label class="lbl">Distance (mi)</label><input type="text" inputmode="decimal" value="${g(`${dk}.run.distance`,'')}" oninput="sv('${dk}.run.distance',this.value)" placeholder="0.0"></div>
+        <div><label class="lbl">Avg pace</label><input type="text" value="${esc(g(`${dk}.run.pace`,''))}" oninput="sv('${dk}.run.pace',this.value)" placeholder="11:30 /mi"></div>
+      </div>
+      <label class="lbl">Notes — knee feeling, energy, St. George prep</label>
+      <textarea style="min-height:52px" oninput="sv('${dk}.run.notes',this.value)">${esc(g(`${dk}.run.notes`,''))}</textarea>
+      <div style="margin-top:6px">${phRow('run','Long run complete')}</div>
+    </div></div>`;}
+
+  // MAIN LIFT
+  if(cfg.tr&&lift){
+    H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#7F77DD"></div>Main lift — ${lift.n}</div></div>
+    <div class="card">
+      <div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:4px;margin-bottom:6px">
+        <div style="font-size:10px;font-weight:600;color:#555;padding:3px 5px">Set</div>
+        <div style="font-size:10px;font-weight:600;color:#555;text-align:center">Weight</div>
+        <div style="font-size:10px;font-weight:600;color:#555;text-align:center">Reps</div>
+        <div style="font-size:10px;font-weight:600;color:#555;text-align:center">Notes</div>
+      </div>
+      ${lift.sets.map((name,i)=>`
+      <div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:4px;margin-bottom:3px;align-items:center">
+        <div style="font-size:10px;color:#555;padding:3px 5px;font-weight:500;white-space:nowrap">${name}</div>
+        <input type="text" value="${esc(g(`${dk}.sets.s${i}.w`,''))}" oninput="sv('${dk}.sets.s${i}.w',this.value)" placeholder="lbs" style="text-align:center;padding:5px 4px;font-size:12px">
+        <input type="text" value="${esc(g(`${dk}.sets.s${i}.r`,''))}" oninput="sv('${dk}.sets.s${i}.r',this.value)" placeholder="reps" style="text-align:center;padding:5px 4px;font-size:12px">
+        <input type="text" value="${esc(g(`${dk}.sets.s${i}.n`,''))}" oninput="sv('${dk}.sets.s${i}.n',this.value)" placeholder="..." style="padding:5px 4px;font-size:11px">
+      </div>`).join('')}
+      <div style="margin-top:8px"><label class="lbl">Session notes</label>
+        <textarea style="min-height:46px" placeholder="How it felt, energy, anything to note..." oninput="sv('${dk}.training.notes',this.value)">${esc(g(`${dk}.training.notes`,''))}</textarea>
+      </div>
+      <div style="margin-top:7px;display:flex;align-items:center;gap:8px;cursor:pointer" onclick="tog('${dk}.training.done');renderAll()">
+        <div style="flex:1;font-size:12px;font-weight:600;color:#f0f0f0">Session complete</div>
+        <div class="hc ${sessComplete?'on':''}" style="width:20px;height:20px;border-radius:4px">✓</div>
+      </div>
+    </div></div>`;}
+
+  // SUPERSETS
+  if(ss.length>0){
+    H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#7F77DD"></div>Supersets</div></div>`;
+    ss.forEach((sup,si)=>{
+      H+=`<div class="card" style="margin-bottom:5px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#555;margin-bottom:6px">Superset ${si+1}</div>`;
+      sup.forEach((e,ei)=>{
+        const k=`ss${si}_${ei}`;
+        H+=`<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #1e1e1e">
           <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">
-            <div style="font-size:10px;font-weight:600;color:#3a2a9a;background:#eeedfe;border-radius:3px;padding:1px 5px;flex-shrink:0">${e.l}</div>
-            <div style="font-size:12px;color:#1a1a1a;font-weight:500">${e.n}</div>
+            <div style="font-size:10px;font-weight:700;color:#0f0f0f;background:#e8b86d;border-radius:3px;padding:1px 5px;flex-shrink:0">${e.l}</div>
+            <div style="font-size:12px;color:#f0f0f0;font-weight:500">${e.n}</div>
+            <div style="font-size:10px;color:#555;margin-left:auto">${e.s}</div>
           </div>
-          <div style="font-size:10px;color:#999;margin-bottom:5px">${e.s}</div>
-          <div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:4px;align-items:center">
-            <div style="font-size:10px;color:#999;padding:3px 5px">Sets</div>
-            <div style="font-size:10px;font-weight:600;color:#999;text-align:center">Weight</div>
-            <div style="font-size:10px;font-weight:600;color:#999;text-align:center">Reps</div>
-            <div style="font-size:10px;font-weight:600;color:#999;text-align:center">Notes</div>
+          <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:4px">
+            <div style="font-size:10px;color:#555;padding:3px 5px">Sets</div>
+            <div style="font-size:10px;color:#555;text-align:center">Weight</div>
+            <div style="font-size:10px;color:#555;text-align:center">Reps</div>
           </div>
-          ${[1,2,3].map(setNum=>`
-          <div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:4px;margin-top:3px;align-items:center">
-            <div style="font-size:10px;color:#666;padding:3px 5px;font-weight:500">Set ${setNum}</div>
-            <input type="text" value="${esc(g(`${dk}.ss.${ssKey}.s${setNum}.weight`,''))}" oninput="sv('${dk}.ss.${ssKey}.s${setNum}.weight',this.value)" placeholder="lbs" style="text-align:center;padding:5px 4px;font-size:12px">
-            <input type="text" value="${esc(g(`${dk}.ss.${ssKey}.s${setNum}.reps`,''))}" oninput="sv('${dk}.ss.${ssKey}.s${setNum}.reps',this.value)" placeholder="reps" style="text-align:center;padding:5px 4px;font-size:12px">
-            <input type="text" value="${esc(g(`${dk}.ss.${ssKey}.s${setNum}.note`,''))}" oninput="sv('${dk}.ss.${ssKey}.s${setNum}.note',this.value)" placeholder="..." style="padding:5px 4px;font-size:11px">
+          ${[1,2,3].map(sn=>`
+          <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:4px;margin-top:3px">
+            <div style="font-size:10px;color:#555;padding:3px 5px">Set ${sn}</div>
+            <input type="text" value="${esc(g(`${dk}.ss.${k}.s${sn}.w`,''))}" oninput="sv('${dk}.ss.${k}.s${sn}.w',this.value)" placeholder="lbs" style="text-align:center;padding:5px 4px;font-size:12px">
+            <input type="text" value="${esc(g(`${dk}.ss.${k}.s${sn}.r`,''))}" oninput="sv('${dk}.ss.${k}.s${sn}.r',this.value)" placeholder="reps" style="text-align:center;padding:5px 4px;font-size:12px">
           </div>`).join('')}
         </div>`;
       });
-      ssH+=`</div>`;
+      H+=`</div>`;
     });
-    ssH+=`</div>`;
-    H+=ssH;}
+    H+=`</div>`;}
 
-  // ── FINAL PHASE — Bulletproofing + PAILs/RAILs ───────────
-  const finalPhase = isRunDay ? 8 : 7;
-  if(bp){
-    H+=`<div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase ${finalPhase} — Bulletproofing + PAILs/RAILs · ${bp.t}</div>
-        <div style="font-size:10px;font-weight:600;color:#1D9E75;background:#e0f3ea;padding:2px 7px;border-radius:5px">~6:50am · 8 min</div>
-      </div>
-      ${phaseRow(dk,'phase_bp','Phase ${finalPhase} complete')}
-      <ul style="padding-left:14px;margin:6px 0">${bp.i.map(i=>`<li style="font-size:11px;color:#555;margin-bottom:5px;line-height:1.6">${i}</li>`).join('')}</ul>
-      <div style="font-size:10px;color:#999;font-weight:600;margin-bottom:3px;margin-top:6px">How-to videos</div>
-      ${bp.v.map(v=>`<a class="vl" href="https://www.youtube.com/results?search_query=${encodeURIComponent(v)}" target="_blank">▶ ${v}</a>`).join('')}
-      <div style="margin-top:8px"><label class="lbl">Notes</label><input type="text" value="${esc(g(`${dk}.phase6.notes`,''))}" oninput="sv('${dk}.phase6.notes',this.value)" placeholder="How it felt, anything tight..."></div>
-    </div>`;}
-
-  H+=`</div>`;return H;
-}
-
-// ── KELCIE DAY ─────────────────────────────────────────────
-function renderKelcie(){
-  const mc=document.getElementById('mainContent');
-  if(!loaded){mc.innerHTML='<div class="spin-wrap"><div class="spinner"></div>Loading...</div>';return;}
-  const d=curDay,dk=`k_d${d}`;
-  const hk=['scripture','movement','lucas','journal','winddown'];
-  const hd=hk.filter(h=>g(`${dk}.habits.${h}`,false)).length;
-  const td=g(`${dk}.training.done`,false);
-  const photoDay=[1,3,5].includes(d);
-
-  let H=`<div class="dh"><div class="dn" style="color:#9b1a5a">Kelcie — ${DAYS[d]}</div><div class="dm"><div class="dfl">Focus</div><div class="dfv">${d===1?'Legs + Abs':d===3?'Pull + Abs':d===5?'Push + Abs':'Rest + Lucas + Family'}</div></div></div>
-  <div class="stats">
-    <div class="stat"><div class="snum">${hd}/${hk.length}</div><div class="slbl">Habits</div></div>
-    <div class="stat"><div class="snum" style="color:${td?'#1a7a50':'#bbb'}">${td?'✓':'—'}</div><div class="slbl">Training</div></div>
-    <div class="stat"><div class="snum">${g(`${dk}.biz.sessions`,0)}</div><div class="slbl">Photo sessions</div></div>
-  </div>`;
-
-  // MORNING
-  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot a-gold"></div>Morning anchor</div></div><div class="card">
-    ${hr(dk,'scripture','Scripture reading — 15 min','Morning','k')}
-    <div style="font-size:11px;color:#999;padding:4px 0">Even 15 quiet minutes before Lucas wakes counts. YouVersion app works perfectly.</div>
-  </div></div>`;
-
-  // LUCAS
-  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot a-amber"></div>Lucas</div></div><div class="card">
-    ${hr(dk,'lucas','Intentional floor time with Lucas','During the day','k')}
-    <div style="padding:8px 0 0"><label class="lbl">Lucas moment today</label>
-      <textarea placeholder="Something he did, a sound he made, the way he looked at you..." style="min-height:60px" oninput="sv('${dk}.lucasmoment',this.value)">${esc(g(`${dk}.lucasmoment`,''))}</textarea>
-    </div>
-  </div></div>`;
-
-  // PHOTOGRAPHY
-  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot a-rose"></div>Photography business</div></div><div class="card">
-    <div style="margin-bottom:8px">
-      <label class="lbl">Photo sessions this month (goal: 2)</label>
-      <div style="display:flex;align-items:center;gap:10px">
-        <input type="number" min="0" max="20" value="${g('k_biz.sessionsMonth',0)}" oninput="sv('k_biz.sessionsMonth',parseInt(this.value)||0);renderAll()" style="width:64px;font-size:18px;font-weight:700;text-align:center;padding:5px 7px">
-        <div style="flex:1"><div style="font-size:11px;color:#999;margin-bottom:3px">${Math.min(100,Math.round(((parseInt(g('k_biz.sessionsMonth',0))||0)/2)*100))}% of monthly goal</div>
-          <div class="pbar"><div class="pbf" style="width:${Math.min(100,Math.round(((parseInt(g('k_biz.sessionsMonth',0))||0)/2)*100))}%;background:${Math.min(100,Math.round(((parseInt(g('k_biz.sessionsMonth',0))||0)/2)*100))>=100?'#1a7a50':'#9b1a5a'}"></div></div>
-        </div>
-      </div>
-    </div>
-    <div style="margin-bottom:8px"><label class="lbl">Upcoming sessions / inquiries</label>
-      <textarea style="min-height:52px" placeholder="e.g. Smith family — Apr 20, Johnson newborn — inquiry pending..." oninput="sv('k_biz.upcoming',this.value)">${esc(g('k_biz.upcoming',''))}</textarea>
-    </div>
-    <label class="lbl">Today's one business task</label>
-    <input type="text" value="${esc(g(`${dk}.biz.task`,''))}" oninput="sv('${dk}.biz.task',this.value)" placeholder="e.g. Edit 5 photos, post to Instagram, respond to inquiry...">
-    <div style="margin-top:7px">${hr(dk,'biz','Business task done','Today','k')}</div>
-  </div></div>`;
-
-  // TRAINING
-  if([1,3,5].includes(d)){
-    const trName=d===1?'Legs + Abs':d===3?'Pull Day + Abs':d===5?'Push Day + Abs':'';
-    H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot a-rose"></div>Training · ${trName} · 8:00pm</div></div><div class="card">
-      <div class="note" style="margin-bottom:8px">Your program with your friend — just log whether it happened and how it went.</div>
-      <div style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:8px" onclick="tog('${dk}.training.done');renderAll()">
-        <div class="hc ${td?'on-k':''}" style="width:20px;height:20px;border-radius:4px">✓</div>
-        <div style="font-size:13px;font-weight:500;color:#1a1a1a">Session complete</div>
-      </div>
-      <label class="lbl">How did it feel?</label>
-      <textarea style="min-height:52px" placeholder="Energy, strength, anything to note..." oninput="sv('${dk}.training.notes',this.value)">${esc(g(`${dk}.training.notes`,''))}</textarea>
-    </div></div>`;}
-
-  // MOVEMENT on rest days
-  if(![1,3,5].includes(d)){
-    H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot a-green"></div>Movement + recovery</div></div><div class="card">
-      ${hr(dk,'movement','Movement today — walk, stretch, anything','Anytime','k')}
-      <div class="note">Rest days matter as much as training days at 6 months postpartum. A 20-min walk with Lucas counts completely.</div>
-    </div></div>`;}
-
-  // SUPPLEMENTS
-  H+=renderSupplements(dk,'k');
-
-  // JOURNAL
-  H+=renderJournal(dk,d,'k');
-
-  // WIND DOWN
-  H+=renderWindDown(dk,d,'k');
-
-  mc.innerHTML=H;
-}
-
-// ── SHARED COMPONENTS ──────────────────────────────────────
-function renderStudy(dk,who){
-  return `<div class="sec"><div class="sh"><div class="st"><div class="dot a-purple"></div>School</div><span style="font-size:10px;color:#999">Target: 2 hrs</span></div>
+  // DAILY HABITS
+  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#e8b86d"></div>Daily habits</div></div>
   <div class="card">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-      <div><label class="lbl">Hours</label><input type="text" inputmode="decimal" value="${g(`${dk}.study.hours`,'')}" oninput="sv('${dk}.study.hours',this.value)" onchange="renderAll()" style="width:60px;font-size:15px;font-weight:700;text-align:center;padding:4px 6px"></div>
-      <div style="flex:1"><div style="font-size:10px;color:#999;margin-bottom:2px">${Math.min(100,Math.round(((parseFloat(g(`${dk}.study.hours`,0))||0)/2)*100))}% of goal</div>
-        <div class="pbar"><div class="pbf" style="width:${Math.min(100,Math.round(((parseFloat(g(`${dk}.study.hours`,0))||0)/2)*100))}%;background:${Math.min(100,Math.round(((parseFloat(g(`${dk}.study.hours`,0))||0)/2)*100))>=100?'#1a7a50':'#7F77DD'}"></div></div>
-      </div>
+    ${hrRow('water','1 gallon of water','All day')}
+    ${hrRow('sleep','7+ hours sleep last night','Morning')}
+    ${hrRow('nutrition','Hit protein goal today','Evening')}
+    <div style="padding:8px 0 0"><label class="lbl">Notes — food, sleep, energy, recovery</label>
+      <textarea style="min-height:52px" placeholder="What you ate, how you recovered, energy levels..." oninput="sv('${dk}.habits.notes',this.value)">${esc(g(`${dk}.habits.notes`,''))}</textarea>
     </div>
-    <div style="margin-bottom:7px"><label class="lbl">Tonight's goal</label><input type="text" value="${esc(g(`${dk}.study.goal`,''))}" oninput="sv('${dk}.study.goal',this.value)" placeholder="e.g. Chapter 4 + problem set..."></div>
-    <label class="lbl">Completed / carried forward</label>
-    <textarea style="min-height:42px" oninput="sv('${dk}.study.completed',this.value)">${esc(g(`${dk}.study.completed`,''))}</textarea>
   </div></div>`;
-}
-
-function renderSupplements(dk,who){
-  const defaultSupps=who==='d'?DEFAULT_D_SUPPS:DEFAULT_K_SUPPS;
-  const suppKey=who==='d'?'d_supplements':'k_supplements';
-  let supps;
-  try{supps=JSON.parse(g(suppKey,null))||defaultSupps;}catch(e){supps=defaultSupps;}
-
-  const color=who==='d'?'#1a5a9b':'#9b1a5a';
-  const onClass=who==='d'?'on-j':'on-k';
-
-  let H=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:${color}"></div>Supplements</div>
-    <button onclick="editSupplements('${who}')" style="font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid #ddd;background:white;color:#666;cursor:pointer">Edit list</button>
-  </div><div class="card">`;
-
-  supps.forEach((s,i)=>{
-    const done=g(`${dk}.supps.s${i}`,false);
-    H+=`<div class="hr" onclick="tog('${dk}.supps.s${i}');renderAll()">
-      <div class="hc ${done?onClass:''}">✓</div>
-      <div class="hl ${done?'on':''}">${esc(s.name)}</div>
-      <div class="htag">${esc(s.time)}</div>
-    </div>`;
-  });
-
-  H+=`</div></div>`;return H;
-}
-
-function editSupplements(who){
-  const suppKey=who==='d'?'d_supplements':'k_supplements';
-  const defaultSupps=who==='d'?DEFAULT_D_SUPPS:DEFAULT_K_SUPPS;
-  let supps;
-  try{supps=JSON.parse(g(suppKey,null))||defaultSupps;}catch(e){supps=defaultSupps;}
-  
-  // Build inline editor modal
-  const overlay=document.createElement('div');
-  overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px';
-  
-  const modal=document.createElement('div');
-  modal.style.cssText='background:white;border-radius:12px;padding:20px;width:100%;max-width:400px;max-height:80vh;overflow-y:auto';
-  
-  let rows=supps.map((s,i)=>`
-    <div id="supp-row-${i}" style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
-      <input id="supp-name-${i}" type="text" value="${s.name}" placeholder="Supplement name" style="flex:1;padding:7px 9px;border:1px solid #e0ddd6;border-radius:6px;font-size:13px">
-      <input id="supp-time-${i}" type="text" value="${s.time}" placeholder="Time" style="width:90px;padding:7px 9px;border:1px solid #e0ddd6;border-radius:6px;font-size:13px">
-      <button onclick="document.getElementById('supp-row-${i}').remove()" style="width:28px;height:28px;border-radius:50%;border:1px solid #ddd;background:white;color:#999;cursor:pointer;font-size:16px;flex-shrink:0">×</button>
-    </div>`).join('');
-  
-  modal.innerHTML=`
-    <div style="font-size:15px;font-weight:700;margin-bottom:4px">Edit supplements</div>
-    <div style="font-size:11px;color:#999;margin-bottom:14px">Name + when you take it. Tap × to remove.</div>
-    <div id="supp-rows">${rows}</div>
-    <button onclick="
-      const nr=document.createElement('div');
-      const idx=Date.now();
-      nr.id='supp-row-'+idx;
-      nr.style.cssText='display:flex;gap:8px;margin-bottom:8px;align-items:center';
-      nr.innerHTML=\`<input id='supp-name-\${idx}' type='text' placeholder='Supplement name' style='flex:1;padding:7px 9px;border:1px solid #e0ddd6;border-radius:6px;font-size:13px'><input id='supp-time-\${idx}' type='text' placeholder='Time' style='width:90px;padding:7px 9px;border:1px solid #e0ddd6;border-radius:6px;font-size:13px'><button onclick='this.parentNode.remove()' style='width:28px;height:28px;border-radius:50%;border:1px solid #ddd;background:white;color:#999;cursor:pointer;font-size:16px;flex-shrink:0'>×</button>\`;
-      document.getElementById('supp-rows').appendChild(nr);
-    " style="width:100%;padding:8px;border-radius:6px;border:1px dashed #ddd;background:#faf9f6;color:#888;font-size:12px;cursor:pointer;margin-bottom:12px">+ Add supplement</button>
-    <div style="display:flex;gap:8px">
-      <button onclick="
-        const rows=document.querySelectorAll('[id^=supp-row-]');
-        const newSupps=[];
-        rows.forEach(row=>{
-          const idx=row.id.replace('supp-row-','');
-          const name=document.getElementById('supp-name-'+idx);
-          const time=document.getElementById('supp-time-'+idx);
-          if(name&&name.value.trim())newSupps.push({name:name.value.trim(),time:time?time.value.trim()||'Daily':'Daily'});
-        });
-        sv('${suppKey}',JSON.stringify(newSupps));
-        document.body.removeChild(document.getElementById('supp-overlay'));
-        renderAll();
-      " style="flex:1;padding:10px;border-radius:8px;border:none;background:#1a1a1a;color:white;font-size:13px;font-weight:600;cursor:pointer">Save</button>
-      <button onclick="document.body.removeChild(document.getElementById('supp-overlay'))" style="padding:10px 16px;border-radius:8px;border:1px solid #ddd;background:white;color:#666;font-size:13px;cursor:pointer">Cancel</button>
-    </div>`;
-  
-  overlay.id='supp-overlay';
-  overlay.appendChild(modal);
-  document.body.appendChild(overlay);
-}
-
-function renderJournal(dk,d,who){
-  const p=who==='d'?D_PROMPTS[d]:K_PROMPTS[d];
-  const bgColor=who==='d'?'#e6eef8':'#f8e6f0';
-  const borderColor=who==='d'?'#b0c8e8':'#e8b0c8';
-  const catColor=who==='d'?'#1a5a9b':'#9b1a5a';
-  const onClass=who==='d'?'on-j':'on-k';
-  return `<div class="sec"><div class="sh"><div class="st"><div class="dot a-gold"></div>Tonight's journal</div></div>
-  <div class="prompt" style="background:${bgColor};border:1px solid ${borderColor}">
-    <div class="pcat" style="color:${catColor}">${p.c}</div>
-    <div class="pq">"${p.q}"</div>
-    <div class="ph">${p.h}</div>
-  </div>
-  <div class="card"><textarea placeholder="Write here or in your physical journal..." oninput="sv('${dk}.journalEntry',this.value)">${esc(g(`${dk}.journalEntry`,''))}</textarea>
-    <div style="margin-top:6px">${hr(dk,'journal','Journal done','Tonight',who)}</div>
-  </div></div>`;
-}
-
-function renderWindDown(dk,d,who){
-  const wdList=who==='d'?D_WD:K_WD;
-  const onClass=who==='d'?'on-j':'on-k';
-  const bedTime=who==='d'?'10:30pm':'9:15pm';
-  let H=`<div class="sec"><div class="sh"><div class="st"><div class="dot a-purple"></div>Wind-down protocol</div></div><div class="card">`;
-  wdList.forEach((item,i)=>{
-    H+=`<div style="display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid #f0ede6">
-      <div style="font-size:11px;color:#555;flex:1;line-height:1.5;padding-top:1px">${item.t}</div>
-      ${item.v?`<a class="vl" style="margin-top:0;flex-shrink:0" href="https://www.youtube.com/results?search_query=${encodeURIComponent(item.v)}" target="_blank">▶</a>`:''}
-    </div>`;
-  });
-  if(who==='d'){
-    H+=`<div style="margin-top:8px;padding-top:8px;border-top:1px solid #f0ede6">
-      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#999;margin-bottom:5px">Axisboard Pro + toe spacers</div>
-      <div style="font-size:11px;color:#555;line-height:1.5;margin-bottom:7px">5–10 min before bed. Put toe spacers on, stand on the Axisboard. Balance work at low intensity is calming for your nervous system — it's a natural transition into sleep mode. Single leg balance, lateral rocks, forward/back, squat holds.</div>
-      <a class="vl" href="https://www.youtube.com/results?search_query=sidekick+axisboard+pro+exercises+tutorial" target="_blank">▶ Axisboard exercises</a>
-      <div style="margin-top:7px">${hr(dk,'axisboard','Axisboard Pro + toe spacers done','Before bed','d')}</div>
-    </div>`;
-  }
-  H+=`<div style="margin-top:6px">${hr(dk,'winddown',`Wind-down — start by ${bedTime}`,bedTime,who)}</div>
-  </div></div>`;return H;
-}
-
-// ── FAMILY VIEW ─────────────────────────────────────────────
-function renderFamily(){
-  const mc=document.getElementById('mainContent');
-  if(!loaded){mc.innerHTML='<div class="spin-wrap"><div class="spinner"></div>Loading...</div>';return;}
-  const d=curDay,ddk=`d_d${d}`,kdk=`k_d${d}`;
-
-  const dHabits=['scripture','toespacers','piano','reading','journal','winddown'];
-  const kHabits=['scripture','movement','lucas','journal','winddown'];
-  const dHD=dHabits.filter(h=>g(`${ddk}.habits.${h}`,false)).length;
-  const kHD=kHabits.filter(h=>g(`${kdk}.habits.${h}`,false)).length;
-  const dTrain=g(`${ddk}.training.done`,false);
-  const kTrain=g(`${kdk}.training.done`,false);
-
-  let H=`<div class="dh"><div class="dn" style="color:#1a7a50">Family — ${DAYS[d]}</div><div class="dm"><div class="dfl">Together</div><div class="dfv">Full picture</div></div></div>`;
-
-  // SIDE BY SIDE CARDS
-  H+=`<div class="family-split">
-    <div class="person-card" style="background:#e6eef8;border-color:#1a5a9b">
-      <div class="person-name" style="color:#1a5a9b">Darius</div>
-      <div class="habit-dots">${dHabits.map(h=>`<div class="hdot" style="background:${g(`${ddk}.habits.${h}`,false)?'#1a5a9b':'#ddd'}" title="${h}"></div>`).join('')}</div>
-      <div class="ps-row"><div class="ps-label">Habits</div><div class="ps-val">${dHD}/${dHabits.length}</div></div>
-      <div class="ps-row"><div class="ps-label">Training</div><div class="ps-val" style="color:${dTrain?'#1a7a50':'#bbb'}">${dTrain?'Done ✓':'—'}</div></div>
-      <div class="ps-row"><div class="ps-label">Cold plunge</div><div class="ps-val" style="color:${g(`${ddk}.phases.coldplunge`,false)?'#1a7a50':'#bbb'}">${g(`${ddk}.phases.coldplunge`,false)?'✓':'—'}</div></div>
-      <div class="ps-row"><div class="ps-label">Study hrs</div><div class="ps-val">${g(`${ddk}.study.hours`,0)}</div></div>
-      <div class="ps-row"><div class="ps-label">Scripture</div><div class="ps-val" style="color:${g(`${ddk}.habits.scripture`,false)?'#1a7a50':'#bbb'}">${g(`${ddk}.habits.scripture`,false)?'✓':'—'}</div></div>
-    </div>
-    <div class="person-card" style="background:#f8e6f0;border-color:#9b1a5a">
-      <div class="person-name" style="color:#9b1a5a">Kelcie</div>
-      <div class="habit-dots">${kHabits.map(h=>`<div class="hdot" style="background:${g(`${kdk}.habits.${h}`,false)?'#9b1a5a':'#ddd'}" title="${h}"></div>`).join('')}</div>
-      <div class="ps-row"><div class="ps-label">Habits</div><div class="ps-val">${kHD}/${kHabits.length}</div></div>
-      <div class="ps-row"><div class="ps-label">Training</div><div class="ps-val" style="color:${kTrain?'#1a7a50':'#bbb'}">${kTrain?'Done ✓':'—'}</div></div>
-      <div class="ps-row"><div class="ps-label">Sessions/mo</div><div class="ps-val">${g('k_biz.sessionsMonth',0)}/2</div></div>
-      <div class="ps-row"><div class="ps-label">Scripture</div><div class="ps-val" style="color:${g(`${kdk}.habits.scripture`,false)?'#1a7a50':'#bbb'}">${g(`${kdk}.habits.scripture`,false)?'✓':'—'}</div></div>
-    </div>
-  </div>`;
-
-  // LUCAS MOMENTS
-  const dLucas=g(`${ddk}.lucasmoment`,'');
-  const kLucas=g(`${kdk}.lucasmoment`,'');
-  H+=`<div class="conn-card">
-    <div class="conn-title">Lucas moments today</div>
-    ${dLucas?`<div class="lucas-entry"><div class="lucas-who">Darius wrote</div><div class="lucas-text">"${esc(dLucas)}"</div></div>`:'<div style="font-size:11px;color:#bbb;margin-bottom:5px">Darius hasn\'t logged a moment yet</div>'}
-    ${kLucas?`<div class="lucas-entry"><div class="lucas-who">Kelcie wrote</div><div class="lucas-text">"${esc(kLucas)}"</div></div>`:'<div style="font-size:11px;color:#bbb">Kelcie hasn\'t logged a moment yet</div>'}
-  </div>`;
-
-  // CONNECTION
-  H+=`<div class="conn-card">
-    <div class="conn-title">Connection today</div>
-    <div style="margin-bottom:8px"><label class="lbl">Darius — one thing on your heart for Kelcie</label>
-      <input type="text" value="${esc(g(`fam_d${d}.dToK`,''))}" oninput="sv('fam_d${d}.dToK',this.value)" placeholder="Something you noticed, are grateful for, want her to know...">
-    </div>
-    <div><label class="lbl">Kelcie — one thing on your heart for Darius</label>
-      <input type="text" value="${esc(g(`fam_d${d}.kToD`,''))}" oninput="sv('fam_d${d}.kToD',this.value)" placeholder="Something you noticed, are grateful for, want him to know...">
-    </div>
-  </div>`;
-
-  // HOUSEHOLD TO-DO
-  H+=`<div class="conn-card">
-    <div class="conn-title">Household to-do</div>
-    <div id="todoList"></div>
-    <div style="display:flex;gap:6px;margin-top:8px">
-      <input type="text" id="todoInput" placeholder="Add a task..." style="flex:1;margin-bottom:0" onkeydown="if(event.key==='Enter')addTodo()">
-      <button onclick="addTodo()" style="padding:8px 14px;border-radius:6px;border:none;background:#1a7a50;color:white;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap">+ Add</button>
-    </div>
-  </div>`;
-
-  // WEEKLY CHORE LIST
-  H+=`<div class="conn-card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <div class="conn-title" style="margin-bottom:0">Weekly chores</div>
-      <button onclick="resetChores()" style="font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid #ddd;background:white;color:#666;cursor:pointer">Reset week</button>
-    </div>
-    <div id="choreList"></div>
-    <div style="display:flex;gap:6px;margin-top:8px">
-      <input type="text" id="choreInput" placeholder="Add a chore..." style="flex:1;margin-bottom:0" onkeydown="if(event.key==='Enter')addChore()">
-      <button onclick="addChore()" style="padding:8px 14px;border-radius:6px;border:none;background:#888;color:white;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap">+ Add</button>
-    </div>
-  </div>`;
-
-  // WEEK STATS
-  let dWeekStudy=0,dWeekTrain=0,kWeekTrain=0;
-  for(let dd=1;dd<=6;dd++){
-    dWeekStudy+=(parseFloat(g(`d_d${dd}.study.hours`,0))||0);
-    if(g(`d_d${dd}.training.done`,false))dWeekTrain++;
-    if(g(`k_d${dd}.training.done`,false))kWeekTrain++;
-  }
-  H+=`<div class="conn-card">
-    <div class="conn-title">This week</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div><div style="font-size:11px;font-weight:700;color:#1a5a9b;margin-bottom:5px">Darius</div>
-        <div class="ps-row"><div class="ps-label">Study hours</div><div class="ps-val">${dWeekStudy.toFixed(1)}</div></div>
-        <div class="ps-row"><div class="ps-label">Training sessions</div><div class="ps-val">${dWeekTrain}/6</div></div>
-      </div>
-      <div><div style="font-size:11px;font-weight:700;color:#9b1a5a;margin-bottom:5px">Kelcie</div>
-        <div class="ps-row"><div class="ps-label">Training sessions</div><div class="ps-val">${kWeekTrain}/3</div></div>
-        <div class="ps-row"><div class="ps-label">Sessions this month</div><div class="ps-val">${g('k_biz.sessionsMonth',0)}/2</div></div>
-      </div>
-    </div>
-  </div>`;
 
   mc.innerHTML=H;
-  renderTodoList();
-  renderChoreList();
 }
 
-// TO-DO LIST
-function getTodos(){try{return JSON.parse(g('household.todos','[]'))||[];}catch(e){return [];}}
-function saveTodos(t){sv('household.todos',JSON.stringify(t));}
-function addTodo(){
-  const inp=document.getElementById('todoInput');if(!inp)return;
-  const text=inp.value.trim();if(!text)return;
-  const todos=getTodos();todos.push({id:Date.now(),text,done:false});
-  saveTodos(todos);inp.value='';renderTodoList();
-}
-function toggleTodo(id){const t=getTodos();const x=t.find(i=>i.id===id);if(x)x.done=!x.done;saveTodos(t);renderTodoList();}
-function deleteTodo(id){saveTodos(getTodos().filter(i=>i.id!==id));renderTodoList();}
-function renderTodoList(){
-  const el=document.getElementById('todoList');if(!el)return;
-  const todos=getTodos();
-  if(!todos.length){el.innerHTML='<div style="font-size:12px;color:#bbb;text-align:center;padding:6px 0">No tasks yet</div>';return;}
-  const open=todos.filter(t=>!t.done),done=todos.filter(t=>t.done);
-  let H='';
-  open.forEach(t=>{H+=`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f0ede6">
-    <div onclick="toggleTodo(${t.id})" style="width:20px;height:20px;border-radius:50%;border:1.5px solid #ddd;background:white;flex-shrink:0;cursor:pointer"></div>
-    <div style="flex:1;font-size:13px;color:#1a1a1a">${esc(t.text)}</div>
-    <div onclick="deleteTodo(${t.id})" style="font-size:18px;color:#bbb;cursor:pointer;padding:0 4px;line-height:1">×</div>
-  </div>`;});
-  if(done.length){
-    H+=`<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#bbb;margin:8px 0 4px">Done</div>`;
-    done.forEach(t=>{H+=`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0ede6">
-      <div onclick="toggleTodo(${t.id})" style="width:20px;height:20px;border-radius:50%;border:1.5px solid #1a7a50;background:#1a7a50;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:10px">✓</div>
-      <div style="flex:1;font-size:12px;color:#bbb;text-decoration:line-through">${esc(t.text)}</div>
-      <div onclick="deleteTodo(${t.id})" style="font-size:18px;color:#ddd;cursor:pointer;padding:0 4px;line-height:1">×</div>
-    </div>`;});
-    H+=`<div onclick="clearDoneTodos()" style="font-size:11px;color:#999;cursor:pointer;text-align:right;padding:6px 0">Clear completed</div>`;
+// ── PROGRESS TAB ─────────────────────────────────────────────
+function renderProgress(){
+  const mc=document.getElementById('progressContent');
+  // Build personal PRs from all weeks
+  const liftNames={1:'Overhead Press',2:'Barbell Curl',3:'Chest-Supported Row',4:'Leg Press',5:'DB Press'};
+  let prs={};
+  // Scan all stored weeks for PRs
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(!k.startsWith('ib_week_'+pin+'_'))continue;
+    try{
+      const data=JSON.parse(localStorage.getItem(k));
+      for(let day=1;day<=5;day++){
+        const dk=`d${day}`;
+        if(!data[dk]||!data[dk].sets)continue;
+        const topSet=data[dk].sets.s2;
+        if(topSet&&topSet.w){
+          const w=parseFloat(topSet.w)||0;
+          const liftName=liftNames[day]||`Day ${day}`;
+          if(!prs[day]||w>prs[day].weight){
+            prs[day]={weight:w,reps:topSet.r||'',name:liftName,week:k.split('_').pop()};
+          }
+        }
+      }
+    }catch(e){}
   }
-  el.innerHTML=H;
-}
-function clearDoneTodos(){saveTodos(getTodos().filter(t=>!t.done));renderTodoList();}
 
-// CHORE LIST
-function getChores(){try{return JSON.parse(g('household.chores',null))||DEFAULT_CHORES;}catch(e){return DEFAULT_CHORES;}}
-function saveChores(c){sv('household.chores',JSON.stringify(c));}
-function toggleChore(i){const c=getChores();c[i].done=!c[i].done;saveChores(c);renderChoreList();}
-function cycleChoreWho(i){const c=getChores();const cycle={d:'k',k:'both',both:'d'};c[i].who=cycle[c[i].who]||'both';saveChores(c);renderChoreList();}
-function deleteChore(i){const c=getChores();c.splice(i,1);saveChores(c);renderChoreList();}
-function addChore(){
-  const inp=document.getElementById('choreInput');if(!inp)return;
-  const text=inp.value.trim();if(!text)return;
-  const c=getChores();c.push({text,who:'both',done:false});
-  saveChores(c);inp.value='';renderChoreList();
-}
-function resetChores(){if(confirm('Reset all chores as undone for the new week?')){const c=getChores();c.forEach(x=>x.done=false);saveChores(c);renderChoreList();}}
-function renderChoreList(){
-  const el=document.getElementById('choreList');if(!el)return;
-  const chores=getChores();
-  if(!chores.length){el.innerHTML='<div style="font-size:12px;color:#bbb;text-align:center;padding:6px 0">No chores yet</div>';return;}
-  const open=chores.filter(c=>!c.done),done=chores.filter(c=>c.done);
-  const whoLabel=(who,idx)=>who==='d'?`<span class="chore-who who-d" onclick="cycleChoreWho(${idx})" style="cursor:pointer" title="Tap to change">Darius</span>`:who==='k'?`<span class="chore-who who-k" onclick="cycleChoreWho(${idx})" style="cursor:pointer" title="Tap to change">Kelcie</span>`:`<span class="chore-who who-both" onclick="cycleChoreWho(${idx})" style="cursor:pointer" title="Tap to change">Both</span>`;
-  let H='';
-  open.forEach((c,i)=>{
-    const realIdx=chores.indexOf(c);
-    H+=`<div class="chore-row">
-      <div onclick="toggleChore(${realIdx})" style="width:20px;height:20px;border-radius:50%;border:1.5px solid #ddd;background:white;flex-shrink:0;cursor:pointer"></div>
-      <div class="chore-text">${esc(c.text)}</div>
-      ${whoLabel(c.who,realIdx)}
-      <div onclick="deleteChore(${realIdx})" style="font-size:16px;color:#bbb;cursor:pointer;padding:0 2px;line-height:1">×</div>
-    </div>`;
-  });
-  if(done.length){
-    H+=`<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#bbb;margin:8px 0 4px">Completed</div>`;
-    done.forEach((c,i)=>{
-      const realIdx=chores.indexOf(c);
-      H+=`<div class="chore-row">
-        <div onclick="toggleChore(${realIdx})" style="width:20px;height:20px;border-radius:50%;border:1.5px solid #1a7a50;background:#1a7a50;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:10px">✓</div>
-        <div class="chore-text done-txt">${esc(c.text)}</div>
-        ${whoLabel(c.who,realIdx)}
-        <div onclick="deleteChore(${realIdx})" style="font-size:16px;color:#ddd;cursor:pointer;padding:0 2px;line-height:1">×</div>
+  // Run PRs
+  let runPRs={easy:0,moderate:0,long:0};
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(!k.startsWith('ib_week_'+pin+'_'))continue;
+    try{
+      const data=JSON.parse(localStorage.getItem(k));
+      [1,3,5,6].forEach(day=>{
+        const run=data[`d${day}`]&&data[`d${day}`].run;
+        if(run&&run.distance){
+          const dist=parseFloat(run.distance)||0;
+          const type=SPLIT[day].runType;
+          if(type&&dist>runPRs[type])runPRs[type]=dist;
+        }
+      });
+    }catch(e){}
+  }
+
+  // Weekly consistency (last 8 weeks)
+  let weeklyData=[];
+  for(let w=0;w<8;w++){
+    const wDate=new Date();wDate.setDate(wDate.getDate()-(wDate.getDay())-(w*7));
+    const wKey='ib_week_'+pin+'_'+wDate.toISOString().split('T')[0];
+    let sessions=0;
+    try{
+      const data=JSON.parse(localStorage.getItem(wKey)||'{}');
+      for(let d=1;d<=6;d++){if(data[`d${d}`]&&data[`d${d}`].training&&data[`d${d}`].training.done)sessions++;}
+    }catch(e){}
+    weeklyData.unshift({week:8-w,sessions});
+  }
+
+  let H=`<div class="dh"><div class="dn" style="color:#e8b86d">${userName}</div><div class="dm"><div class="dfl">Progress</div><div class="dfv">Personal records</div></div></div>`;
+
+  // PERSONAL RECORDS
+  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#e8b86d"></div>Lift PRs — top set</div></div>
+  <div class="pr-grid">
+    ${Object.entries(prs).map(([day,pr])=>`
+    <div class="pr-card">
+      <div class="pr-lift">${pr.name}</div>
+      <div class="pr-weight">${pr.weight}<span class="pr-unit"> lbs</span></div>
+      ${pr.reps?`<div class="pr-date">× ${pr.reps} reps</div>`:''}
+    </div>`).join('')}
+    ${Object.keys(prs).length===0?'<div style="grid-column:1/-1;font-size:12px;color:#444;text-align:center;padding:20px">Log your first session to see PRs here</div>':''}
+  </div></div>`;
+
+  // MARATHON PROGRESS
+  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#f472b6"></div>Marathon progress</div></div>
+  <div class="card">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#555;margin-bottom:8px">Longest runs logged</div>
+    ${['easy','moderate','long'].map(type=>{
+      const info=RUN_INFO[type];
+      const dist=runPRs[type];
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #1e1e1e">
+        <span class="${'run-type-badge '+info.cls}" style="font-size:9px">${info.label}</span>
+        <div style="font-size:15px;font-weight:700;color:${info.color}">${dist>0?dist.toFixed(1)+' mi':'—'}</div>
       </div>`;
-    });
-  }
-  el.innerHTML=H;
-}
-
-// ── CALENDAR ────────────────────────────────────────────────
-function renderCal(){
-  const mc=document.getElementById('calContent');
-  const today=new Date(),yr=calMo.getFullYear(),mo=calMo.getMonth();
-  const firstDay=new Date(yr,mo,1).getDay(),dim=new Date(yr,mo+1,0).getDate();
-  let H=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-    <button onclick="calMo.setMonth(calMo.getMonth()-1);renderAll()" class="wb" style="width:auto;padding:4px 12px;font-size:14px">‹</button>
-    <div style="font-size:15px;font-weight:700">${MONTHS[mo]} ${yr}</div>
-    <button onclick="calMo.setMonth(calMo.getMonth()+1);renderAll()" class="wb" style="width:auto;padding:4px 12px;font-size:14px">›</button>
-  </div><div class="cal-grid">${SHORT.map(d=>`<div class="cal-hc">${d}</div>`).join('')}`;
-  for(let i=0;i<Math.ceil((firstDay+dim)/7)*7;i++){
-    const cd=i-firstDay+1,inM=cd>=1&&cd<=dim;
-    const cd2=inM?new Date(yr,mo,cd):null;
-    const isT=cd2&&cd2.toDateString()===today.toDateString();
-    const isSel=selDate&&cd2&&cd2.toDateString()===new Date(selDate).toDateString();
-    const dow=cd2?cd2.getDay():null;
-    const wO=cd2?getWO(cd2):null,saved=inM&&wO===wOff?state:{};
-    const ddk=`d_d${dow}`,kdk=`k_d${dow}`;
-    const dTD=inM&&!!(saved[ddk]&&saved[ddk].training&&saved[ddk].training.done);
-    const kTD=inM&&!!(saved[kdk]&&saved[kdk].training&&saved[kdk].training.done);
-    const dHD=inM?['scripture','toespacers','piano','reading','journal','winddown'].filter(h=>saved[ddk]&&saved[ddk].habits&&saved[ddk].habits[h]).length:0;
-    H+=`<div class="cal-cell${!inM?' other':''} ${isT?'today':''} ${isSel?'selected':''}" onclick="${inM?`selectDate('${cd2.toISOString()}')`:''}" >
-      <div class="cal-dn" style="color:${isT?'#8a6010':'#666'}">${inM?cd:''}</div>
-      <div class="cal-dots">
-        ${inM&&dTD?`<div class="cdot" style="background:#1a5a9b"></div>`:''}
-        ${inM&&kTD?`<div class="cdot" style="background:#9b1a5a"></div>`:''}
-        ${inM&&dHD>0?`<div class="cdot" style="background:#BA7517"></div>`:''}
-        ${inM&&dow===0?`<div class="cdot" style="background:#1a7a50"></div>`:''}
-        ${inM&&dow===6?`<div class="cdot" style="background:#D85A30" title="Long run"></div>`:''}
+    }).join('')}
+    <div style="margin-top:10px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#555;margin-bottom:6px">Marathon training · Week ${getMarathonWeek()+1} of 22</div>
+      <div class="pbar" style="height:8px"><div class="pbf" style="width:${Math.round(((getMarathonWeek()+1)/22)*100)}%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <div style="font-size:10px;color:#555">Start</div>
+        <div style="font-size:10px;color:#e8b86d;font-weight:600">${Math.round(((getMarathonWeek()+1)/22)*100)}% complete</div>
+        <div style="font-size:10px;color:#555">Oct 3</div>
       </div>
-    </div>`;
-  }
-  H+=`</div><div class="cal-legend">
-    <div class="cleg"><div class="cdot" style="background:#1a5a9b"></div>Darius trains</div>
-    <div class="cleg"><div class="cdot" style="background:#9b1a5a"></div>Kelcie trains</div>
-    <div class="cleg"><div class="cdot" style="background:#BA7517"></div>Habits</div>
-    <div class="cleg"><div class="cdot" style="background:#1a7a50"></div>Sabbath</div>
-    <div class="cleg"><div class="cdot" style="background:#D85A30"></div>Long run</div>
-  </div>`;
-  if(selDate){
-    const dt=new Date(selDate),dow=dt.getDay(),ddk=`d_d${dow}`,kdk=`k_d${dow}`;
-    const wO=getWO(dt),saved=wO===wOff?state:{};
-    const dTD=!!(saved[ddk]&&saved[ddk].training&&saved[ddk].training.done);
-    const kTD=!!(saved[kdk]&&saved[kdk].training&&saved[kdk].training.done);
-    const dStudy=saved[ddk]&&saved[ddk].study?saved[ddk].study.hours||0:0;
-    const dTop=saved[ddk]&&saved[ddk].sets?saved[ddk].sets.s2?`${saved[ddk].sets.s2.weight||'—'} × ${saved[ddk].sets.s2.reps||'—'}`:'—':'—';
-    const dLucas=saved[ddk]?saved[ddk].lucasmoment||'':'';
-    const kLucas=saved[kdk]?saved[kdk].lucasmoment||'':'';
-    H+=`<div class="card" style="margin-top:8px">
-      <div style="font-size:15px;font-weight:700;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0ede6">${dt.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px">
-        <div><div style="font-size:11px;font-weight:700;color:#1a5a9b;margin-bottom:5px">Darius</div>
-          <div class="mr"><div class="ml">Training</div><div style="color:${dTD?'#1a7a50':'#bbb'}">${dTD?'✓':'—'}</div></div>
-          <div class="mr"><div class="ml">Top set</div><div style="font-size:11px;color:#666">${esc(dTop)}</div></div>
-          <div class="mr"><div class="ml">Study hrs</div><div style="font-size:11px;color:#666">${dStudy}</div></div>
-        </div>
-        <div><div style="font-size:11px;font-weight:700;color:#9b1a5a;margin-bottom:5px">Kelcie</div>
-          <div class="mr"><div class="ml">Training</div><div style="color:${kTD?'#1a7a50':'#bbb'}">${kTD?'✓':'—'}</div></div>
-          <div class="mr"><div class="ml">Sessions/mo</div><div style="font-size:11px;color:#666">${g('k_biz.sessionsMonth',0)}/2</div></div>
-        </div>
-      </div>
-      ${dLucas||kLucas?`<div style="padding-top:8px;border-top:1px solid #f0ede6">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#8a6010;margin-bottom:6px">Lucas moments</div>
-        ${dLucas?`<div style="font-size:11px;color:#555;margin-bottom:4px"><b>Darius:</b> ${esc(dLucas)}</div>`:''}
-        ${kLucas?`<div style="font-size:11px;color:#555"><b>Kelcie:</b> ${esc(kLucas)}</div>`:''}
-      </div>`:''}
-    </div>`;
-  }
-  mc.innerHTML=H;
-}
-function getWO(date){const n=new Date(),d=n.getDay(),s=new Date(n);s.setDate(n.getDate()-d);const ds=new Date(date);ds.setDate(date.getDate()-date.getDay());return Math.round((ds-s)/(7*24*60*60*1000));}
-function selectDate(iso){selDate=iso;renderAll();}
+    </div>
+  </div></div>`;
 
-// ── SUNDAY PLANNING ─────────────────────────────────────────
-function renderDSunday(){
-  const mc=document.getElementById('sundayContent'),dk='d_d0';
-  let tS=0,tT=0,tH=0,tHM=0;
-  for(let d=1;d<=6;d++){tS+=(parseFloat(g(`d_d${d}.study.hours`,0))||0);if(g(`d_d${d}.training.done`,false))tT++;['scripture','toespacers','piano','reading','journal','winddown'].forEach(h=>{tHM++;if(g(`d_d${d}.habits.${h}`,false))tH++;});}
-  const nxt=Math.min(20,(parseInt(g('weeklyTargets.cindyRounds',12))||12)+2);
-  const p=D_PROMPTS[0];
-  mc.innerHTML=`<div class="dh"><div class="dn" style="color:#1a5a9b">Darius — Sunday</div><div class="dm"><div class="dfl">Today</div><div class="dfv">Sabbath + Planning</div></div></div>
-  <div class="stats">
-    <div class="stat"><div class="snum">${tS.toFixed(1)}</div><div class="slbl">Study hrs</div></div>
-    <div class="stat"><div class="snum">${tT}/6</div><div class="slbl">Sessions</div></div>
-    <div class="stat"><div class="snum">${tH}/${tHM}</div><div class="slbl">Habits</div></div>
-  </div>
-  <div class="sec"><div class="sh"><div class="st"><div class="dot a-gold"></div>Weekly review</div></div>
-  <div class="prompt" style="background:#e6eef8;border:1px solid #b0c8e8"><div class="pcat" style="color:#1a5a9b">${p.c}</div><div class="pq">"${p.q}"</div><div class="ph">${p.h}</div></div>
+  // WEEKLY CONSISTENCY
+  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#7F77DD"></div>Weekly consistency</div></div>
   <div class="card">
-    <div style="margin-bottom:8px"><label class="lbl">Win as a husband</label><input type="text" value="${esc(g(`${dk}.review.husband`,''))}" oninput="sv('${dk}.review.husband',this.value)" placeholder="..."></div>
-    <div style="margin-bottom:8px"><label class="lbl">Win as a father (Lucas)</label><input type="text" value="${esc(g(`${dk}.review.father`,''))}" oninput="sv('${dk}.review.father',this.value)" placeholder="..."></div>
-    <div style="margin-bottom:8px"><label class="lbl">Win as a disciple</label><input type="text" value="${esc(g(`${dk}.review.disciple`,''))}" oninput="sv('${dk}.review.disciple',this.value)" placeholder="..."></div>
-    <label class="lbl">One thing differently next week</label>
-    <textarea oninput="sv('${dk}.review.improve',this.value)" style="min-height:52px">${esc(g(`${dk}.review.improve`,''))}</textarea>
-  </div></div>
-  <div class="divider"></div>
-  <div class="sec"><div class="sh"><div class="st"><div class="dot a-teal"></div>Next week — training</div></div>
+    <div style="display:flex;align-items:flex-end;gap:4px;height:60px;margin-bottom:6px">
+      ${weeklyData.map(w=>{
+        const h=w.sessions>0?Math.max(10,Math.round((w.sessions/6)*100)):4;
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+          <div style="font-size:9px;color:#555">${w.sessions}</div>
+          <div style="width:100%;height:${h}%;background:${w.sessions>=5?'#e8b86d':w.sessions>=3?'#7F77DD':'#2a2a2a'};border-radius:3px 3px 0 0;min-height:4px"></div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="display:flex;justify-content:space-between">
+      <div style="font-size:10px;color:#555">8 weeks ago</div>
+      <div style="font-size:10px;color:#555">This week</div>
+    </div>
+  </div></div>`;
+
+  // UPDATE PRs
+  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#e8b86d"></div>Update a PR manually</div></div>
   <div class="card">
-    <div class="mr"><div class="ml" style="font-weight:500">Cindy rounds target (Sat)</div><input class="mini" type="number" value="${nxt}" min="1" max="20" oninput="sv('weeklyTargets.cindyRounds',parseInt(this.value))"></div>
-    <div class="mr"><div class="ml">Chest rehab week</div>
-      <select style="padding:4px 8px;font-size:12px;border:1px solid #ddd;border-radius:5px;background:#faf9f6" onchange="sv('weeklyTargets.chestWeek',this.value)">
-        <option value="2" ${g('weeklyTargets.chestWeek','2')==='2'?'selected':''}>Week 2 — isometric</option>
-        <option value="3" ${g('weeklyTargets.chestWeek','2')==='3'?'selected':''}>Week 3 — test</option>
-        <option value="4" ${g('weeklyTargets.chestWeek','2')==='4'?'selected':''}>Week 4+ — build</option>
+    <div style="margin-bottom:8px"><label class="lbl">Lift</label>
+      <select id="prLift" style="margin-bottom:8px">
+        ${Object.entries(liftNames).map(([d,n])=>`<option value="${d}">${n}</option>`).join('')}
       </select>
     </div>
-    <div style="margin-top:8px"><label class="lbl">Strength goals</label>
-      <textarea placeholder="e.g. Add 5lbs to chest-supported row..." oninput="sv('weeklyTargets.strengthGoals',this.value)" style="min-height:46px">${esc(g('weeklyTargets.strengthGoals',''))}</textarea>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div><label class="lbl">Weight (lbs)</label><input type="text" id="prWeight" inputmode="decimal" placeholder="185"></div>
+      <div><label class="lbl">Reps</label><input type="text" id="prReps" placeholder="3"></div>
     </div>
-  </div></div>
-  <div class="sec"><div class="sh"><div class="st"><div class="dot a-purple"></div>Next week — school</div></div>
-  <div class="card">
-    <div style="margin-bottom:7px"><label class="lbl">Assignments + deadlines</label>
-      <textarea placeholder="List what is due and when..." oninput="sv('weeklyTargets.deadlines',this.value)" style="min-height:50px">${esc(g('weeklyTargets.deadlines',''))}</textarea>
-    </div>
-    <label class="lbl">Nightly study plan (Mon–Fri)</label>
-    <textarea placeholder="Mon:&#10;Tue:&#10;Wed:&#10;Thu:&#10;Fri:" oninput="sv('weeklyTargets.studyPlan',this.value)" style="min-height:80px">${esc(g('weeklyTargets.studyPlan',''))}</textarea>
-  </div></div>
-  <div class="sec"><div class="sh"><div class="st"><div class="dot a-coral"></div>Family intention</div></div>
-  <div class="card">
-    <div style="margin-bottom:7px"><label class="lbl">Date night plan</label><input type="text" value="${esc(g('weeklyTargets.dateNight',''))}" oninput="sv('weeklyTargets.dateNight',this.value)" placeholder="e.g. Dinner out Saturday..."></div>
-    <div style="margin-bottom:7px"><label class="lbl">One word for this week</label><input type="text" value="${esc(g('weeklyTargets.intentionWord',''))}" oninput="sv('weeklyTargets.intentionWord',this.value)" placeholder="Present · Disciplined · Faithful..."></div>
-    <label class="lbl">What that word means in each role</label>
-    <textarea placeholder="As a husband:&#10;As a father:&#10;As a student:&#10;As a disciple:" oninput="sv('weeklyTargets.intentionMeaning',this.value)" style="min-height:80px">${esc(g('weeklyTargets.intentionMeaning',''))}</textarea>
-  </div></div>
-  <div class="sec"><div class="sh"><div class="st"><div class="dot a-gold"></div>Today's habits</div></div>
-  <div class="card">
-    ${hr(dk,'scripture','Scripture reading','Morning','d')}
-    ${hr(dk,'toespacers','Toe spacers','Morning','d')}
-    ${hr(dk,'church','Church attendance','Sabbath','d')}
-    ${hr(dk,'journal','Journal + weekly review','Tonight','d')}
-    ${hr(dk,'winddown','Wind-down','10:30pm','d')}
-    <div style="padding:7px 0 0"><label class="lbl">Lucas moment today</label>
-      <input type="text" placeholder="Something he did worth remembering..." value="${esc(g(`${dk}.lucasmoment`,''))}" oninput="sv('${dk}.lucasmoment',this.value)">
-    </div>
+    <button onclick="savePR()" style="width:100%;padding:10px;border-radius:8px;border:none;background:#e8b86d;color:#0f0f0f;font-size:13px;font-weight:700;cursor:pointer">Save PR</button>
+    <div id="prMsg" style="font-size:12px;color:#4ade80;margin-top:6px;text-align:center;display:none">PR saved! ✓</div>
   </div></div>`;
+
+  mc.innerHTML=H;
 }
 
-function renderKSunday(){
-  const mc=document.getElementById('sundayContent'),dk='k_d0';
-  let kT=0;for(let d=1;d<=6;d++)if(g(`k_d${d}.training.done`,false))kT++;
-  const p=K_PROMPTS[0];
-  mc.innerHTML=`<div class="dh"><div class="dn" style="color:#9b1a5a">Kelcie — Sunday</div><div class="dm"><div class="dfl">Today</div><div class="dfv">Sabbath + Planning</div></div></div>
+function savePR(){
+  const day=document.getElementById('prLift').value;
+  const w=document.getElementById('prWeight').value.trim();
+  const r=document.getElementById('prReps').value.trim();
+  if(!w)return;
+  sv(`d${day}.sets.s2.w`,w);
+  if(r)sv(`d${day}.sets.s2.r`,r);
+  const msg=document.getElementById('prMsg');
+  msg.style.display='block';
+  setTimeout(()=>{msg.style.display='none';renderProgress();},2000);
+}
+
+// ── MARATHON TAB ─────────────────────────────────────────────
+function renderMarathon(){
+  const mc=document.getElementById('marathonContent');
+  const week=getMarathonWeek()+1;
+  const targets=MARATHON_WEEKS[getMarathonWeek()]||[20,30,40];
+  const raceDate=new Date('2026-10-03');
+  const daysLeft=Math.max(0,Math.ceil((raceDate-new Date())/(24*60*60*1000)));
+  const weeksLeft=Math.ceil(daysLeft/7);
+
+  // Build run log from this week
+  let weeklyRuns=[];
+  [1,3,5,6].forEach(d=>{
+    const run=g(`d${d}.run`);
+    if(run&&(run.actual||run.distance)){
+      weeklyRuns.push({day:DAYS[d],type:SPLIT[d].runType,actual:run.actual||0,distance:run.distance||0,pace:run.pace||''});
+    }
+  });
+
+  let H=`<div class="dh"><div class="dn" style="color:#f472b6">Marathon</div><div class="dm"><div class="dfl">Race day</div><div class="dfv">Oct 3 · St. George, UT</div></div></div>
   <div class="stats">
-    <div class="stat"><div class="snum">${kT}/3</div><div class="slbl">Sessions</div></div>
-    <div class="stat"><div class="snum">${g('k_biz.sessionsMonth',0)}/2</div><div class="slbl">Sessions/mo</div></div>
-    <div class="stat"><div class="snum">${['scripture','movement','lucas','journal','winddown'].filter(h=>g(`${dk}.habits.${h}`,false)).length}/5</div><div class="slbl">Habits</div></div>
-  </div>
-  <div class="sec"><div class="sh"><div class="st"><div class="dot a-gold"></div>Weekly review</div></div>
-  <div class="prompt" style="background:#f8e6f0;border:1px solid #e8b0c8"><div class="pcat" style="color:#9b1a5a">${p.c}</div><div class="pq">"${p.q}"</div><div class="ph">${p.h}</div></div>
-  <div class="card">
-    <div style="margin-bottom:8px"><label class="lbl">Win as a mother</label><input type="text" value="${esc(g(`${dk}.review.mother`,''))}" oninput="sv('${dk}.review.mother',this.value)" placeholder="..."></div>
-    <div style="margin-bottom:8px"><label class="lbl">Win as a photographer</label><input type="text" value="${esc(g(`${dk}.review.photographer`,''))}" oninput="sv('${dk}.review.photographer',this.value)" placeholder="..."></div>
-    <div style="margin-bottom:8px"><label class="lbl">Win as a wife</label><input type="text" value="${esc(g(`${dk}.review.wife`,''))}" oninput="sv('${dk}.review.wife',this.value)" placeholder="..."></div>
-    <div style="margin-bottom:8px"><label class="lbl">Win as a disciple</label><input type="text" value="${esc(g(`${dk}.review.disciple`,''))}" oninput="sv('${dk}.review.disciple',this.value)" placeholder="..."></div>
-    <label class="lbl">One thing differently next week</label>
-    <textarea oninput="sv('${dk}.review.improve',this.value)" style="min-height:52px">${esc(g(`${dk}.review.improve`,''))}</textarea>
-  </div></div>
-  <div class="divider"></div>
-  <div class="sec"><div class="sh"><div class="st"><div class="dot a-rose"></div>Next week — photography</div></div>
-  <div class="card">
-    <div style="margin-bottom:7px"><label class="lbl">Sessions goal this month</label>
-      <input type="text" value="${esc(g('kelcieTargets.bizGoal',''))}" oninput="sv('kelcieTargets.bizGoal',this.value)" placeholder="e.g. Book 2 sessions, post 3x this week...">
+    <div class="stat"><div class="snum">${week}/22</div><div class="slbl">Week</div></div>
+    <div class="stat"><div class="snum">${daysLeft}</div><div class="slbl">Days left</div></div>
+    <div class="stat"><div class="snum">${weeksLeft}</div><div class="slbl">Weeks left</div></div>
+  </div>`;
+
+  // Overall progress
+  H+=`<div class="card card-gold" style="margin-bottom:10px">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#e8b86d;margin-bottom:8px">St. George Marathon · 26.2 miles</div>
+    <div class="pbar" style="height:8px;margin-bottom:6px"><div class="pbf" style="width:${Math.round((week/22)*100)}%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:#666">
+      <span>Week 1 · Apr 16</span><span style="color:#e8b86d;font-weight:700">${Math.round((week/22)*100)}% through training</span><span>Race Day · Oct 3</span>
     </div>
-    <div style="margin-bottom:7px"><label class="lbl">Sessions booked or in progress</label>
-      <textarea style="min-height:50px" placeholder="Any booked or potential sessions?" oninput="sv('kelcieTargets.sessions',this.value)">${esc(g('kelcieTargets.sessions',''))}</textarea>
-    </div>
-    <label class="lbl">One business task per day this week</label>
-    <textarea placeholder="Mon:&#10;Tue:&#10;Wed:&#10;Thu:&#10;Fri:" oninput="sv('kelcieTargets.bizPlan',this.value)" style="min-height:80px">${esc(g('kelcieTargets.bizPlan',''))}</textarea>
-  </div></div>
-  <div class="sec"><div class="sh"><div class="st"><div class="dot a-amber"></div>Next week — Lucas + self</div></div>
+    <div class="note" style="margin-top:8px;background:#1a1500;border-color:#3a2e00">⛰️ St. George is net downhill — 2,600 ft descent. Key: short stride, high cadence (170+), eccentric quad training weekly.</div>
+  </div>`;
+
+  // This week's targets
+  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#f472b6"></div>This week's run targets</div><span class="time-badge">Week ${week}</span></div>
   <div class="card">
-    <div style="margin-bottom:7px"><label class="lbl">One thing to try with Lucas this week</label>
-      <input type="text" value="${esc(g('kelcieTargets.lucasActivity',''))}" oninput="sv('kelcieTargets.lucasActivity',this.value)" placeholder="New activity, outing, milestone to watch for...">
-    </div>
-    <label class="lbl">Self-care intention this week</label>
-    <input type="text" value="${esc(g('kelcieTargets.selfcare',''))}" oninput="sv('kelcieTargets.selfcare',this.value)" placeholder="Something just for you — even small...">
-  </div></div>
-  <div class="sec"><div class="sh"><div class="st"><div class="dot a-gold"></div>Today's habits</div></div>
-  <div class="card">
-    ${hr(dk,'scripture','Scripture reading','Morning','k')}
-    ${hr(dk,'church','Church attendance','Sabbath','k')}
-    ${hr(dk,'lucas','Intentional time with Lucas','Today','k')}
-    ${hr(dk,'journal','Journal + weekly review','Tonight','k')}
-    ${hr(dk,'winddown','Wind-down — start by 9:15pm','9:15pm','k')}
-    <div style="padding:7px 0 0"><label class="lbl">Lucas moment today</label>
-      <input type="text" placeholder="Something he did worth remembering..." value="${esc(g(`${dk}.lucasmoment`,''))}" oninput="sv('${dk}.lucasmoment',this.value)">
-    </div>
+    ${[['easy','Mon + Fri',targets[0]],['moderate','Wednesday',targets[1]],['long','Saturday',targets[2]]].map(([type,day,target])=>{
+      const info=RUN_INFO[type];
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e1e1e">
+        <div><span class="${'run-type-badge '+info.cls}" style="font-size:9px">${info.label}</span><div style="font-size:11px;color:#555;margin-top:3px">${day}</div></div>
+        <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:${info.color}">${target} min</div></div>
+      </div>`;
+    }).join('')}
   </div></div>`;
+
+  // This week's runs logged
+  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#1D9E75"></div>This week's runs logged</div></div>
+  <div class="card">
+    ${weeklyRuns.length>0?weeklyRuns.map(r=>{
+      const info=RUN_INFO[r.type]||{color:'#888',cls:'',label:r.type};
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #1e1e1e">
+        <div><div style="font-size:12px;font-weight:600;color:#f0f0f0">${r.day}</div><span class="${'run-type-badge '+info.cls}" style="font-size:9px;margin-top:3px;display:inline-block">${info.label}</span></div>
+        <div style="text-align:right">
+          <div style="font-size:15px;font-weight:700;color:${info.color}">${r.actual} min</div>
+          ${r.distance?`<div style="font-size:11px;color:#555">${r.distance} mi${r.pace?' · '+r.pace+'/mi':''}</div>`:''}
+        </div>
+      </div>`;
+    }).join(''):'<div style="font-size:12px;color:#444;text-align:center;padding:16px">No runs logged this week yet</div>'}
+  </div></div>`;
+
+  // Phase-by-phase what changes
+  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#555"></div>Training phases overview</div></div>
+  <div class="card">
+    ${[
+      {range:'Wks 1–8',label:'Base building',desc:'Short runs, easy pace. Build the habit. Lifting stays full.'},
+      {range:'Wks 9–16',label:'Marathon build',desc:'Long runs hit 16–18 miles. Lifting drops to compounds only on heavy run weeks.'},
+      {range:'Wks 17–19',label:'Peak training',desc:'Highest mileage weeks. Lifting minimal. Sleep and nutrition are training.'},
+      {range:'Wks 20–22',label:'Taper',desc:'Volume drops significantly. Body consolidates fitness. Trust the process.'},
+      {range:'Oct 3',label:'Race day',desc:'St. George, Utah. Start line. Everything you built.'}
+    ].map(p=>`
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #1e1e1e">
+      <div style="font-size:10px;font-weight:700;color:#e8b86d;width:64px;flex-shrink:0;padding-top:2px">${p.range}</div>
+      <div><div style="font-size:12px;font-weight:600;color:#f0f0f0;margin-bottom:2px">${p.label}</div>
+      <div style="font-size:11px;color:#555;line-height:1.5">${p.desc}</div></div>
+    </div>`).join('')}
+  </div></div>`;
+
+  mc.innerHTML=H;
 }
 
-// INIT
-buildNav();
+// ── ADMIN TAB ─────────────────────────────────────────────────
+async function renderAdmin(){
+  const mc=document.getElementById('adminContent');
+  mc.innerHTML='<div class="spin-wrap"><div class="spinner"></div><span style="color:#555">Loading squad data...</span></div>';
+
+  // Load user list
+  let users=[];
+  try{
+    const r=await jsonp(SHEET+'?action=get&key='+encodeURIComponent(allUsersKey()));
+    if(r&&r.status==='found'&&r.value)users=JSON.parse(r.value);
+  }catch(e){}
+  if(!users.length){
+    try{const l=localStorage.getItem(allUsersKey());if(l)users=JSON.parse(l);}catch(e){}
+  }
+
+  // Add admin if not in list
+  if(!users.find(u=>u.name==='Darius'))users.unshift({name:'Darius',pin:ADMIN_PIN});
+
+  // Load each user's current week data
+  let memberData=[];
+  for(const u of users){
+    const wk2=new Date(),wd=wk2.getDay(),ws=new Date(wk2);ws.setDate(wk2.getDate()-wd);
+    const wkKey='ib_week_'+u.pin+'_'+ws.toISOString().split('T')[0];
+    let data={};
+    try{
+      const r=await jsonp(SHEET+'?action=get&key='+encodeURIComponent(wkKey));
+      if(r&&r.status==='found'&&r.value)data=JSON.parse(r.value);
+      else{try{const l=localStorage.getItem(wkKey);if(l)data=JSON.parse(l);}catch(e){}}
+    }catch(e){try{const l=localStorage.getItem(wkKey);if(l)data=JSON.parse(l);}catch(e2){}}
+
+    let sessions=0,totalRun=0,topSet=0,runDist=0;
+    for(let d=1;d<=6;d++){
+      if(data[`d${d}`]&&data[`d${d}`].training&&data[`d${d}`].training.done)sessions++;
+      const run=data[`d${d}`]&&data[`d${d}`].run;
+      if(run){totalRun+=(parseFloat(run.actual)||0);runDist+=(parseFloat(run.distance)||0);}
+      const s=data[`d${d}`]&&data[`d${d}`].sets&&data[`d${d}`].sets.s2;
+      if(s&&s.w){const w=parseFloat(s.w)||0;if(w>topSet)topSet=w;}
+    }
+    memberData.push({name:u.name,sessions,totalRun:Math.round(totalRun),topSet,runDist:runDist.toFixed(1),isMe:u.name==='Darius'});
+  }
+
+  // Sort by sessions then run time
+  memberData.sort((a,b)=>b.sessions-a.sessions||b.totalRun-a.totalRun);
+
+  let H=`<div class="dh"><div class="dn" style="color:#e8b86d">Squad</div><div class="dm"><div class="dfl">Admin view</div><div class="dfv">This week</div></div></div>`;
+
+  // LEADERBOARDS
+  const lbCategories=[
+    {title:'Sessions this week',key:'sessions',unit:'sessions',color:'#e8b86d'},
+    {title:'Total run time',key:'totalRun',unit:'min',color:'#f472b6'},
+    {title:'Top set weight',key:'topSet',unit:'lbs',color:'#7F77DD'},
+    {title:'Total miles run',key:'runDist',unit:'mi',color:'#4ade80'}
+  ];
+
+  lbCategories.forEach(cat=>{
+    const sorted=[...memberData].sort((a,b)=>parseFloat(b[cat.key])-parseFloat(a[cat.key]));
+    H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:${cat.color}"></div>${cat.title}</div></div>
+    <div class="lb-card">
+      ${sorted.map((m,i)=>`
+      <div class="lb-row">
+        <div class="lb-rank ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n'}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</div>
+        <div class="lb-name">${esc(m.name)}${m.isMe?' 👑':''}</div>
+        <div>
+          <div class="lb-val">${m[cat.key]} <span style="font-size:10px;color:#555">${cat.unit}</span></div>
+        </div>
+      </div>`).join('')}
+    </div></div>`;
+  });
+
+  // INDIVIDUAL MEMBER BREAKDOWN
+  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#555"></div>Member breakdown</div></div>`;
+  memberData.forEach(m=>{
+    H+=`<div class="member-card">
+      <div class="member-name">${esc(m.name)}${m.isMe?'<span class="gold-badge">YOU</span>':''}</div>
+      <div class="member-stat-grid">
+        <div class="mstat"><div class="mstat-n">${m.sessions}</div><div class="mstat-l">Sessions</div></div>
+        <div class="mstat"><div class="mstat-n">${m.totalRun}m</div><div class="mstat-l">Run time</div></div>
+        <div class="mstat"><div class="mstat-n">${m.runDist}mi</div><div class="mstat-l">Miles</div></div>
+      </div>
+      <div class="prog-bar-row"><div class="prog-bar-label" style="font-size:10px;color:#555">Sessions</div><div class="prog-bar-wrap"><div class="prog-bar-fill" style="width:${Math.min(100,Math.round((m.sessions/6)*100))}%"></div></div><div class="prog-bar-val">${m.sessions}/6</div></div>
+      <div class="prog-bar-row"><div class="prog-bar-label" style="font-size:10px;color:#555">Run minutes</div><div class="prog-bar-wrap"><div class="prog-bar-fill" style="width:${Math.min(100,Math.round((m.totalRun/300)*100))}%;background:linear-gradient(90deg,#f472b6,#f9a8d4)"></div></div><div class="prog-bar-val">${m.totalRun}m</div></div>
+    </div>`;
+  });
+  H+=`</div>`;
+
+  mc.innerHTML=H;
+}
 </script>
 </body>
 </html>

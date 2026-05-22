@@ -382,14 +382,51 @@ const SS={
   6:[]
 };
 
-const MARATHON_START=new Date('2026-04-16');
+const MARATHON_START=new Date('2026-05-22');
 const MARATHON_WEEKS=[
   [20,30,40],[25,35,45],[25,35,50],[20,30,40],[30,40,55],[30,40,60],[35,45,70],[25,35,50],
   [35,50,80],[40,50,90],[40,55,100],[30,40,70],[45,55,110],[45,60,120],[50,60,130],[35,45,90],
   [50,65,140],[50,65,150],[40,50,110],[30,40,80],[20,30,40],[0,0,0]
 ];
-function getMarathonWeek(){return Math.min(Math.max(Math.floor((new Date()-MARATHON_START)/(7*24*60*60*1000)),0),21);}
-function getRunTarget(type){const w=MARATHON_WEEKS[getMarathonWeek()]||[20,30,40];return type==='easy'?w[0]:type==='moderate'?w[1]:w[2];}
+function getMarathonWeek(){
+  const now=new Date();
+  const diff=Math.floor((now-MARATHON_START)/(7*24*60*60*1000));
+  return Math.min(Math.max(diff,0),21);
+}
+function getRunTarget(runType){
+  const week=getMarathonWeek();
+  const targets=MARATHON_PLAN.weeks[week]||[20,30,40];
+  if(runType==='easy')return targets[0];
+  if(runType==='moderate')return targets[1];
+  if(runType==='long')return targets[2];
+  return 0;
+}
+function getRunMiles(type){
+  const week=getMarathonWeek()+1;
+  const plan=MARATHON_PLAN.weeklyPlan[Math.min(week,26)]||MARATHON_PLAN.weeklyPlan[26];
+  if(!plan||!type)return 0;
+  return plan[type]?.mi||0;
+}
+function getMarathonPhase(){
+  const week=getMarathonWeek()+1;
+  for(const phase of MARATHON_PLAN.phases){
+    if(phase.weeks.includes(week))return phase;
+  }
+  return week>19?MARATHON_PLAN.phases[7]:MARATHON_PLAN.phases[0];
+}
+function getWeekPlan(){
+  const week=getMarathonWeek()+1;
+  return MARATHON_PLAN.weeklyPlan[Math.min(week,26)]||MARATHON_PLAN.weeklyPlan[26];
+}
+function getSpartanPhase(){
+  const wp=getWeekPlan();
+  return wp.spartan||'foundation';
+}
+function getLiftingMode(){
+  const wp=getWeekPlan();
+  return wp.lifting||'full';
+}
+
 
 const RUN_INFO={
   easy:{label:'Easy Run',color:'#4ade80',cls:'run-easy',desc:'Conversational pace — full sentences, under 140bpm. Builds aerobic base.'},
@@ -716,7 +753,7 @@ function phaseRow(dk,key,label){
 
 function renderDariusTraining(dk,d){
   const comp=D_COMP[d],dss=D_SS[d]||[],bp=D_BP[d],cars=D_CARS[d];
-  const td=g(`${dk}.training.done`,false);
+  const td=gIB(`${dk}.training.done`,false);
   const isRunDay=D_DCFG[d]&&D_DCFG[d].run;
   const runType=D_DCFG[d]&&D_DCFG[d].runType;
   const runTarget=isRunDay?getRunTarget(runType):0;
@@ -784,10 +821,10 @@ function renderDariusTraining(dk,d){
     ${phaseRow(dk,'sauna','Sauna complete')}
     <div style="font-size:11px;color:#555;line-height:1.5;padding:4px 0 6px">${isRunDay?'Sauna ready by the time McGill + CARs are done. 15 min in sauna → out → shoulder activation → run. Heat primes nervous system and raises core temp before your run.':'Sauna ready by the time McGill + CARs are done. 15–20 min → out → shoulder activation → Zone 2 run → lift. Heat before lifting raises growth hormone and primes the nervous system.'}</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
-      <div><label class="lbl">Duration (min)</label><input type="number" min="5" max="40" value="${g(`${dk}.sauna.duration`,'')}" oninput="sv('${dk}.sauna.duration',this.value)" placeholder="15"></div>
-      <div><label class="lbl">Temp (°F)</label><input type="number" min="140" max="220" value="${g(`${dk}.sauna.temp`,'')}" oninput="sv('${dk}.sauna.temp',this.value)" placeholder="180"></div>
+      <div><label class="lbl">Duration (min)</label><input type="number" min="5" max="40" value="${gIB(`${dk}.sauna.duration`,'')}" oninput="svIB('${dk}.sauna.duration',this.value)" placeholder="15"></div>
+      <div><label class="lbl">Temp (°F)</label><input type="number" min="140" max="220" value="${gIB(`${dk}.sauna.temp`,'')}" oninput="svIB('${dk}.sauna.temp',this.value)" placeholder="180"></div>
     </div>
-    <div style="margin-top:7px"><label class="lbl">Notes</label><input type="text" value="${esc(g(`${dk}.sauna.notes`,''))}" oninput="sv('${dk}.sauna.notes',this.value)" placeholder="How it felt, sweat level, energy after..."></div>
+    <div style="margin-top:7px"><label class="lbl">Notes</label><input type="text" value="${esc(gIB(`${dk}.sauna.notes`,''))}" oninput="svIB('${dk}.sauna.notes',this.value)" placeholder="How it felt, sweat level, energy after..."></div>
   </div>`;
 
   // ── PHASE 4 — Context-specific activation ────────────────
@@ -835,12 +872,12 @@ function renderDariusTraining(dk,d){
   if(isRunDay){
     const runInfo=MARATHON_PLAN.runTypes[runType];
     const runTarget2=getRunTarget(runType);
-    const runActual=parseFloat(g(`${dk}.run.actual`,0))||0;
+    const runActual=parseFloat(gIB(`${dk}.run.actual`,0))||0;
     const runPct=runTarget2>0?Math.min(100,Math.round((runActual/runTarget2)*100)):0;
     const week=getMarathonWeek()+1;
     H+=`<div class="card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 4 — Marathon Training · Week ${week}/22 · ${runInfo.label}</div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 4 — Marathon Training · Week ${week}/26 · ${runInfo.label}</div>
         <div style="font-size:10px;font-weight:600;color:#1a7a50;background:#e0f3ea;padding:2px 7px;border-radius:5px">6:00am · ${runTarget2} min</div>
       </div>
       ${phaseRow(dk,'phase4run','Marathon run complete')}
@@ -850,7 +887,7 @@ function renderDariusTraining(dk,d){
       </div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
         <div><label class="lbl">Actual (min)</label>
-          <input type="text" inputmode="decimal" value="${g(`${dk}.run.actual`,'')}" onchange="svT('${dk}.run.actual',this.value);renderAll()" style="width:70px;font-size:15px;font-weight:700;text-align:center;padding:5px 7px">
+          <input type="text" inputmode="decimal" value="${gIB(`${dk}.run.actual`,'')}" onchange="svIB('${dk}.run.actual',this.value);renderAll()" style="width:70px;font-size:15px;font-weight:700;text-align:center;padding:5px 7px">
         </div>
         <div style="flex:1">
           <div style="font-size:11px;color:#999;margin-bottom:3px">${runPct}% · target ${runTarget2} min</div>
@@ -858,11 +895,11 @@ function renderDariusTraining(dk,d){
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-        <div><label class="lbl">Distance (mi)</label><input type="text" inputmode="decimal" value="${g(`${dk}.run.distance`,'')}" oninput="svT('${dk}.run.distance',this.value)" placeholder="0.0"></div>
-        <div><label class="lbl">Avg pace</label><input type="text" value="${esc(g(`${dk}.run.pace`,''))}" oninput="svT('${dk}.run.pace',this.value)" placeholder="11:30 /mi"></div>
+        <div><label class="lbl">Distance (mi)</label><input type="text" inputmode="decimal" value="${gIB(`${dk}.run.distance`,'')}" oninput="svIB('${dk}.run.distance',this.value)" placeholder="0.0"></div>
+        <div><label class="lbl">Avg pace</label><input type="text" value="${esc(gIB(`${dk}.run.pace`,''))}" oninput="svIB('${dk}.run.pace',this.value)" placeholder="11:30 /mi"></div>
       </div>
       <label class="lbl">How did it feel? Knee notes?</label>
-      <textarea style="min-height:48px" oninput="svT('${dk}.run.notes',this.value)">${esc(gT(`${dk}.run.notes`,''))}</textarea>
+      <textarea style="min-height:48px" oninput="svIB('${dk}.run.notes',this.value)">${esc(gIB(`${dk}.run.notes`,''))}</textarea>
     </div>`;
   } else {
     H+=`<div class="card">
@@ -872,30 +909,6 @@ function renderDariusTraining(dk,d){
       </div>
       ${phaseRow(dk,'phase4run','Zone 2 run complete')}
       <div style="font-size:11px;color:#555;line-height:1.5;padding:4px 0">Rest day from marathon. Conversational pace 10 min — keeps aerobic base without adding run stress.</div>
-    </div>`;
-  }
-
-  // ── PHASE 5 — Run (old, now removed) ─────────────────────
-  if(false){
-    // Marathon run is rendered separately above by renderMarathonRun()
-    // Just show a connector card
-    H+=`<div class="card" style="background:#e6f4ee;border-color:#1a7a50">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#1a7a50">Phase 5 — Marathon run</div>
-        <div style="font-size:10px;font-weight:600;color:#1a7a50;background:#c0ecd8;padding:2px 7px;border-radius:5px">6:00am · ${runTarget} min</div>
-      </div>
-      <div style="font-size:11px;color:#1a5a3a;line-height:1.5">See marathon training section above ↑ for full run details, target, and logging.</div>
-      ${phaseRow(dk,'phase5run','Marathon run complete')}
-    </div>`;
-  } else {
-    H+=`<div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 5 — Zone 2 Run · 10 min</div>
-        <div style="font-size:10px;font-weight:600;color:#1a5a9b;background:#e6eef8;padding:2px 7px;border-radius:5px">6:00am · 10 min</div>
-      </div>
-      ${phaseRow(dk,'phase5run','Zone 2 run complete')}
-      <div style="font-size:11px;color:#555;line-height:1.5;padding:4px 0">Rest day from marathon running. Conversational pace, 10 min keeps your aerobic base ticking without adding run stress.</div>
-      <a class="vl" style="margin-top:4px" href="https://www.youtube.com/results?search_query=zone+2+running+heart+rate+training" target="_blank">▶ Zone 2 running explained</a>
     </div>`;
   }
 
@@ -933,20 +946,20 @@ function renderDariusTraining(dk,d){
       ${comp.sets.map((setName,i)=>`
       <div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:4px;margin-bottom:3px;align-items:center">
         <div style="font-size:10px;color:#666;padding:3px 5px;font-weight:500;white-space:nowrap">${setName}</div>
-        <input type="text" value="${esc(gT(`${dk}.sets.s${i}.weight`,''))}" oninput="svT('${dk}.sets.s${i}.weight',this.value)" placeholder="lbs" style="text-align:center;padding:5px 4px;font-size:12px">
-        <input type="text" value="${esc(gT(`${dk}.sets.s${i}.reps`,''))}" oninput="svT('${dk}.sets.s${i}.reps',this.value)" placeholder="reps" style="text-align:center;padding:5px 4px;font-size:12px">
-        <input type="text" value="${esc(gT(`${dk}.sets.s${i}.note`,''))}" oninput="svT('${dk}.sets.s${i}.note',this.value)" placeholder="..." style="padding:5px 4px;font-size:11px">
+        <input type="text" value="${esc(gIB(`${dk}.sets.s${i}.weight`,''))}" oninput="svIB('${dk}.sets.s${i}.weight',this.value)" placeholder="lbs" style="text-align:center;padding:5px 4px;font-size:12px">
+        <input type="text" value="${esc(gIB(`${dk}.sets.s${i}.reps`,''))}" oninput="svIB('${dk}.sets.s${i}.reps',this.value)" placeholder="reps" style="text-align:center;padding:5px 4px;font-size:12px">
+        <input type="text" value="${esc(gIB(`${dk}.sets.s${i}.note`,''))}" oninput="svIB('${dk}.sets.s${i}.note',this.value)" placeholder="..." style="padding:5px 4px;font-size:11px">
       </div>`).join('')}
     </div>`;
 
     // PRIOR WEEK SUMMARY
-    const hasPrior=comp.sets.some((_,i)=>g(`prev.d_d${d}.sets.s${i}.weight`,''));
+    const hasPrior=comp.sets.some((_,i)=>gIB(`prev.d_d${d}.sets.s${i}.weight`,''));
     H+=`<div style="margin-top:10px;padding-top:10px;border-top:1px solid #f0ede6">
       <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#999;margin-bottom:5px">Last week</div>`;
     if(hasPrior){
       H+=comp.sets.map((setName,i)=>{
-        const w=g(`prev.d_d${d}.sets.s${i}.weight`,'—');
-        const r=g(`prev.d_d${d}.sets.s${i}.reps`,'—');
+        const w=gIB(`prev.d_d${d}.sets.s${i}.weight`,'—');
+        const r=gIB(`prev.d_d${d}.sets.s${i}.reps`,'—');
         return `<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #f0ede6"><div style="font-size:11px;color:#666">${setName}</div><div style="font-size:11px;font-weight:500;color:#1a1a1a">${w} lbs × ${r}</div></div>`;
       }).join('');
     } else {
@@ -955,9 +968,9 @@ function renderDariusTraining(dk,d){
     H+=`</div>`;
 
     H+=`<div style="margin-top:8px"><label class="lbl">Session notes</label>
-      <textarea style="min-height:46px" placeholder="How it felt, PRs, pain signals..." oninput="svT('${dk}.training.notes',this.value)">${esc(gT(`${dk}.training.notes`,''))}</textarea>
+      <textarea style="min-height:46px" placeholder="How it felt, PRs, pain signals..." oninput="svIB('${dk}.training.notes',this.value)">${esc(gIB(`${dk}.training.notes`,''))}</textarea>
     </div>
-    <div style="margin-top:7px;display:flex;align-items:center;gap:8px;cursor:pointer" onclick="svT('${dk}.training.done',!gT('${dk}.training.done',false));renderAll()">
+    <div style="margin-top:7px;display:flex;align-items:center;gap:8px;cursor:pointer" onclick="svIB('${dk}.training.done',!gIB('${dk}.training.done',false));renderAll()">
       <div style="flex:1;font-size:12px;font-weight:600">Session complete</div>
       <div class="hc ${td?'on-j':''}" style="width:20px;height:20px;border-radius:4px">✓</div>
     </div></div>`;}
@@ -986,9 +999,9 @@ function renderDariusTraining(dk,d){
           ${[1,2,3].map(setNum=>`
           <div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:4px;margin-top:3px;align-items:center">
             <div style="font-size:10px;color:#666;padding:3px 5px;font-weight:500">Set ${setNum}</div>
-            <input type="text" value="${esc(gT(`${dk}.ss.${ssKey}.s${setNum}.weight`,''))}" oninput="svT('${dk}.ss.${ssKey}.s${setNum}.weight',this.value)" placeholder="lbs" style="text-align:center;padding:5px 4px;font-size:12px">
-            <input type="text" value="${esc(gT(`${dk}.ss.${ssKey}.s${setNum}.reps`,''))}" oninput="svT('${dk}.ss.${ssKey}.s${setNum}.reps',this.value)" placeholder="reps" style="text-align:center;padding:5px 4px;font-size:12px">
-            <input type="text" value="${esc(gT(`${dk}.ss.${ssKey}.s${setNum}.note`,''))}" oninput="svT('${dk}.ss.${ssKey}.s${setNum}.note',this.value)" placeholder="..." style="padding:5px 4px;font-size:11px">
+            <input type="text" value="${esc(gIB(`${dk}.ss.${ssKey}.s${setNum}.weight`,''))}" oninput="svIB('${dk}.ss.${ssKey}.s${setNum}.weight',this.value)" placeholder="lbs" style="text-align:center;padding:5px 4px;font-size:12px">
+            <input type="text" value="${esc(gIB(`${dk}.ss.${ssKey}.s${setNum}.reps`,''))}" oninput="svIB('${dk}.ss.${ssKey}.s${setNum}.reps',this.value)" placeholder="reps" style="text-align:center;padding:5px 4px;font-size:12px">
+            <input type="text" value="${esc(gIB(`${dk}.ss.${ssKey}.s${setNum}.note`,''))}" oninput="svIB('${dk}.ss.${ssKey}.s${setNum}.note',this.value)" placeholder="..." style="padding:5px 4px;font-size:11px">
           </div>`).join('')}
         </div>`;
       });
@@ -1009,7 +1022,7 @@ function renderDariusTraining(dk,d){
       <ul style="padding-left:14px;margin:6px 0">${bp.i.map(i=>`<li style="font-size:11px;color:#555;margin-bottom:5px;line-height:1.6">${i}</li>`).join('')}</ul>
       <div style="font-size:10px;color:#999;font-weight:600;margin-bottom:3px;margin-top:6px">How-to videos</div>
       ${bp.v.map(v=>`<a class="vl" href="https://www.youtube.com/results?search_query=${encodeURIComponent(v)}" target="_blank">▶ ${v}</a>`).join('')}
-      <div style="margin-top:8px"><label class="lbl">Notes</label><input type="text" value="${esc(g(`${dk}.phase6.notes`,''))}" oninput="sv('${dk}.phase6.notes',this.value)" placeholder="How it felt, anything tight..."></div>
+      <div style="margin-top:8px"><label class="lbl">Notes</label><input type="text" value="${esc(gIB(`${dk}.phase6.notes`,''))}" oninput="svIB('${dk}.phase6.notes',this.value)" placeholder="How it felt, anything tight..."></div>
     </div>`;}
 
   H+=`</div>`;return H;
@@ -1195,9 +1208,9 @@ function renderMarathon(){
 
   H+=`<div class="card card-gold" style="margin-bottom:8px">
     <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#e8b86d;margin-bottom:8px">🏔️ St. George Marathon · 26.2 miles</div>
-    <div class="pbar" style="height:8px;margin-bottom:6px"><div class="pbf" style="width:${Math.round((week/22)*100)}%"></div></div>
+    <div class="pbar" style="height:8px;margin-bottom:6px"><div class="pbf" style="width:${Math.round((week/26)*100)}%"></div></div>
     <div style="display:flex;justify-content:space-between;font-size:10px;color:#666;margin-bottom:6px">
-      <span>Week 1 · Apr 16</span><span style="color:#e8b86d;font-weight:700">${Math.round((week/22)*100)}% trained</span><span>Oct 3</span>
+      <span>Week 1 · Apr 16</span><span style="color:#e8b86d;font-weight:700">${Math.round((week/26)*100)}% trained</span><span>Oct 3</span>
     </div>
     <div style="font-size:13px;font-weight:700;color:#e8b86d">${daysToMarathon} days out</div>
     <div class="note" style="margin-top:6px;background:#1a1500;border-color:#3a2e00">Net downhill 2,600ft. Short stride, high cadence 170+, eccentric quad training weekly.</div>
@@ -1223,7 +1236,7 @@ function renderMarathon(){
       </div>
     </div>
     <div style="font-size:13px;font-weight:700;color:#f87171;margin-bottom:6px">${daysToSpartan} days out · Trifecta = Beast + Sprint + Super</div>
-    <div class="pbar" style="height:6px;margin-bottom:6px;background:#2a0a0a"><div style="height:100%;border-radius:3px;background:linear-gradient(90deg,#f87171,#fca5a5);width:${Math.min(100,Math.round(((new Date()-new Date('2026-04-16'))/(spartanBeast-new Date('2026-04-16')))*100))}%"></div></div>
+    <div class="pbar" style="height:6px;margin-bottom:6px;background:#2a0a0a"><div style="height:100%;border-radius:3px;background:linear-gradient(90deg,#f87171,#fca5a5);width:${Math.min(100,Math.round(((new Date()-new Date('2026-05-22'))/(spartanBeast-new Date('2026-05-22')))*100))}%"></div></div>
     <div style="font-size:10px;color:#555">Saturday tip: Beast first while fresh → 6hr gap → Sprint. Sunday: don't go out hot — mile 3 is when Saturday hits you.</div>
   </div>`;
 

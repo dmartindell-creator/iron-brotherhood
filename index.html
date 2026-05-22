@@ -187,12 +187,13 @@ select:focus{border-color:#e8b86d}
     <div id="page-daily" class="page active"><div id="dailyContent"><div class="spin-wrap"><div class="spinner"></div></div></div></div>
     <div id="page-progress" class="page"><div id="progressContent"></div></div>
     <div id="page-marathon" class="page"><div id="marathonContent"></div></div>
+    <div id="page-spartan" class="page"><div id="spartanContent"></div></div>
     <div id="page-admin" class="page"><div id="adminContent"></div></div>
   </div>
 </div>
 
 <script>
-const SHEET='https://script.google.com/macros/s/AKfycbxgae2nECVYBjH08_lJLWlwVjopCy3U3cDbNHKb7iTCbrmftkW_6MHfLVzifwn7-mfBPw/exec';
+const SHEET='https://script.google.com/macros/s/AKfycbyfZLAuEdVRwE61ZPKUbaDZAVpNpvJvnJl972fulcI8un6kHkITS-NnVjt3aVXINx2FgA/exec';
 const ADMIN_PIN='1121'; // Admin PIN
 let _n=0;
 function jsonp(url){
@@ -277,6 +278,17 @@ const LIFTS={
   5:{n:'DB Press / Machine Press',sets:['Warm-up 1','Warm-up 2','Top Set','Working Set 1','Working Set 2']}
 };
 
+// SPARTAN PREP — progressive superset added to each day
+// Phase 1 (now-Aug): build base grip/carry/pull
+// Phase 2 (Sep-Oct): ramp intensity, add burpees
+// Phase 3 (post-marathon Oct-Nov): pure Spartan circuits
+const SPARTAN_SS={
+  1:[{l:'A',n:'Dead hang',s:'Max time × 3 — grip endurance for obstacle holds'},{l:'B',n:'Farmer carry',s:'2×40 steps — DB in each hand, walk the gym'}],
+  2:[{l:'A',n:'Towel pull-up or rope climb progression',s:'3×max — grip + pull strength'},{l:'B',n:'Burpees',s:'3×10 — obstacle penalty training'}],
+  3:[{l:'A',n:'Dead hang',s:'Max time × 3 — grip'},{l:'B',n:'Sandbag/DB bear hug carry',s:'2×40 steps — Spartan carry simulation'}],
+  4:[{l:'A',n:'Box jump',s:'3×8 — obstacle vault + explosive power'},{l:'B',n:'Burpees',s:'3×15 — build to 30 without stopping'}],
+  5:[{l:'A',n:'Chest-to-bar pull-up or ring row',s:'3×max — pulling over obstacles'},{l:'B',n:'Overhead DB carry',s:'2×40 steps each arm — spear throw shoulder strength'}]
+};
 const SS={
   1:[[{l:'A',n:'DB lateral raises',s:'3×12'},{l:'B',n:'Rear delt flys',s:'3×15'}],[{l:'A',n:'Face pulls',s:'3×15'},{l:'B',n:'External rotations',s:'3×12'}],[{l:'A',n:'Plank',s:'3×45s'},{l:'B',n:'Hanging knee raise',s:'3×12'}]],
   2:[[{l:'A',n:'Hammer curls',s:'3×12'},{l:'B',n:'Rope pushdowns',s:'3×12'}],[{l:'A',n:'Cable curls',s:'3×12'},{l:'B',n:'Cable kickbacks',s:'3×12'}]],
@@ -315,10 +327,63 @@ function fmtR(o){const d=wDates(o),op={month:'short',day:'numeric'};return d[1].
 function sb(s,m){const b=document.getElementById('syncBadge');if(!b)return;if(s==='ok'){b.className='sync s-ok';b.textContent='Synced ✓'}else if(s==='s'){b.className='sync s-save';b.textContent='Saving...'}else{b.className='sync s-err';b.textContent=m||'Local only'}}
 function userKey(){return 'ib_user_'+pin;}
 function weekKey(){return 'ib_week_'+pin+'_'+wk(wOff);}
+const SHARED_PINS_IB=['0120'];
+function isSharedPinIB(){return SHARED_PINS_IB.includes(pin);}
+function trainingKeyIB(dayKey){
+  if(isSharedPinIB())return 'shared_training_'+pin+'_'+wk(wOff)+'_'+dayKey;
+  return null;
+}
+function gIB(path,def=null){
+  // For training paths on shared PINs, read from shared keys
+  const match=path.match(/^d(\d+)\.(sets|ss|training|run|phases|spartan)(.*)/);
+  if(match&&isSharedPinIB()){
+    const dayKey='d'+match[1];
+    const key=trainingKeyIB(dayKey);
+    let dayData={};
+    try{const r=localStorage.getItem(key);if(r)dayData=JSON.parse(r);}catch(e){}
+    const rest=match[2]+match[3];
+    const pts=rest.split('.');
+    let o=dayData;
+    for(const x of pts){if(o==null||typeof o!=='object')return def;o=o[x];}
+    return o!=null?o:def;
+  }
+  return g(path,def);
+}
+function svIB(path,val){
+  const match=path.match(/^d(\d+)\.(sets|ss|training|run|phases|spartan)(.*)/);
+  if(match&&isSharedPinIB()){
+    const dayKey='d'+match[1];
+    const key=trainingKeyIB(dayKey);
+    let dayData={};
+    try{const r=localStorage.getItem(key);if(r)dayData=JSON.parse(r);}catch(e){}
+    const rest=(match[2]+match[3]).split('.');
+    let o=dayData;
+    for(let i=0;i<rest.length-1;i++){if(!o[rest[i]])o[rest[i]]={};o=o[rest[i]];}
+    o[rest[rest.length-1]]=val;
+    const p=JSON.stringify(dayData);
+    try{localStorage.setItem(key,p);}catch(e){}
+    sched();
+    // Also save shared key to sheet
+    jsonp(SHEET+'?action=set&key='+encodeURIComponent(key)+'&value='+encodeURIComponent(p)).catch(()=>{});
+    return;
+  }
+  sv(path,val);
+}
+async function loadSharedTrainingIB(){
+  if(!isSharedPinIB())return;
+  for(let d=0;d<=6;d++){
+    const key=trainingKeyIB('d'+d);
+    try{
+      const r=await jsonp(SHEET+'?action=get&key='+encodeURIComponent(key));
+      if(r&&r.status==='found'&&r.value){try{localStorage.setItem(key,r.value);}catch(e){}}
+    }catch(e){}
+  }
+}
 function allUsersKey(){return 'ib_users';}
 
 async function load(){
   sb('s','Loading...');
+  if(isSharedPinIB())await loadSharedTrainingIB();
   try{
     const r=await jsonp(SHEET+'?action=get&key='+encodeURIComponent(weekKey()));
     if(r&&r.status==='found'&&r.value){state=JSON.parse(r.value);try{localStorage.setItem(weekKey(),r.value)}catch(e){}sb('ok');}
@@ -372,6 +437,13 @@ function enterPin(){
     launchApp();return;
   }
 
+  // Pre-registered PINs
+  const preRegistered={'0120':'Darius'};
+  if(preRegistered[v]){
+    pin=v;userName=preRegistered[v];isAdmin=false;
+    launchApp();return;
+  }
+
   // Try to load existing user
   const profileKey='ib_user_'+v;
   let profile=null;
@@ -405,11 +477,17 @@ function launchApp(){
   document.getElementById('mainApp').style.display='flex';
   document.getElementById('userBdg').textContent=userName+' · logout';
   document.getElementById('adminBadge').style.display=isAdmin?'block':'none';
+  // Save Darius profile automatically
+  if(pin==='0120'){
+    const p={name:'Darius',pin:'0120',lastSeen:new Date().toISOString()};
+    try{localStorage.setItem('ib_user_0120',JSON.stringify(p));}catch(e){}
+  }
   if(isAdmin){
     document.getElementById('navTabs').innerHTML=`
       <button class="ntab active" onclick="setPage('daily',this)">Daily</button>
       <button class="ntab" onclick="setPage('progress',this)">Progress</button>
       <button class="ntab" onclick="setPage('marathon',this)">Marathon</button>
+      <button class="ntab" onclick="setPage('spartan',this)">🔥 Spartan</button>
       <button class="ntab" onclick="setPage('admin',this)">⚡ Squad</button>`;
   }
   load().then(()=>renderAll());
@@ -442,6 +520,7 @@ function renderContent(){
   if(curPage==='daily')renderDaily();
   else if(curPage==='progress')renderProgress();
   else if(curPage==='marathon')renderMarathon();
+  else if(curPage==='spartan')renderSpartan();
   else if(curPage==='admin')renderAdmin();
 }
 
@@ -547,7 +626,7 @@ function renderDaily(){
       <div style="font-size:11px;color:#888;line-height:1.5;margin-bottom:10px">${info.desc}</div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
         <div><label class="lbl">Actual (min)</label>
-          <input type="text" inputmode="decimal" value="${g(`${dk}.run.actual`,'')}" onchange="sv('${dk}.run.actual',this.value);renderAll()" style="width:70px;font-size:15px;font-weight:700;text-align:center;padding:5px 7px">
+          <input type="text" inputmode="decimal" value="${g(`${dk}.run.actual`,'')}" onchange="svIB('${dk}.run.actual',this.value);renderAll()" style="width:70px;font-size:15px;font-weight:700;text-align:center;padding:5px 7px">
         </div>
         <div style="flex:1">
           <div style="font-size:11px;color:#555;margin-bottom:3px">${pct}% · target ${rt} min</div>
@@ -555,8 +634,8 @@ function renderDaily(){
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-        <div><label class="lbl">Distance (mi)</label><input type="text" inputmode="decimal" value="${g(`${dk}.run.distance`,'')}" oninput="sv('${dk}.run.distance',this.value)" placeholder="0.0"></div>
-        <div><label class="lbl">Avg pace</label><input type="text" value="${esc(g(`${dk}.run.pace`,''))}" oninput="sv('${dk}.run.pace',this.value)" placeholder="11:30 /mi"></div>
+        <div><label class="lbl">Distance (mi)</label><input type="text" inputmode="decimal" value="${g(`${dk}.run.distance`,'')}" oninput="svIB('${dk}.run.distance',this.value)" placeholder="0.0"></div>
+        <div><label class="lbl">Avg pace</label><input type="text" value="${esc(g(`${dk}.run.pace`,''))}" oninput="svIB('${dk}.run.pace',this.value)" placeholder="11:30 /mi"></div>
       </div>
       <label class="lbl">How did it feel?</label>
       <textarea style="min-height:52px" placeholder="Energy, breathing, any knee or leg issues..." oninput="sv('${dk}.run.notes',this.value)">${esc(g(`${dk}.run.notes`,''))}</textarea>
@@ -573,7 +652,7 @@ function renderDaily(){
       <div style="font-size:11px;color:#888;line-height:1.5;margin-bottom:10px">${info.desc} · <b style="color:#f472b6">Target: ${rt} min</b></div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
         <div><label class="lbl">Actual (min)</label>
-          <input type="text" inputmode="decimal" value="${g(`${dk}.run.actual`,'')}" onchange="sv('${dk}.run.actual',this.value);renderAll()" style="width:70px;font-size:15px;font-weight:700;text-align:center;padding:5px 7px">
+          <input type="text" inputmode="decimal" value="${g(`${dk}.run.actual`,'')}" onchange="svIB('${dk}.run.actual',this.value);renderAll()" style="width:70px;font-size:15px;font-weight:700;text-align:center;padding:5px 7px">
         </div>
         <div style="flex:1">
           <div style="font-size:11px;color:#555;margin-bottom:3px">${pct}% · target ${rt} min</div>
@@ -581,8 +660,8 @@ function renderDaily(){
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-        <div><label class="lbl">Distance (mi)</label><input type="text" inputmode="decimal" value="${g(`${dk}.run.distance`,'')}" oninput="sv('${dk}.run.distance',this.value)" placeholder="0.0"></div>
-        <div><label class="lbl">Avg pace</label><input type="text" value="${esc(g(`${dk}.run.pace`,''))}" oninput="sv('${dk}.run.pace',this.value)" placeholder="11:30 /mi"></div>
+        <div><label class="lbl">Distance (mi)</label><input type="text" inputmode="decimal" value="${g(`${dk}.run.distance`,'')}" oninput="svIB('${dk}.run.distance',this.value)" placeholder="0.0"></div>
+        <div><label class="lbl">Avg pace</label><input type="text" value="${esc(g(`${dk}.run.pace`,''))}" oninput="svIB('${dk}.run.pace',this.value)" placeholder="11:30 /mi"></div>
       </div>
       <label class="lbl">Notes — knee feeling, energy, St. George prep</label>
       <textarea style="min-height:52px" oninput="sv('${dk}.run.notes',this.value)">${esc(g(`${dk}.run.notes`,''))}</textarea>
@@ -602,14 +681,14 @@ function renderDaily(){
       ${lift.sets.map((name,i)=>`
       <div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:4px;margin-bottom:3px;align-items:center">
         <div style="font-size:10px;color:#555;padding:3px 5px;font-weight:500;white-space:nowrap">${name}</div>
-        <input type="text" value="${esc(g(`${dk}.sets.s${i}.w`,''))}" oninput="sv('${dk}.sets.s${i}.w',this.value)" placeholder="lbs" style="text-align:center;padding:5px 4px;font-size:12px">
-        <input type="text" value="${esc(g(`${dk}.sets.s${i}.r`,''))}" oninput="sv('${dk}.sets.s${i}.r',this.value)" placeholder="reps" style="text-align:center;padding:5px 4px;font-size:12px">
-        <input type="text" value="${esc(g(`${dk}.sets.s${i}.n`,''))}" oninput="sv('${dk}.sets.s${i}.n',this.value)" placeholder="..." style="padding:5px 4px;font-size:11px">
+        <input type="text" value="${esc(gIB(`${dk}.sets.s${i}.w`,''))}" oninput="svIB('${dk}.sets.s${i}.w',this.value)" placeholder="lbs" style="text-align:center;padding:5px 4px;font-size:12px">
+        <input type="text" value="${esc(gIB(`${dk}.sets.s${i}.r`,''))}" oninput="svIB('${dk}.sets.s${i}.r',this.value)" placeholder="reps" style="text-align:center;padding:5px 4px;font-size:12px">
+        <input type="text" value="${esc(gIB(`${dk}.sets.s${i}.n`,''))}" oninput="svIB('${dk}.sets.s${i}.n',this.value)" placeholder="..." style="padding:5px 4px;font-size:11px">
       </div>`).join('')}
       <div style="margin-top:8px"><label class="lbl">Session notes</label>
-        <textarea style="min-height:46px" placeholder="How it felt, energy, anything to note..." oninput="sv('${dk}.training.notes',this.value)">${esc(g(`${dk}.training.notes`,''))}</textarea>
+        <textarea style="min-height:46px" placeholder="How it felt, energy, anything to note..." oninput="svIB('${dk}.training.notes',this.value)">${esc(gIB(`${dk}.training.notes`,''))}</textarea>
       </div>
-      <div style="margin-top:7px;display:flex;align-items:center;gap:8px;cursor:pointer" onclick="tog('${dk}.training.done');renderAll()">
+      <div style="margin-top:7px;display:flex;align-items:center;gap:8px;cursor:pointer" onclick="svIB('${dk}.training.done',!gIB('${dk}.training.done',false));renderAll()">
         <div style="flex:1;font-size:12px;font-weight:600;color:#f0f0f0">Session complete</div>
         <div class="hc ${sessComplete?'on':''}" style="width:20px;height:20px;border-radius:4px">✓</div>
       </div>
@@ -637,14 +716,27 @@ function renderDaily(){
           ${[1,2,3].map(sn=>`
           <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:4px;margin-top:3px">
             <div style="font-size:10px;color:#555;padding:3px 5px">Set ${sn}</div>
-            <input type="text" value="${esc(g(`${dk}.ss.${k}.s${sn}.w`,''))}" oninput="sv('${dk}.ss.${k}.s${sn}.w',this.value)" placeholder="lbs" style="text-align:center;padding:5px 4px;font-size:12px">
-            <input type="text" value="${esc(g(`${dk}.ss.${k}.s${sn}.r`,''))}" oninput="sv('${dk}.ss.${k}.s${sn}.r',this.value)" placeholder="reps" style="text-align:center;padding:5px 4px;font-size:12px">
+            <input type="text" value="${esc(gIB(`${dk}.ss.${k}.s${sn}.w`,''))}" oninput="svIB('${dk}.ss.${k}.s${sn}.w',this.value)" placeholder="lbs" style="text-align:center;padding:5px 4px;font-size:12px">
+            <input type="text" value="${esc(gIB(`${dk}.ss.${k}.s${sn}.r`,''))}" oninput="svIB('${dk}.ss.${k}.s${sn}.r',this.value)" placeholder="reps" style="text-align:center;padding:5px 4px;font-size:12px">
           </div>`).join('')}
         </div>`;
       });
       H+=`</div>`;
     });
     H+=`</div>`;}
+
+  // SPARTAN PREP SUPERSET
+  const spartanSS=SPARTAN_SS[d];
+  if(spartanSS&&cfg.tr){
+    H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#f87171"></div>Spartan prep finisher</div><span style="font-size:10px;font-weight:600;color:#f87171;background:#1a0a0a;padding:2px 7px;border-radius:5px;border:1px solid #4a1a1a">Nov 21 · Trifecta</span></div>
+    <div class="card" style="background:#1a0a0a;border-color:#3a1a1a">
+      <div class="note" style="background:#2a0a0a;border-color:#4a1a1a;margin-bottom:8px">Do this after your main lift. Spartan-specific conditioning — grip, carry, pull, burpees. Build the penalty immunity now.</div>
+      ${spartanSS.map((e,i)=>`<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid #2a1a1a">
+        <div style="font-size:10px;font-weight:700;color:#0f0f0f;background:#f87171;border-radius:3px;padding:1px 5px;flex-shrink:0">${e.l}</div>
+        <div><div style="font-size:12px;color:#f0f0f0;font-weight:500">${e.n}</div><div style="font-size:10px;color:#666;margin-top:2px">${e.s}</div></div>
+      </div>`).join('')}
+    </div></div>`;
+  }
 
   // DAILY HABITS
   H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#e8b86d"></div>Daily habits</div></div>
@@ -830,13 +922,46 @@ function renderMarathon(){
   </div>`;
 
   // Overall progress
-  H+=`<div class="card card-gold" style="margin-bottom:10px">
-    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#e8b86d;margin-bottom:8px">St. George Marathon · 26.2 miles</div>
+  // Days to each race
+  const marathon=new Date('2026-10-03');
+  const spartanBeast=new Date('2026-11-21');
+  const spartanSprint=new Date('2026-11-21');
+  const spartanSuper=new Date('2026-11-22');
+  const daysToMarathon=Math.max(0,Math.ceil((marathon-new Date())/(24*60*60*1000)));
+  const daysToSpartan=Math.max(0,Math.ceil((spartanBeast-new Date())/(24*60*60*1000)));
+
+  H+=`<div class="card card-gold" style="margin-bottom:8px">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#e8b86d;margin-bottom:8px">🏔️ St. George Marathon · 26.2 miles</div>
     <div class="pbar" style="height:8px;margin-bottom:6px"><div class="pbf" style="width:${Math.round((week/22)*100)}%"></div></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;color:#666">
-      <span>Week 1 · Apr 16</span><span style="color:#e8b86d;font-weight:700">${Math.round((week/22)*100)}% through training</span><span>Race Day · Oct 3</span>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:#666;margin-bottom:6px">
+      <span>Week 1 · Apr 16</span><span style="color:#e8b86d;font-weight:700">${Math.round((week/22)*100)}% trained</span><span>Oct 3</span>
     </div>
-    <div class="note" style="margin-top:8px;background:#1a1500;border-color:#3a2e00">⛰️ St. George is net downhill — 2,600 ft descent. Key: short stride, high cadence (170+), eccentric quad training weekly.</div>
+    <div style="font-size:13px;font-weight:700;color:#e8b86d">${daysToMarathon} days out</div>
+    <div class="note" style="margin-top:6px;background:#1a1500;border-color:#3a2e00">Net downhill 2,600ft. Short stride, high cadence 170+, eccentric quad training weekly.</div>
+  </div>`;
+
+  H+=`<div class="card" style="background:#1a0a0a;border-color:#4a1a1a;margin-bottom:8px">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#f87171;margin-bottom:10px">🔥 Spartan Trifecta Weekend · Nov 21–22</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+      <div style="background:#2a0a0a;border-radius:7px;padding:8px;text-align:center;border:1px solid #4a1a1a">
+        <div style="font-size:9px;font-weight:700;color:#f87171;text-transform:uppercase;margin-bottom:3px">Sat 7am</div>
+        <div style="font-size:12px;font-weight:700;color:#f0f0f0">Beast</div>
+        <div style="font-size:10px;color:#666">21K · 30+ obstacles</div>
+      </div>
+      <div style="background:#2a0a0a;border-radius:7px;padding:8px;text-align:center;border:1px solid #4a1a1a">
+        <div style="font-size:9px;font-weight:700;color:#f87171;text-transform:uppercase;margin-bottom:3px">Sat 1pm</div>
+        <div style="font-size:12px;font-weight:700;color:#f0f0f0">Sprint</div>
+        <div style="font-size:10px;color:#666">5K · 20 obstacles</div>
+      </div>
+      <div style="background:#2a0a0a;border-radius:7px;padding:8px;text-align:center;border:1px solid #4a1a1a">
+        <div style="font-size:9px;font-weight:700;color:#f87171;text-transform:uppercase;margin-bottom:3px">Sun 7am</div>
+        <div style="font-size:12px;font-weight:700;color:#f0f0f0">Super</div>
+        <div style="font-size:10px;color:#666">10K · 25 obstacles</div>
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:700;color:#f87171;margin-bottom:6px">${daysToSpartan} days out · Trifecta = Beast + Sprint + Super</div>
+    <div class="pbar" style="height:6px;margin-bottom:6px;background:#2a0a0a"><div style="height:100%;border-radius:3px;background:linear-gradient(90deg,#f87171,#fca5a5);width:${Math.min(100,Math.round(((new Date()-new Date('2026-04-16'))/(spartanBeast-new Date('2026-04-16')))*100))}%"></div></div>
+    <div style="font-size:10px;color:#555">Saturday tip: Beast first while fresh → 6hr gap → Sprint. Sunday: don't go out hot — mile 3 is when Saturday hits you.</div>
   </div>`;
 
   // This week's targets
@@ -881,6 +1006,93 @@ function renderMarathon(){
       <div><div style="font-size:12px;font-weight:600;color:#f0f0f0;margin-bottom:2px">${p.label}</div>
       <div style="font-size:11px;color:#555;line-height:1.5">${p.desc}</div></div>
     </div>`).join('')}
+  </div></div>`;
+
+  mc.innerHTML=H;
+}
+
+// ── SPARTAN TAB ──────────────────────────────────────────────
+function renderSpartan(){
+  const mc=document.getElementById('spartanContent');
+  const beast=new Date('2026-11-21');
+  const sprint=new Date('2026-11-21');
+  const superR=new Date('2026-11-22');
+  const marathon=new Date('2026-10-03');
+  const now=new Date();
+  const daysToMarathon=Math.max(0,Math.ceil((marathon-now)/(24*60*60*1000)));
+  const daysToSpartan=Math.max(0,Math.ceil((beast-now)/(24*60*60*1000)));
+  const weeksToSpartan=Math.ceil(daysToSpartan/7);
+
+  let H=`<div class="dh"><div class="dn" style="color:#f87171">Spartan</div><div class="dm"><div class="dfl">Trifecta</div><div class="dfv">Nov 21–22 · Beast + Sprint + Super</div></div></div>
+  <div class="stats">
+    <div class="stat"><div class="snum" style="color:#f87171">${daysToSpartan}</div><div class="slbl">Days out</div></div>
+    <div class="stat"><div class="snum">${weeksToSpartan}</div><div class="slbl">Weeks</div></div>
+    <div class="stat"><div class="snum" style="color:#e8b86d">${daysToMarathon}</div><div class="slbl">Marathon first</div></div>
+  </div>`;
+
+  // TRIFECTA WEEKEND SCHEDULE
+  H+=`<div class="card" style="background:#1a0a0a;border-color:#4a1a1a;margin-bottom:8px">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#f87171;margin-bottom:10px">Trifecta weekend schedule</div>
+    ${[
+      {day:'Saturday Nov 21',time:'7:00am',race:'Beast — 21K',detail:'~30+ obstacles · 3–5 hrs · start fresh',color:'#f87171'},
+      {day:'Saturday Nov 21',time:'1:00pm',race:'Sprint — 5K',detail:'~20 obstacles · 6hr gap after Beast',color:'#fca5a5'},
+      {day:'Sunday Nov 22',time:'7:00am',race:'Super — 10K',detail:'~25 obstacles · fresh after night rest',color:'#f87171'}
+    ].map(r=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #2a1a1a">
+      <div style="flex-shrink:0;text-align:right;width:70px"><div style="font-size:10px;font-weight:700;color:${r.color}">${r.time}</div><div style="font-size:9px;color:#444">${r.day.split(' ').slice(0,2).join(' ')}</div></div>
+      <div><div style="font-size:13px;font-weight:700;color:#f0f0f0">${r.race}</div><div style="font-size:11px;color:#666;margin-top:2px">${r.detail}</div></div>
+    </div>`).join('')}
+  </div>`;
+
+  // OBSTACLE LIST
+  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#f87171"></div>Key obstacles to train for</div></div>
+  <div class="card" style="background:#1a0a0a;border-color:#3a1a1a">
+    ${[
+      {n:'Rope climb',s:'Train dead hangs + towel pull-ups weekly. Hands, not legs.'},
+      {n:'Bucket carry',s:'50lb bucket uphill. Train farmer carries + bear hug carries.'},
+      {n:'Spear throw',s:'30 burpees if you miss. Train overhead DB press + shoulder stability.'},
+      {n:'Atlas stone carry',s:'150lb stone. Train sandbag bear hugs + deadlift.'},
+      {n:'Multi-rig',s:'Grip endurance. Dead hangs to failure weekly.'},
+      {n:'Wall / box over',s:'4–8ft walls. Train box jumps + explosive push.'},
+      {n:'Burpee penalty',s:'30 burpees per failed obstacle. Build to 30 unbroken now.'}
+    ].map(o=>`<div style="padding:8px 0;border-bottom:1px solid #2a1a1a">
+      <div style="font-size:12px;font-weight:600;color:#f87171">${o.n}</div>
+      <div style="font-size:11px;color:#666;margin-top:2px">${o.s}</div>
+    </div>`).join('')}
+  </div></div>`;
+
+  // TRAINING PHASES
+  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#f87171"></div>Spartan training phases</div></div>
+  <div class="card" style="background:#1a0a0a;border-color:#3a1a1a">
+    ${[
+      {range:'Now – Aug',phase:'Phase 1 — Build base',items:['Dead hangs 3×max weekly','Farmer carries added to every lift','Burpees 3×10 as finisher','Pull-up volume increasing']},
+      {range:'Sep – Oct 3',phase:'Phase 2 — Pre-marathon peak',items:['Burpees 3×20 finisher','Rope climb progressions','Sandbag carry circuits','Grip work every session']},
+      {range:'Oct 4–17',phase:'Phase 3 — Marathon recovery',items:['Active recovery only','Light carries, no intensity','Mobility focus','Let the legs come back']},
+      {range:'Oct 18 – Nov 20',phase:'Phase 4 — Spartan peak',items:['Full Spartan circuits daily','30 burpees unbroken','Obstacle-specific drills','Taper final week']},
+      {range:'Nov 21–22',phase:'Race weekend',items:['Beast 7am Sat · Sprint 1pm Sat · Super 7am Sun','Fuel between races — real food not gels','Dry kit change between Saturday races','Sunday: do not go out hot']}
+    ].map(p=>`<div style="padding:8px 0;border-bottom:1px solid #2a1a1a">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+        <div style="font-size:10px;font-weight:700;color:#f87171;width:80px;flex-shrink:0">${p.range}</div>
+        <div style="font-size:12px;font-weight:700;color:#f0f0f0">${p.phase}</div>
+      </div>
+      <ul style="padding-left:20px">${p.items.map(i=>`<li style="font-size:11px;color:#666;margin-bottom:2px">${i}</li>`).join('')}</ul>
+    </div>`).join('')}
+  </div></div>`;
+
+  // LOG TODAY'S SPARTAN WORK
+  const dk=`d${curDay}`;
+  H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#f87171"></div>Log today's Spartan prep</div></div>
+  <div class="card" style="background:#1a0a0a;border-color:#3a1a1a">
+    <div style="margin-bottom:8px"><label class="lbl" style="color:#666">Burpees completed</label>
+      <input type="text" inputmode="decimal" value="${gIB(`${dk}.spartan.burpees`,'')}" oninput="svIB('${dk}.spartan.burpees',this.value)" placeholder="e.g. 30">
+    </div>
+    <div style="margin-bottom:8px"><label class="lbl" style="color:#666">Dead hang time (seconds)</label>
+      <input type="text" inputmode="decimal" value="${gIB(`${dk}.spartan.hang`,'')}" oninput="svIB('${dk}.spartan.hang',this.value)" placeholder="e.g. 45">
+    </div>
+    <div style="margin-bottom:8px"><label class="lbl" style="color:#666">Carry distance (steps)</label>
+      <input type="text" inputmode="decimal" value="${gIB(`${dk}.spartan.carry`,'')}" oninput="svIB('${dk}.spartan.carry',this.value)" placeholder="e.g. 80">
+    </div>
+    <label class="lbl" style="color:#666">Notes</label>
+    <textarea style="min-height:52px;background:#2a0a0a;border-color:#4a1a1a" placeholder="Obstacles practiced, what felt weak, what improved..." oninput="svIB('${dk}.spartan.notes',this.value)">${esc(gIB(`${dk}.spartan.notes`,''))}</textarea>
   </div></div>`;
 
   mc.innerHTML=H;

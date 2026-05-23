@@ -263,13 +263,13 @@ const ACTIVATION={
 
 // ── FC DATA STRUCTURES ────────────────────────────────
 const D_DCFG={
-  0:{f:'Sabbath + Planning',run:false,tr:null},
-  1:{f:'Shoulders / Abs + Easy Run',run:true,runType:'easy',tr:'Shoulders'},
-  2:{f:'Arms',run:false,tr:'Arms'},
-  3:{f:'Back / Abs + Moderate Run',run:true,runType:'moderate',tr:'Back'},
-  4:{f:'Legs — Knee Focus',run:false,tr:'Legs'},
-  5:{f:'Chest (Rehab) + Easy Run',run:true,runType:'easy',tr:'Chest'},
-  6:{f:'Long Run Day',run:true,runType:'long',tr:null}
+  0:{label:'Sunday',tr:false,run:false,rest:true},
+  1:{label:'Monday',tr:true,run:true,runType:'easy',lift:'shoulders',spartanFocus:'overhead'},
+  2:{label:'Tuesday',tr:true,run:true,runType:'easy',lift:'arms',spartanFocus:'rope'},
+  3:{label:'Wednesday',tr:true,run:true,runType:'moderate',lift:'back',spartanFocus:'hang'},
+  4:{label:'Thursday',tr:true,run:false,lift:'legs',spartanFocus:'vault'},
+  5:{label:'Friday',tr:true,run:true,runType:'easy',lift:'chest',spartanFocus:'burpee'},
+  6:{label:'Saturday',tr:false,run:true,runType:'long',rest:false}
 };
 const D_COMP={
   1:{n:'DB Overhead Press / Cable Laterals',sets:['Warm-up 1','Warm-up 2','Warm-up 3','Top Set','Working Set 1','Working Set 2']},
@@ -299,10 +299,8 @@ const D_SS={
     [{l:'A',n:'Romanian deadlifts',s:'2×10'},{l:'B',n:'Hamstring curls',s:'2×12'}],
     [{l:'A',n:'Bulgarian split squats',s:'2×10 each'},{l:'B',n:'KOT calf raise',s:'2×15 each — knees over toes, slow lower'}]
   ],
-  5:[
-    [{l:'A',n:'Incline DB press',s:'2×10 elbows 45°'},{l:'B',n:'Flat DB press',s:'2×10 full range'}],
+  5:[[{l:'A',n:'Incline DB press',s:'2×10 elbows 45°'},{l:'B',n:'Flat DB press',s:'2×10 full range'}],
     [{l:'A',n:'Cable crossovers / pec deck',s:'2×12 — peak contraction'},{l:'B',n:'Dips (bodyweight or assisted)',s:'2×8 — full range, controlled'}],
-    [{l:'A',n:'External rotation (seated DB)',s:'2×12 — 10% bodyweight, elbow on knee'},{l:'B',n:'Incline Powell raise',s:'2×10 — 10% bodyweight, single arm arc'},{l:'C',n:'Incline Trap-3 raise',s:'2×8 — 10% bodyweight, Y-shape at top'}],
     [{l:'A',n:'Plank',s:'2×45–60s'},{l:'B',n:'Hanging knee raise',s:'2×12'},{l:'C',n:'Ab wheel rollout',s:'2×10'},{l:'D',n:'Reverse crunches',s:'2×12'}]
   ],
   6:[]
@@ -394,12 +392,10 @@ function getMarathonWeek(){
   return Math.min(Math.max(diff,0),21);
 }
 function getRunTarget(runType){
-  const week=getMarathonWeek();
-  const targets=MARATHON_PLAN.weeks[week]||[20,30,40];
-  if(runType==='easy')return targets[0];
-  if(runType==='moderate')return targets[1];
-  if(runType==='long')return targets[2];
-  return 0;
+  const week=getMarathonWeek()+1;
+  const plan=MARATHON_PLAN.weeklyPlan[Math.min(week,26)]||MARATHON_PLAN.weeklyPlan[1];
+  if(!plan||!runType)return 30;
+  return plan[runType]?.min||30;
 }
 function getRunMiles(type){
   const week=getMarathonWeek()+1;
@@ -666,6 +662,31 @@ function hrRow(key,label,time){
   return `<div class="hr" onclick="tog('d${curDay}.habits.${key}');renderAll()"><div class="hc ${done?'on':''}">✓</div><div class="hl ${done?'done':''}">${label}</div><div class="htag">${time}</div></div>`;
 }
 
+function renderBulletproofing(dk, d){
+  const isRunDay=D_DCFG[d]&&D_DCFG[d].run;
+  const bp=D_BP[d];
+  if(!bp)return '';
+  const isSaturday=d===6;
+  const finalPhase=isSaturday?5:isRunDay?8:7;
+  let H='';
+  H+=`<div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase ${finalPhase} — Bulletproofing + PAILs/RAILs · ${bp.t}</div>
+        <div style="font-size:10px;font-weight:600;color:#1D9E75;background:#e0f7f0;padding:2px 7px;border-radius:5px">~6:50am · 7 min</div>
+      </div>
+      ${phaseRow(dk,'phase8bp','Bulletproofing + PAILs/RAILs complete')}
+      <ul style="padding-left:16px;margin:6px 0">
+        ${bp.i.map(x=>`<li style="font-size:11px;color:#444;padding:2px 0;line-height:1.5">${x}</li>`).join('')}
+      </ul>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#999;margin-top:6px;margin-bottom:4px">How-to videos</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${bp.v.map(v=>`<a class="vl" href="https://www.youtube.com/results?search_query=${encodeURIComponent(v)}" target="_blank">▶ ${v}</a>`).join('')}
+      </div>
+      <div style="margin-top:8px"><label class="lbl">Notes</label><input type="text" value="${gIB(dk+'.phase6.notes','')}" oninput="sv('${dk}.phase6.notes',this.value)" placeholder="How it felt, anything tight..."></div>
+    </div>`;
+  return H;
+}
+
 function renderDaily(){
   const mc=document.getElementById('dailyContent');
   if(!loaded){mc.innerHTML='<div class="spin-wrap"><div class="spinner"></div></div>';return;}
@@ -681,10 +702,10 @@ function renderDaily(){
   const runType=cfg&&cfg.runType;
   const runTarget=getRunTarget(runType);
   let timeline=[];
-  timeline.push({t:'5:45am',l:'Arrive',c:'#888'});
+  timeline.push({t:'5:30am',l:'Arrive — 5:30am start',c:'#888'});
   timeline.push({t:'5:45',l:'Phase 1 — McGill Big 3 · 5 min',c:'#7F77DD'});
   timeline.push({t:'5:50',l:'Phase 2 — CARs · 5 min',c:'#7F77DD'});
-  timeline.push({t:'5:55',l:`Phase 3 — Activation · ${actLabels[d]||'full body'} · 5 min`,c:'#4ade80'});
+  timeline.push({t:'5:40',l:`Phase 3 — Activation · ${actLabels[d]||'full body'} · 5 min`,c:'#4ade80'});
   if(isRunDay){
     timeline.push({t:'6:00',l:`Phase 4 — Marathon run · ${runTarget} min`,c:'#1a7a50'});
     timeline.push({t:'after run',l:'Phase 5 — Pre-lift warm-up · 5 min',c:'#7F77DD'});
@@ -711,7 +732,204 @@ function renderDaily(){
   // Main training render
   H+=renderDariusTraining(dk,d);
 
-  // SPARTAN FINISHER
+  // ── SPARTAN PREP FINISHER — Phase 7 ─────────────────────
+  // Day-correlated to lift focus. Progressively harder by week phase.
+  const spartanPhase=getSpartanPhase();
+  const liftMode=getLiftingMode();
+  const currentWeek=getMarathonWeek()+1;
+
+  // ── SPARTAN EXERCISES BY DAY + PHASE ──────────────────
+  // Each exercise has how-to + video link
+  const SPARTAN_EX={
+    // MON — Shoulders → overhead carry + spear throw
+    1:{
+      foundation:[
+        {l:'A',n:'Overhead DB carry',s:'2×20 steps each arm — light',how:'Hold DB directly overhead, locked arm. Walk with control. Shoulder stability for atlas stone overhead.',vid:'overhead carry exercise Spartan training how to'},
+        {l:'B',n:'Overhead DB press — spear throw sim',s:'2×10 — focus on shoulder stability',how:'Press DB overhead with one arm, then simulate a throwing follow-through. Trains the exact shoulder pattern of the Spartan spear throw.',vid:'spear throw Spartan race training how to prep'}
+      ],
+      build:[
+        {l:'A',n:'Overhead carry heavy',s:'2×30 steps each arm',how:'Heavy DB locked overhead. Walk the full distance without lowering. This is harder than it looks.',vid:'overhead carry exercise Spartan training how to'},
+        {l:'B',n:'Spear throw accuracy sim',s:'3×5 each arm — aim at target on wall',how:'Stand 8-10 feet from a target. One arm throw motion — full extension, follow through. Accuracy is the goal.',vid:'spear throw Spartan race training how to prep'},
+        {l:'C',n:'Burpees',s:'2×8',how:'Full burpee — chest to floor, jump at top.',vid:'how to do a burpee perfect form step by step beginners'}
+      ],
+      minimal:[
+        {l:'A',n:'Light overhead carry',s:'2×15 steps — maintain',how:'Light DB overhead. Just keeping the movement pattern alive before the marathon.',vid:'overhead carry exercise Spartan training how to'}
+      ],
+      recovery:[
+        {l:'A',n:'Shoulder CARs',s:'×10 each — full range circles',how:'Slow full circle with your arm in every direction. Keeps shoulder mobile during recovery week.',vid:'shoulder CARs controlled articular rotation FRC'}
+      ],
+      peak:[
+        {l:'A',n:'Overhead carry competition weight',s:'3×50 steps each arm',how:'As heavy as possible overhead. This is the atlas stone overhead carry simulation.',vid:'overhead carry exercise Spartan training how to'},
+        {l:'B',n:'Spear throw — accuracy under fatigue',s:'5× each arm — after carry',how:'Throw immediately after the carry while your shoulders are tired. Race day spear throws happen when you are already exhausted.',vid:'spear throw Spartan race training how to prep'},
+        {l:'C',n:'Burpees',s:'3×15 unbroken',how:'Full burpee. 15 unbroken. This is your penalty rep count.',vid:'how to do a burpee perfect form step by step beginners'}
+      ],
+      taper:[
+        {l:'A',n:'Overhead carry light',s:'2×20 steps — stay sharp',how:'Light weight. Just keeping the movement pattern sharp before race day.',vid:'overhead carry exercise Spartan training how to'},
+        {l:'B',n:'Spear throw practice',s:'3× each arm — accuracy only',how:'Focus on accuracy not power. Stay loose.',vid:'spear throw Spartan race training how to prep'}
+      ]
+    },
+    // TUE — Arms → rope climb progression + towel pull + grip
+    2:{
+      foundation:[
+        {l:'A',n:'Dead hang',s:'2×15s — build grip base',how:'Grip bar shoulder width. Full hang, arms straight. This is the foundation for every rope and rig obstacle.',vid:'dead hang grip strength tutorial Spartan'},
+        {l:'B',n:'Towel pull — seated',s:'2×8 hand over hand',how:'Loop towel over pull-up bar. Sit below it. Pull yourself up hand over hand. Simulates rope climb grip demand.',vid:'towel pull up rope climb substitute how to'}
+      ],
+      build:[
+        {l:'A',n:'Dead hang',s:'3×25s',how:'Full hang, arms straight. Build toward 60 seconds for rope climb endurance.',vid:'dead hang grip strength tutorial Spartan'},
+        {l:'B',n:'Towel pull-ups',s:'3×max — gripping towel not bar',how:'Grip towel instead of bar for pull-ups. Much harder on grip. Directly trains rope texture demands.',vid:'towel pull up rope climb substitute how to'},
+        {l:'C',n:'Burpees',s:'2×8',how:'Full burpee. Chest to floor every rep.',vid:'how to do a burpee perfect form step by step beginners'}
+      ],
+      minimal:[
+        {l:'A',n:'Dead hang',s:'2×15s — maintain grip',how:'Just keep the grip alive. Light effort before the marathon.',vid:'dead hang grip strength tutorial Spartan'}
+      ],
+      recovery:[
+        {l:'A',n:'Wrist circles + finger extensions',s:'×10 each — recovery mobility',how:'Gently rotate wrists and extend fingers. Keeps forearms loose during recovery.',vid:'wrist mobility exercises forearm stretches how to'}
+      ],
+      peak:[
+        {l:'A',n:'Rope climb or towel climb',s:'4×full climb or max height',how:'Jump to rope. Pull up while driving knees. Use J-hook foot technique to rest. This is the most important Spartan obstacle to practice.',vid:'rope climb how to technique J hook Spartan'},
+        {l:'B',n:'Dead hang',s:'3×max — race endurance',how:'Max hold each set. Your grip will be tested repeatedly at every rope and rig obstacle.',vid:'dead hang grip strength tutorial Spartan'},
+        {l:'C',n:'Burpees',s:'3×15 unbroken',how:'Full burpee penalty training.',vid:'how to do a burpee perfect form step by step beginners'}
+      ],
+      taper:[
+        {l:'A',n:'Dead hang',s:'2×20s — stay sharp',how:'Keep the grip sharp. Short holds.',vid:'dead hang grip strength tutorial Spartan'},
+        {l:'B',n:'Towel grip holds',s:'2×15s',how:'Grip towel as tight as possible. Squeeze for 15 seconds. Maintains grip strength without fatiguing.',vid:'towel pull up rope climb substitute how to'}
+      ]
+    },
+    // WED — Back → dead hang + farmer carry + lat endurance
+    3:{
+      foundation:[
+        {l:'A',n:'Dead hang',s:'2×20s — lat + grip',how:'Full hang. Feel the lat stretch. Decompresses spine after rows and builds grip for rope climb.',vid:'dead hang grip strength tutorial Spartan'},
+        {l:'B',n:'Farmer carry',s:'2×30 steps each hand — heavy DB',how:'Pick up heavy DBs. Stand tall. Walk without leaning. This is the Spartan bucket carry simulation.',vid:'farmer carry how to form Spartan bucket carry'}
+      ],
+      build:[
+        {l:'A',n:'Dead hang',s:'3×30s',how:'Build to 60 seconds. Every second of grip you add is another obstacle you can complete.',vid:'dead hang grip strength tutorial Spartan'},
+        {l:'B',n:'Farmer carry heavy',s:'3×40 steps — competition weight',how:'Heavier than you think you can handle. Walk with control. Back straight.',vid:'farmer carry how to form Spartan bucket carry'},
+        {l:'C',n:'Burpees',s:'2×10',how:'Full burpee. Chest to floor.',vid:'how to do a burpee perfect form step by step beginners'}
+      ],
+      minimal:[
+        {l:'A',n:'Dead hang',s:'1×20s — maintain',how:'Just keep the movement pattern. Light effort.',vid:'dead hang grip strength tutorial Spartan'},
+        {l:'B',n:'Light farmer carry',s:'2×20 steps',how:'Light weight. Protect legs before marathon.',vid:'farmer carry how to form Spartan bucket carry'}
+      ],
+      recovery:[
+        {l:'A',n:'Easy walk with DB at sides',s:'5 min — light load',how:'Light DBs at your sides. Easy stroll. Active recovery for grip and back.',vid:'farmer carry how to form Spartan bucket carry'}
+      ],
+      peak:[
+        {l:'A',n:'Dead hang to knee raise',s:'3×max — grip + core combined',how:'Hang from bar. Bring knees to chest each rep. Combines grip endurance with core — both tested at once at Spartan.',vid:'hanging knee raise dead hang combo how to'},
+        {l:'B',n:'Farmer carry max weight',s:'4×60 steps — heavy as possible',how:'Competition weight. Walk the full distance without stopping or resting the DBs on your body.',vid:'farmer carry how to form Spartan bucket carry'},
+        {l:'C',n:'Sandbag bear hug carry',s:'3×40 steps — atlas stone sim',how:'Bear hug a heavy sandbag. Walk with it. This is the closest simulation to the atlas stone carry.',vid:'sandbag carry bear hug atlas stone Spartan training'},
+        {l:'D',n:'Burpees',s:'3×15 unbroken',how:'Full burpee. 15 unbroken penalty training.',vid:'how to do a burpee perfect form step by step beginners'}
+      ],
+      taper:[
+        {l:'A',n:'Dead hang',s:'2×20s',how:'Keep grip sharp.',vid:'dead hang grip strength tutorial Spartan'},
+        {l:'B',n:'Light farmer carry',s:'2×30 steps',how:'Light. Stay loose before race day.',vid:'farmer carry how to form Spartan bucket carry'}
+      ]
+    },
+    // THU — Legs → box jumps + bear crawl + obstacle vault
+    4:{
+      foundation:[
+        {l:'A',n:'Box jump or step-up',s:'2×8 — vault power foundation',how:'Stand arms length from box. Load hips, swing arms, explode up. Land softly with bent knees. Always step down.',vid:'box jump how to form tutorial Spartan obstacle vault'},
+        {l:'B',n:'Bear crawl',s:'2×20 steps — obstacle coordination',how:'Hands and feet on floor, knees 1 inch off ground. Move opposite hand and foot together. Hips stay level. Simulates crawling under obstacles.',vid:'bear crawl exercise how to form obstacle Spartan'}
+      ],
+      build:[
+        {l:'A',n:'Box jump — max height',s:'3×8 — reset each rep',how:'Maximum height. Reset and reload between every rep — not for cardio, for power.',vid:'box jump how to form tutorial Spartan obstacle vault'},
+        {l:'B',n:'Lateral vault practice',s:'3×5 each direction — over bench or box',how:'Run at the box, plant one hand, vault over sideways. Practice both sides. This is the Spartan wall vault technique.',vid:'lateral vault obstacle race technique how to Spartan'},
+        {l:'C',n:'Bear crawl',s:'3×25 steps fast',how:'Fast bear crawl. Hips stay low and level. This is the under-obstacle movement at Spartan.',vid:'bear crawl exercise how to form obstacle Spartan'},
+        {l:'D',n:'Burpees',s:'2×10',how:'Full burpee. Chest to floor.',vid:'how to do a burpee perfect form step by step beginners'}
+      ],
+      minimal:[
+        {l:'A',n:'Low step-up',s:'2×8 each — no impact',how:'Step up onto a low box or step. No jumping. Keeps legs moving without impact before marathon.',vid:'step up exercise how to form no impact'},
+        {l:'B',n:'Bear crawl easy',s:'1×15 steps',how:'Slow bear crawl. Easy movement.',vid:'bear crawl exercise how to form obstacle Spartan'}
+      ],
+      recovery:[
+        {l:'A',n:'Easy walk',s:'20 min',how:'Just walk. Active recovery. No intensity.',vid:'brisk walking technique form exercise'},
+        {l:'B',n:'Leg swings + hip circles',s:'×10 each — recovery mobility',how:'Gentle leg swings forward and side to side. Hip circles. Keeps lower body mobile.',vid:'leg swings hip circles mobility recovery exercise'}
+      ],
+      peak:[
+        {l:'A',n:'Box jump — explosive with pause',s:'4×6 — 2s pause at bottom before exploding',how:'Sit into the load position, pause 2 seconds, then explode. This trains maximum power output.',vid:'box jump pause reactive how to plyometric'},
+        {l:'B',n:'Wall obstacle sim — jump + pull over',s:'3×5 — jump to bar, pull yourself over',how:'Jump to a pull-up bar or ledge, then pull yourself up and over. This is the Spartan wall obstacle.',vid:'Spartan wall obstacle technique how to race'},
+        {l:'C',n:'Bear crawl + burpee combo',s:'3× — crawl 15 steps then 8 burpees immediately',how:'Bear crawl under the obstacle, then immediately do 8 burpees. Simulates the under + penalty sequence.',vid:'bear crawl burpee combo Spartan training obstacle'},
+        {l:'D',n:'Lateral bounds',s:'3×8 each — stick landing',how:'Jump sideways off one foot, land on other, hold 2 seconds. Trains lateral power and single leg landing stability.',vid:'lateral bound stick landing plyometric exercise'}
+      ],
+      taper:[
+        {l:'A',n:'Box jump light',s:'2×5 — stay explosive',how:'Just a few jumps to keep the explosive pattern sharp. Not tiring yourself out.',vid:'box jump how to form tutorial Spartan obstacle vault'},
+        {l:'B',n:'Bear crawl',s:'1×15 steps',how:'Light crawl. Stay loose.',vid:'bear crawl exercise how to form obstacle Spartan'}
+      ]
+    },
+    // FRI — Chest → burpees + atlas stone + push carries
+    5:{
+      foundation:[
+        {l:'A',n:'Burpees',s:'2×8 — full range, learn the movement',how:'1-Stand 2-Hands to floor 3-Step or jump feet back to plank 4-Chest to floor 5-Push up 6-Jump feet forward 7-Jump and clap overhead. This is the Spartan penalty for every failed obstacle.',vid:'how to do a burpee perfect form step by step beginners'},
+        {l:'B',n:'DB bear hug carry',s:'2×20 steps — atlas stone sim',how:'Pick up a heavy DB or plate in a bear hug. Walk with it. This simulates the atlas stone — the heaviest carry at Spartan.',vid:'atlas stone carry simulation dumbbell bear hug Spartan'}
+      ],
+      build:[
+        {l:'A',n:'Burpees',s:'3×12 — goal unbroken',how:'Full burpee every rep. Goal is unbroken sets. 30 unbroken is race day target.',vid:'how to do a burpee perfect form step by step beginners'},
+        {l:'B',n:'Atlas stone sim — heavy DB or sandbag bear hug',s:'3×30 steps — heavy',how:'Heavy bear hug carry. The atlas stone at the Beast is 100+ lbs. Train heavy.',vid:'atlas stone carry simulation dumbbell bear hug Spartan'},
+        {l:'C',n:'Push-up to carry combo',s:'2× — 10 pushups then 30 step carry',how:'10 pushups immediately followed by a heavy carry. Trains pushing endurance under fatigue.',vid:'pushup farmer carry combo functional training'}
+      ],
+      minimal:[
+        {l:'A',n:'Burpees',s:'2×5 — maintain movement',how:'Just enough to keep the pattern. Light effort before marathon.',vid:'how to do a burpee perfect form step by step beginners'}
+      ],
+      recovery:[
+        {l:'A',n:'Easy pushups',s:'2×8 — bodyweight only',how:'Easy bodyweight pushups. Active recovery. Keep the chest moving.',vid:'pushup perfect form how to tutorial'}
+      ],
+      peak:[
+        {l:'A',n:'30 burpees for time',s:'Goal: sub 3 minutes — penalty immunity training',note:'This is every failed obstacle',how:'30 unbroken burpees as fast as possible. Time yourself every Friday. Watch the time drop each week.',vid:'30 burpees for time Spartan race training penalty'},
+        {l:'B',n:'Atlas stone sim — max weight',s:'3×50 steps — competition weight',how:'Heaviest bear hug carry you can manage. The Beast atlas stone is brutally heavy. Train for it.',vid:'atlas stone carry simulation dumbbell bear hug Spartan'},
+        {l:'C',n:'Push-up carry circuit',s:'3× — 15 pushups + 50 step carry + 10 burpees',how:'No rest between movements. Pushups → carry → burpees. This simulates back-to-back obstacle demands.',vid:'pushup farmer carry combo functional training'}
+      ],
+      taper:[
+        {l:'A',n:'Burpees',s:'2×8 — race pace',how:'Practice your race pace burpee rhythm. Controlled and efficient.',vid:'how to do a burpee perfect form step by step beginners'},
+        {l:'B',n:'Light bear hug carry',s:'2×30 steps',how:'Light. Stay loose. Maintain the movement pattern.',vid:'atlas stone carry simulation dumbbell bear hug Spartan'}
+      ]
+    }
+  };
+
+  // Get today's Spartan exercises based on day and phase
+  const todaySpartan=SPARTAN_EX[d]?.[spartanPhase]||SPARTAN_EX[d]?.foundation||[];
+  const spartanPhaseLabels={
+    foundation:'Foundation — building habits',
+    build:'Building — adding volume',
+    minimal:'Minimal — protect the legs',
+    recovery:'Active recovery — easy movement only',
+    peak:'Spartan Peak — race prep',
+    taper:'Spartan Taper — stay sharp'
+  };
+  const spartanDayLabels={1:'Overhead + Spear',2:'Rope + Grip',3:'Carry + Hang',4:'Vault + Crawl',5:'Burpees + Stone'};
+
+  if(todaySpartan.length&&cfg&&cfg.tr&&d!==0&&d!==6){
+    H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#e8500a"></div>Phase 7 — Spartan prep · ${spartanDayLabels[d]||''}</div><span style="font-size:10px;font-weight:600;color:#e8500a;background:#fef0e8;padding:2px 8px;border-radius:5px;border:1px solid #f4c4a0">~10 min · Nov 21</span></div>
+    <div class="card">
+      <div style="font-size:11px;color:#e8500a;font-weight:600;margin-bottom:4px">${spartanPhaseLabels[spartanPhase]||''} · Week ${currentWeek}/26</div>
+      <div style="font-size:11px;color:#888;margin-bottom:8px;padding:6px 8px;background:#fef9f5;border-radius:6px;border-left:2px solid #e8500a">${spartanPhase==='recovery'?'Active recovery only — mobility and easy movement.':spartanPhase==='minimal'?'Marathon taper — light Spartan only. Protect the legs.':spartanPhase==='peak'?'Spartan is primary now. Push hard on every exercise.':spartanPhase==='taper'?'Race week — stay sharp, stay fresh, do not over-train.':'Building Spartan base alongside marathon training. Consistent effort.'}</div>
+      ${todaySpartan.map((ex,ei)=>{
+        const exKey=dk+'.spartan_ex.'+ei;
+        const done=g(exKey+'.done',false);
+        return `<div style="padding:8px 0;border-bottom:1px solid #f5f0ea">
+          <div style="display:flex;align-items:flex-start;gap:8px">
+            <div onclick="tog('${exKey}.done');renderAll()" style="cursor:pointer;width:20px;height:20px;border-radius:4px;border:1.5px solid ${done?'#e8500a':'#ddd'};background:${done?'#e8500a':'white'};display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
+              ${done?'<span style="color:white;font-size:10px">✓</span>':''}
+            </div>
+            <div style="font-size:10px;font-weight:700;color:white;background:#e8500a;border-radius:3px;padding:1px 5px;flex-shrink:0;margin-top:2px">${ex.l}</div>
+            <div style="flex:1">
+              <div style="font-size:12px;color:#1a1a1a;font-weight:500">${ex.n}</div>
+              <div style="font-size:11px;color:#999;margin-top:1px">${ex.s}</div>
+              ${ex.note?`<div style="font-size:10px;color:#e8500a;margin-top:2px">💡 ${ex.note}</div>`:''}
+              ${ex.how?`<div style="font-size:11px;color:#555;margin-top:4px;padding:5px 8px;background:#fef9f5;border-radius:5px;border-left:2px solid #e8500a;line-height:1.5">📋 ${ex.how}</div>`:''}
+              ${ex.vid?`<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(ex.vid)}" target="_blank" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#e8500a;text-decoration:none;border:1px solid #f4c4a0;border-radius:5px;padding:2px 8px;margin-top:4px;background:#fef9f5">▶ Watch how to</a>`:''}
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+      <div style="margin-top:10px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#999;margin-bottom:6px">Log it</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+          <div><div style="font-size:10px;color:#999;margin-bottom:3px">Burpees</div><input type="text" inputmode="decimal" value="${g(dk+'.spartan.burpees','')}" oninput="sv('${dk}.spartan.burpees',this.value)" placeholder="0"></div>
+          <div><div style="font-size:10px;color:#999;margin-bottom:3px">Dead hang (s)</div><input type="text" inputmode="decimal" value="${g(dk+'.spartan.hang','')}" oninput="sv('${dk}.spartan.hang',this.value)" placeholder="0"></div>
+          <div><div style="font-size:10px;color:#999;margin-bottom:3px">Carry (steps)</div><input type="text" inputmode="decimal" value="${g(dk+'.spartan.carry','')}" oninput="sv('${dk}.spartan.carry',this.value)" placeholder="0"></div>
+        </div>
+      </div>
+    </div></div>`;
+  }
   const spartanEx=SPARTAN_FINISHER[d];
   if(spartanEx&&cfg&&cfg.tr){
     H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#f87171"></div>Spartan prep finisher</div><span style="font-size:10px;font-weight:600;color:#f87171;background:#2a0808;padding:2px 8px;border-radius:5px;border:1px solid #5a1a1a">Nov 21 · Trifecta</span></div>
@@ -738,6 +956,10 @@ function renderDaily(){
       </div>
     </div></div>`;
   }
+  // ── BULLETPROOFING — after Spartan ─────────────────────
+  if(loaded&&cfg&&cfg.tr&&d!==0&&d!==6) H+=renderBulletproofing(dk,d);
+  if(d===6&&loaded) H+=renderBulletproofing(dk,6);
+
 
   mc.innerHTML=H;
 }
@@ -751,6 +973,60 @@ function phaseRow(dk,key,label){
 
 // ── MARATHON RUN SECTION ──────────────────────────────────
 
+
+// ── FC DATA STRUCTURES (injected) ──────────────────────
+const D_CARS={1:'Full CARs + extra shoulder CARs',2:'Full CARs + extra wrist + elbow CARs',3:'Full CARs + extra thoracic CARs',4:'Full CARs + extra hip + ankle CARs',5:'Full CARs — shoulder pain-free range only',6:'Full CARs all 6 joints'};
+const MARATHON_PLAN={
+  startDate:'2026-05-22',
+  marathonDate:'2026-10-03',
+  spartanDate:'2026-11-21',
+  totalWeeks:26,
+  phases:[
+    {name:'Base Building',weeks:[1,2,3,4],color:'#1a7a50',desc:'Build the habit. Easy effort only. Every run counts.'},
+    {name:'Building Mileage',weeks:[5,6,7,8],color:'#2a8a5a',desc:'Mileage increases. Start feeling like a runner.'},
+    {name:'Peak Training',weeks:[9,10,11,12,13],color:'#1a6b3a',desc:'Biggest weeks. This is where the marathon is won.'},
+    {name:'Marathon Taper',weeks:[14,15,16,17],color:'#e8962a',desc:'Trust the training. Mileage drops. Stay sharp.'},
+    {name:'Marathon Peak Taper',weeks:[18,19],color:'#f87171',desc:'2 weeks out. Spartan minimal. Protect the legs.'},
+    {name:'Active Recovery',weeks:[20],color:'#888',desc:'Marathon done. Walk, mobility, McGill + CARs. No running yet.'},
+    {name:'Spartan Re-entry',weeks:[21],color:'#7F77DD',desc:'Easy jogs back. Light Spartan. Foundation only.'},
+    {name:'Spartan Peak',weeks:[22,23,24,25],color:'#c02828',desc:'Full obstacle circuits. 30 burpees. Heavy carries. Race sims.'},
+    {name:'Spartan Taper',weeks:[26],color:'#f87171',desc:'Stay sharp. Short easy runs. Light movement only.'}
+  ],
+  weeklyPlan:{
+    1: {easy:{mi:2.5,min:30},moderate:{mi:3,min:35},long:{mi:4,min:48},spartan:'foundation',lifting:'full'},
+    2: {easy:{mi:3,min:35},moderate:{mi:3.5,min:40},long:{mi:5,min:58},spartan:'foundation',lifting:'full'},
+    3: {easy:{mi:3,min:35},moderate:{mi:4,min:46},long:{mi:6,min:70},spartan:'foundation',lifting:'full'},
+    4: {easy:{mi:2.5,min:30},moderate:{mi:3,min:35},long:{mi:4,min:48},spartan:'foundation',lifting:'full'},
+    5: {easy:{mi:3.5,min:40},moderate:{mi:4,min:46},long:{mi:7,min:80},spartan:'foundation',lifting:'full'},
+    6: {easy:{mi:4,min:46},moderate:{mi:4.5,min:52},long:{mi:8,min:92},spartan:'foundation',lifting:'full'},
+    7: {easy:{mi:4,min:46},moderate:{mi:5,min:58},long:{mi:9,min:104},spartan:'foundation',lifting:'full'},
+    8: {easy:{mi:3,min:35},moderate:{mi:4,min:46},long:{mi:7,min:80},spartan:'foundation',lifting:'full'},
+    9: {easy:{mi:4.5,min:52},moderate:{mi:5,min:58},long:{mi:11,min:127},spartan:'build',lifting:'full'},
+    10:{easy:{mi:5,min:58},moderate:{mi:5.5,min:63},long:{mi:13,min:150},spartan:'build',lifting:'full'},
+    11:{easy:{mi:5,min:58},moderate:{mi:6,min:70},long:{mi:15,min:173},spartan:'build',lifting:'full'},
+    12:{easy:{mi:5,min:58},moderate:{mi:6,min:70},long:{mi:17,min:196},spartan:'build',lifting:'full'},
+    13:{easy:{mi:4,min:46},moderate:{mi:5,min:58},long:{mi:13,min:150},spartan:'build',lifting:'full'},
+    14:{easy:{mi:4,min:46},moderate:{mi:4.5,min:52},long:{mi:12,min:138},spartan:'foundation',lifting:'reduce'},
+    15:{easy:{mi:3.5,min:40},moderate:{mi:4,min:46},long:{mi:10,min:115},spartan:'foundation',lifting:'reduce'},
+    16:{easy:{mi:3,min:35},moderate:{mi:3.5,min:40},long:{mi:8,min:92},spartan:'foundation',lifting:'reduce'},
+    17:{easy:{mi:2.5,min:30},moderate:{mi:3,min:35},long:{mi:6,min:70},spartan:'foundation',lifting:'reduce'},
+    18:{easy:{mi:2,min:24},moderate:{mi:2.5,min:30},long:{mi:4,min:48},spartan:'minimal',lifting:'maintenance'},
+    19:{easy:{mi:2,min:22},moderate:{mi:0,min:0},long:{mi:26.2,min:0},spartan:'minimal',lifting:'maintenance'},
+    20:{easy:{mi:0,min:0},moderate:{mi:0,min:0},long:{mi:0,min:0},spartan:'recovery',lifting:'none'},
+    21:{easy:{mi:2.5,min:30},moderate:{mi:0,min:0},long:{mi:3,min:35},spartan:'foundation',lifting:'maintenance'},
+    22:{easy:{mi:3,min:35},moderate:{mi:3,min:35},long:{mi:4,min:46},spartan:'peak',lifting:'maintenance'},
+    23:{easy:{mi:3.5,min:40},moderate:{mi:3.5,min:40},long:{mi:5,min:58},spartan:'peak',lifting:'maintenance'},
+    24:{easy:{mi:4,min:46},moderate:{mi:4,min:46},long:{mi:5,min:58},spartan:'peak',lifting:'maintenance'},
+    25:{easy:{mi:3,min:35},moderate:{mi:3,min:35},long:{mi:4,min:46},spartan:'peak',lifting:'maintenance'},
+    26:{easy:{mi:2,min:22},moderate:{mi:0,min:0},long:{mi:3,min:35},spartan:'taper',lifting:'none'}
+  },
+  runTypes:{
+    easy:{label:'Easy Run',desc:'Conversational pace — full sentences. Heart rate 120–140bpm. Builds aerobic base.',color:'#1a7a50',cls:'run-type-easy'},
+    moderate:{label:'Moderate Run',desc:'Comfortably hard — short sentences. Heart rate 140–160bpm. Builds lactate threshold.',color:'#e8962a',cls:'run-type-mod'},
+    long:{label:'Long Run',desc:'Easy pace — never above 140bpm. This is your biggest training day of the week.',color:'#7F77DD',cls:'run-type-long'}
+  }
+};
+
 function renderDariusTraining(dk,d){
   const comp=D_COMP[d],dss=D_SS[d]||[],bp=D_BP[d],cars=D_CARS[d];
   const td=gIB(`${dk}.training.done`,false);
@@ -760,19 +1036,25 @@ function renderDariusTraining(dk,d){
 
   // ── SESSION TIMELINE ──────────────────────────────────────
   let timeline=[];
-  timeline.push({t:'5:45am',l:'Arrive',c:'#888'});
-  timeline.push({t:'5:45',l:'Phase 1 — McGill Big 3 · 5 min',c:'#1a5a9b'});
-  timeline.push({t:'5:50',l:'Phase 2 — CARs · 5 min',c:'#1a5a9b'});
+  timeline.push({t:'5:30am',l:'Arrive — 5:30am start',c:'#888'});
+  timeline.push({t:'5:30',l:'Phase 1 — McGill Big 3 · 5 min',c:'#1a5a9b'});
+  timeline.push({t:'5:35',l:'Phase 2 — CARs · 5 min',c:'#1a5a9b'});
   timeline.push({t:'5:55',l:`Phase 3 — Activation · ${{1:'Lower body + shoulder',2:'Shoulder + elbow + wrist',3:'Lower body + upper back',4:'Lower body + knee focus',5:'Lower body + chest',6:'Full lower body dynamic'}[d]||'full body'} · 5 min`,c:'#4ade80'});
-  if(isRunDay){
-    timeline.push({t:'6:00',l:`Phase 4 — Marathon run · ${runTarget} min`,c:'#1a7a50'});
-    timeline.push({t:'after run',l:'Phase 5 — Pre-lift warm-up · 5 min',c:'#1a5a9b'});
-    timeline.push({t:'after warm-up',l:'Phase 6 — Main lift + supersets · 35 min',c:'#7F77DD'});
-    timeline.push({t:'~6:50',l:'Phase 7 — Bulletproofing + PAILs/RAILs · 8 min',c:'#1D9E75'});
+  if(isRunDay&&d===6){
+    // Saturday — long run only
+    timeline.push({t:'5:45',l:`Phase 4 — Long run · ${runTarget} min`,c:'#7F77DD'});
+    timeline.push({t:'after run',l:'Phase 5 — Bulletproofing + mobility · 8 min',c:'#1D9E75'});
+    timeline.push({t:'~7:00am',l:'Home ✓',c:'#888'});
+  } else if(isRunDay){
+    timeline.push({t:'5:45',l:`Phase 4 — Marathon run · ${runTarget} min`,c:'#1a7a50'});
+    timeline.push({t:'after run',l:'Phase 5 — Pre-lift warm-up · 3 min',c:'#1a5a9b'});
+    timeline.push({t:'after warm-up',l:'Phase 6 — Lift + Supersets · 30 min',c:'#7F77DD'});
+    timeline.push({t:'~6:40',l:'Phase 7 — Spartan prep · 10 min',c:'#e8500a'});
+    timeline.push({t:'~6:50',l:'Phase 8 — Bulletproofing + PAILs/RAILs · 7 min',c:'#1D9E75'});
   } else {
     timeline.push({t:'6:00',l:'Phase 4 — Zone 2 run · 10 min',c:'#1a7a50'});
-    timeline.push({t:'6:10',l:'Phase 5 — Main lift + supersets · 35 min',c:'#7F77DD'});
-    timeline.push({t:'~6:45',l:'Phase 6 — Bulletproofing + PAILs/RAILs · 8 min',c:'#1D9E75'});
+    timeline.push({t:'5:45',l:'Phase 4 — Lift · 15 min',c:'#7F77DD'});
+    timeline.push({t:'~6:00',l:'Phase 5 — Supersets · 15 min'}); timeline.push({t:'~6:15',l:'Phase 6 — Spartan prep · 10 min',c:'#e8500a'}); timeline.push({t:'~6:25',l:'Phase 7 — Bulletproofing · 7 min',c:'#1D9E75'});
   }
   timeline.push({t:'7:00am',l:'Home ✓',c:'#1a7a50'});
 
@@ -812,39 +1094,24 @@ function renderDariusTraining(dk,d){
     <a class="vl" href="https://www.youtube.com/results?search_query=FRC+controlled+articular+rotations+tutorial+follow+along" target="_blank">▶ FRC CARs follow along</a>
   </div>`;
 
-  // ── PHASE 3 — SAUNA ──────────────────────────────────────
-  H+=`<div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 3 — Sauna</div>
-      <div style="font-size:10px;font-weight:600;color:#EF9F27;background:#fdf3dc;padding:2px 7px;border-radius:5px">Sat only — 15 min</div>
-    </div>
-    ${phaseRow(dk,'sauna','Sauna complete')}
-    <div style="font-size:11px;color:#555;line-height:1.5;padding:4px 0 6px">${isRunDay?'Sauna ready by the time McGill + CARs are done. 15 min in sauna → out → shoulder activation → run. Heat primes nervous system and raises core temp before your run.':'Sauna ready by the time McGill + CARs are done. 15–20 min → out → shoulder activation → Zone 2 run → lift. Heat before lifting raises growth hormone and primes the nervous system.'}</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
-      <div><label class="lbl">Duration (min)</label><input type="number" min="5" max="40" value="${gIB(`${dk}.sauna.duration`,'')}" oninput="svIB('${dk}.sauna.duration',this.value)" placeholder="15"></div>
-      <div><label class="lbl">Temp (°F)</label><input type="number" min="140" max="220" value="${gIB(`${dk}.sauna.temp`,'')}" oninput="svIB('${dk}.sauna.temp',this.value)" placeholder="180"></div>
-    </div>
-    <div style="margin-top:7px"><label class="lbl">Notes</label><input type="text" value="${esc(gIB(`${dk}.sauna.notes`,''))}" oninput="svIB('${dk}.sauna.notes',this.value)" placeholder="How it felt, sweat level, energy after..."></div>
-  </div>`;
-
   // ── PHASE 4 — Context-specific activation ────────────────
   const D_ACT={
     1:{label:'Lower body (run) + Shoulder (overhead press)',cats:[
-      {cat:'🏃 Run prep',ex:[['Backward walking','2 min — knees over toes, warms knee joint'],['Tibialis raises','2×15 — shin decelerator for downhill running'],['Glute bridges','2×10 — fire glutes before run'],['Banded side walks','2×10 each — hip abductors'],['Leg swings forward','×10 each — dynamic hip'],['Ankle circles','×10 each — ground contact prep']]},
+      {cat:'🏃 Run prep',ex:[['Glute bridges','2×10 — fire glutes before run'],['Banded side walks','2×10 each — hip abductors'],['Leg swings forward','×10 each — dynamic hip'],['Ankle circles','×10 each — ground contact prep'],['Air squats slow','×10 — full lower body primer']]},
       {cat:'💪 Lift prep — overhead press',ex:[['Dips (bodyweight)','2×8 — full range controlled warm-up'],['Band pull-aparts','2×15 — rear delt + rotator cuff'],['External rotations','2×12 each — shoulder health'],['Wall slides','2×10 — scapular upward rotation']]}
     ]},
     2:{label:'Shoulder + elbow + wrist (arms day)',cats:[
       {cat:'💪 Lift prep — curls + pushdowns',ex:[['Wrist circles','×10 each direction — elbow tendon prep'],['Band pull-aparts','2×15 — shoulder stability'],['External rotations','2×12 each — rotator cuff'],['Reverse curls light','2×10 — elbow warm up'],['Finger extensions','×10 — forearm balance']]}
     ]},
     3:{label:'Lower body (run) + Upper back (rows)',cats:[
-      {cat:'🏃 Run prep',ex:[['Backward walking','2 min — knees over toes, warms knee joint'],['Tibialis raises','2×15 — shin decelerator for downhill running'],['Glute bridges','2×10 — fire glutes before run'],['Banded side walks','2×10 each — hip abductors'],['Leg swings forward + lateral','×10 each — full hip mobility'],['Ankle circles','×10 each — ground contact prep']]},
-      {cat:'💪 Lift prep — rows + back',ex:[['Band pull-aparts','2×15 — scapular retraction'],['Face pulls','2×15 — rear delt + external rotation'],['Scapular retractions','2×10 — mid back activation'],['Dead hang','20–30s — lat lengthening before rows']]}
+      {cat:'🏃 Run prep',ex:[['Glute bridges','2×10 — fire glutes before run'],['Banded side walks','2×10 each — hip abductors'],['Leg swings forward + lateral','×10 each — full hip mobility'],['Ankle circles','×10 each — ground contact prep'],['Air squats slow','×10 — full lower body primer']]},
+      {cat:'💪 Lift prep — rows + back',ex:[['Scapular retractions','2×10 — mid back activation'],['Dead hang','20–30s — lat lengthening + decompress before rows'],['Hip circles','×10 each — thoracic + hip mobility']]}
     ]},
     4:{label:'Lower body + knee focus (leg press + squats)',cats:[
       {cat:'🦵 Leg day + knee prep',ex:[['Glute bridges','2×15 — max hip activation'],['Banded side walks','2×15 each — hip abductors for knee stability'],['Wall ankle dorsiflexion','×10 each — squat depth + knee tracking'],['Leg swings','×10 each — hip mobility'],['Bodyweight squats slow','2×10 — full chain activation'],['Single leg balance','20s each — proprioception + knee stability']]}
     ]},
     5:{label:'Lower body (run) + Chest/push prep (rehab safe)',cats:[
-      {cat:'🏃 Run prep',ex:[['Backward walking','2 min — knees over toes, warms knee joint'],['Tibialis raises','2×15 — shin decelerator for downhill running'],['Glute bridges','2×10 — fire glutes before run'],['Banded side walks','2×10 each — hip abductors'],['Leg swings forward','×10 each — dynamic hip'],['Ankle circles','×10 each — ground contact prep']]},
+      {cat:'🏃 Run prep',ex:[['Glute bridges','2×10 — fire glutes before run'],['Banded side walks','2×10 each — hip abductors'],['Leg swings forward','×10 each — dynamic hip'],['Ankle circles','×10 each — ground contact prep'],['Air squats slow','×10 — full lower body primer']]},
       {cat:'💪 Lift prep — chest (rehab safe)',ex:[['Band pull-aparts','2×15 — posterior shoulder balance'],['External rotations','2×12 each — rotator cuff protection'],['Pec isometric holds','3×10s pain-free range only'],['Face pulls','2×15 — always before pressing']]}
     ]},
     6:{label:'Full lower body dynamic (long run)',cats:[
@@ -852,68 +1119,63 @@ function renderDariusTraining(dk,d){
     ]}
   };
   const actData=D_ACT[d];
-  if(actData){
-    H+=`<div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 4 — Activation · ${actData.label}</div>
-        <div style="font-size:10px;font-weight:600;color:#1a5a9b;background:#e6eef8;padding:2px 7px;border-radius:5px">5:55am · 5 min</div>
-      </div>
-      ${phaseRow(dk,'shoulder','Activation complete')}
-      ${actData.cats.map((cat,ci)=>`
-        <div style="margin-top:${ci>0?'10px':'6px'};padding-top:${ci>0?'10px':'0'};${ci>0?'border-top:1px solid #f0ede6':''}">
-          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#999;margin-bottom:5px">${cat.cat}</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
-            ${cat.ex.map(([n,s])=>`<div style="font-size:11px;padding:4px 0;border-bottom:1px solid #f0ede6"><span style="color:#1a1a1a;font-weight:500">${n}</span><br><span style="color:#999">${s}</span></div>`).join('')}
-          </div>
-        </div>`).join('')}
-    </div>`;}
 
-  // ── PHASE 4 — Marathon run / Zone 2 ──────────────────────
+  // ── PHASE 3 — Activation ──────────────────────────────────
+  if(actData){
+    H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot a-green"></div>Phase 3 — Activation · ${actData.label}</div><div class="stag" style="background:#e0f3ea;color:#1a7a50">5:40am · 5 min</div></div>
+    <div class="card">
+      ${phaseRow(dk,'act','Activation complete')}
+      ${actData.cats.map(cat=>`<div style="margin-top:8px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#999;margin-bottom:4px">${cat.cat}</div>
+        ${cat.ex.map(([name,sets])=>`<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #f5f5f0"><span style="font-size:12px;color:#333">${name}</span><span style="font-size:11px;color:#888">${sets}</span></div>`).join('')}
+      </div>`).join('')}
+    </div></div>`;
+  }
+
+  // ── PHASE 4 — Marathon run (run days) ─────────────────────
   if(isRunDay){
-    const runInfo=MARATHON_PLAN.runTypes[runType];
+    const runInfo=MARATHON_PLAN.runTypes[runType]||MARATHON_PLAN.runTypes.easy;
     const runTarget2=getRunTarget(runType);
+    const runMiles=getRunMiles(runType);
+    const runPhase=getMarathonPhase();
     const runActual=parseFloat(gIB(`${dk}.run.actual`,0))||0;
+    const runActualMi=parseFloat(gIB(`${dk}.run.distance`,0))||0;
     const runPct=runTarget2>0?Math.min(100,Math.round((runActual/runTarget2)*100)):0;
     const week=getMarathonWeek()+1;
-    H+=`<div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 4 — Marathon Training · Week ${week}/26 · ${runInfo.label}</div>
-        <div style="font-size:10px;font-weight:600;color:#1a7a50;background:#e0f3ea;padding:2px 7px;border-radius:5px">6:00am · ${runTarget2} min</div>
-      </div>
+    H+=`<div class="sec"><div class="sh"><div class="st"><div class="dot" style="background:#1a7a50"></div>Phase ${d===6?'4 — Long Run':'4 — Marathon Training'} · Week ${week}/26 · ${d===6?'Long Run':runInfo.label}</div><div class="stag" style="background:#e0f3ea;color:#1a7a50">5:45am · ${runTarget2} min</div></div>
+    <div class="card">
       ${phaseRow(dk,'phase4run','Marathon run complete')}
       <div style="background:#e0f3ea;border:1px solid #1a7a5044;border-radius:8px;padding:10px 12px;margin:8px 0">
-        <div style="font-size:11px;font-weight:700;color:#1a7a50;margin-bottom:3px">${runInfo.label} · Target: ${runTarget2} min</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
+          <div style="font-size:11px;font-weight:700;color:#1a7a50">${runInfo.label}</div>
+          <div style="font-size:10px;color:#1a7a50;font-weight:600">${runPhase.name}</div>
+        </div>
+        <div style="display:flex;gap:16px;margin-bottom:4px">
+          <div style="font-size:13px;font-weight:800;color:#1a7a50">${runMiles} mi</div>
+          <div style="font-size:13px;font-weight:800;color:#1a7a50">${runTarget2} min</div>
+        </div>
         <div style="font-size:11px;color:#555;line-height:1.5">${runInfo.desc}</div>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-        <div><label class="lbl">Actual (min)</label>
-          <input type="text" inputmode="decimal" value="${gIB(`${dk}.run.actual`,'')}" onchange="svIB('${dk}.run.actual',this.value);renderAll()" style="width:70px;font-size:15px;font-weight:700;text-align:center;padding:5px 7px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div><label class="lbl">Actual time (min)</label>
+          <input type="text" inputmode="decimal" value="${gIB(dk+'.run.actual','')}" onchange="svT(dk+'.run.actual',this.value);renderAll()" style="font-size:15px;font-weight:700;text-align:center;padding:5px 7px">
+          <div style="margin-top:3px"><div class="pbar"><div class="pbf" style="width:${runPct}%;background:#1a7a50"></div></div><div style="font-size:10px;color:#999;margin-top:2px">${runPct}% of ${runTarget2} min</div></div>
         </div>
-        <div style="flex:1">
-          <div style="font-size:11px;color:#999;margin-bottom:3px">${runPct}% · target ${runTarget2} min</div>
-          <div class="pbar"><div class="pbf" style="width:${runPct}%;background:#1a7a50"></div></div>
+        <div><label class="lbl">Actual distance (mi)</label>
+          <input type="text" inputmode="decimal" value="${gIB(dk+'.run.distance','')}" onchange="svT(dk+'.run.distance',this.value);renderAll()" style="font-size:15px;font-weight:700;text-align:center;padding:5px 7px">
+          <div style="margin-top:3px"><div class="pbar"><div class="pbf" style="width:${Math.min(100,Math.round((runActualMi/(runMiles||1))*100))}%;background:#1a7a50"></div></div></div>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-        <div><label class="lbl">Distance (mi)</label><input type="text" inputmode="decimal" value="${gIB(`${dk}.run.distance`,'')}" oninput="svIB('${dk}.run.distance',this.value)" placeholder="0.0"></div>
-        <div><label class="lbl">Avg pace</label><input type="text" value="${esc(gIB(`${dk}.run.pace`,''))}" oninput="svIB('${dk}.run.pace',this.value)" placeholder="11:30 /mi"></div>
+        <div><label class="lbl">Avg pace (/mi)</label><input type="text" value="${gIB(dk+'.run.pace','')}" oninput="svT(dk+'.run.pace',this.value)" placeholder="11:30"></div>
+        <div><label class="lbl">Heart rate (avg bpm)</label><input type="text" inputmode="decimal" value="${gIB(dk+'.run.hr','')}" oninput="svT(dk+'.run.hr',this.value)" placeholder="135"></div>
       </div>
       <label class="lbl">How did it feel? Knee notes?</label>
-      <textarea style="min-height:48px" oninput="svIB('${dk}.run.notes',this.value)">${esc(gIB(`${dk}.run.notes`,''))}</textarea>
-    </div>`;
-  } else {
-    H+=`<div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 4 — Zone 2 Run · 10 min</div>
-        <div style="font-size:10px;font-weight:600;color:#1a5a9b;background:#e6eef8;padding:2px 7px;border-radius:5px">6:00am · 10 min</div>
-      </div>
-      ${phaseRow(dk,'phase4run','Zone 2 run complete')}
-      <div style="font-size:11px;color:#555;line-height:1.5;padding:4px 0">Rest day from marathon. Conversational pace 10 min — keeps aerobic base without adding run stress.</div>
-    </div>`;
+      <textarea style="min-height:48px" oninput="svT(dk+'.run.notes',this.value)">${gIB(dk+'.run.notes','')}</textarea>
+    </div></div>`;
   }
 
-  // ── PHASE 6 — Pre-lift warm-up (run days only) ────────────
-  if(isRunDay){
+  // ── PHASE 5/6 — Pre-lift warm-up (run days only) ────────────
+  if(isRunDay&&d!==6){
     H+=`<div class="card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
         <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 5 — Pre-lift warm-up</div>
@@ -924,7 +1186,7 @@ function renderDariusTraining(dk,d){
     </div>`;}
 
   // ── PHASE 6 or 7 — Main lift ──────────────────────────────
-  const liftPhaseNum = isRunDay ? 6 : 5;
+  const liftPhaseNum = isRunDay ? 6 : 4;
   const liftTime = isRunDay ? 'after warm-up · 35 min' : '6:10am · 35 min';
   if(comp&&comp.n){
     H+=`<div class="card">
@@ -977,7 +1239,10 @@ function renderDariusTraining(dk,d){
 
   // ── SUPERSETS ─────────────────────────────────────────────
   if(dss.length>0){
-    let ssH=`<div class="card"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999;margin-bottom:4px">Phase ${liftPhaseNum} — Supersets</div>
+    const liftMode=getLiftingMode();
+    const liftModeLabels={full:'Full volume',reduce:'Volume reducing',maintenance:'Maintenance mode',none:'Rest — no lifting today'};
+    const liftNote=liftModeLabels[liftMode]||'Full volume';
+    let ssH=`<div class="card"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999;margin-bottom:4px">Phase ${isRunDay?6:5} — Lift + Supersets · <span style="color:#e8500a">${liftNote}</span></div>
     ${phaseRow(dk,'supersets','Supersets complete')}`;
     dss.forEach((s,si)=>{
       ssH+=`<div style="border-left:3px solid #e0ddd6;padding-left:10px;margin:8px 0">
@@ -996,7 +1261,7 @@ function renderDariusTraining(dk,d){
             <div style="font-size:10px;font-weight:600;color:#999;text-align:center">Reps</div>
             <div style="font-size:10px;font-weight:600;color:#999;text-align:center">Notes</div>
           </div>
-          ${[1,2,3].map(setNum=>`
+          ${((s)=>{const m=s&&s.match(/^(\d+)[×x]/);const n=m?Math.min(parseInt(m[1]),3):2;return Array.from({length:n},(_,i)=>i+1);})(e.s).map(setNum=>`
           <div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:4px;margin-top:3px;align-items:center">
             <div style="font-size:10px;color:#666;padding:3px 5px;font-weight:500">Set ${setNum}</div>
             <input type="text" value="${esc(gIB(`${dk}.ss.${ssKey}.s${setNum}.weight`,''))}" oninput="svIB('${dk}.ss.${ssKey}.s${setNum}.weight',this.value)" placeholder="lbs" style="text-align:center;padding:5px 4px;font-size:12px">
@@ -1010,24 +1275,9 @@ function renderDariusTraining(dk,d){
     ssH+=`</div>`;
     H+=ssH;}
 
-  // ── FINAL PHASE — Bulletproofing + PAILs/RAILs ───────────
-  const finalPhase = isRunDay ? 8 : 7;
-  if(bp){
-    H+=`<div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999">Phase 8 — Bulletproofing + PAILs/RAILs · ${bp.t}</div>
-        <div style="font-size:10px;font-weight:600;color:#1D9E75;background:#e0f3ea;padding:2px 7px;border-radius:5px">~6:50am · 8 min</div>
-      </div>
-      ${phaseRow(dk,'phase_bp','Bulletproofing + PAILs/RAILs complete')}
-      <ul style="padding-left:14px;margin:6px 0">${bp.i.map(i=>`<li style="font-size:11px;color:#555;margin-bottom:5px;line-height:1.6">${i}</li>`).join('')}</ul>
-      <div style="font-size:10px;color:#999;font-weight:600;margin-bottom:3px;margin-top:6px">How-to videos</div>
-      ${bp.v.map(v=>`<a class="vl" href="https://www.youtube.com/results?search_query=${encodeURIComponent(v)}" target="_blank">▶ ${v}</a>`).join('')}
-      <div style="margin-top:8px"><label class="lbl">Notes</label><input type="text" value="${esc(gIB(`${dk}.phase6.notes`,''))}" oninput="svIB('${dk}.phase6.notes',this.value)" placeholder="How it felt, anything tight..."></div>
-    </div>`;}
 
   H+=`</div>`;return H;
 }
-
 
 function renderProgress(){
   const mc=document.getElementById('progressContent');

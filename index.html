@@ -669,7 +669,7 @@ function hrRow(key,label,time){
 function renderDaily(){
   const mc=document.getElementById('dailyContent');
   if(!loaded){mc.innerHTML='<div class="spin-wrap"><div class="spinner"></div></div>';return;}
-  const d=curDay,dk=`d_d${d}`;
+  const d=curDay,dk=`d${d}`;
   const cfg=SPLIT[d];
   
   let H='';
